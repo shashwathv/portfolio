@@ -1,0 +1,19 @@
+.background-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: #0a0a0a;
+}
+
+/* Tilt + oversize so edges don’t show */
+.beams-tilt {
+  position: absolute;
+  width: 140%;
+  height: 140%;
+  top: -20%;
+  left: -20%;
+  transform: rotate(-18deg);
+  transform-origin: center;
+  pointer-events: none;
+}
