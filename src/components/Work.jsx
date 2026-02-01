@@ -7,7 +7,7 @@ export default function Work() {
         'Web scraping and browser automation framework built with Golang. Features headless browsing, proxy support, and intelligent rate limiting for enterprise-scale data extraction.',
       tech: ['Golang', 'Chromedp', 'Redis', 'Docker'],
       links: {
-        github: '#', // TODO: add GitHub repo
+        github: 'https://github.com/VincentSamuelPaul/ShadowBrowse', // TODO: add GitHub repo
         demo: '#'    // TODO: add live demo (optional)
       }
     },
@@ -38,8 +38,8 @@ export default function Work() {
         'NumPy'
       ],
       links: {
-        github: '#', // TODO: add GitHub repo
-        demo: '#'    // TODO: optional web UI / demo
+        github: 'https://github.com/shashwathv/KanGen', // TODO: add GitHub repo
+        demo: null   // TODO: optional web UI / demo
       }
     }
   ];
