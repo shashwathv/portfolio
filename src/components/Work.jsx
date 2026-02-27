@@ -8,7 +8,7 @@ export default function Work() {
       tech: ['Golang', 'Chromedp', 'Redis', 'Docker'],
       links: {
         github: 'https://github.com/VincentSamuelPaul/ShadowBrowse', // TODO: add GitHub repo
-        demo: null    // TODO: add live demo (optional)
+        demo: "https://drive.google.com/file/d/1Pr8xoM5vnvuXAdkyqVTOKZajyLsv-RvP/view?usp=drive_link"    // TODO: add live demo (optional)
       }
     },
     {
