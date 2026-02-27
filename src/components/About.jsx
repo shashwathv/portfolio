@@ -8,18 +8,23 @@ export default function About() {
           </div>
 
           <div className="about-content">
-  <p className="text-strong">
-    I'm a computer science undergraduate interested in backend systems and
-    developer tooling.
-  </p>
-  <p>
-    I enjoy building projects with Golang and Python while learning about
-    system design, performance, and clean architecture through hands-on work.
-  </p>
+            <p className="text-strong">
+              I'm a computer science undergraduate interested in backend systems and
+              developer tooling.
+            </p>
+            <p>
+              I enjoy building projects with Golang and Python while learning about
+              system design, performance, and clean architecture through hands-on work.
+            </p>
+            <p>
+              Currently focused on distributed systems, API design, and exploring how
+              AI can be integrated thoughtfully into real-world applications.
+            </p>
 
             <div className="info-item">
               <h3>Education</h3>
               <p>Bachelor of Engineering in Computer Science</p>
+              <p className="text-muted">Dayananda Sagar Academy of Technology and Management, Bengaluru</p>
               <p>Expected Graduation: 2027</p>
             </div>
 

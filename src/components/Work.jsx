@@ -7,19 +7,22 @@ export default function Work() {
         'Web scraping and browser automation framework built with Golang. Features headless browsing, proxy support, and intelligent rate limiting for enterprise-scale data extraction.',
       tech: ['Golang', 'Chromedp', 'Redis', 'Docker'],
       links: {
-        github: 'https://github.com/VincentSamuelPaul/ShadowBrowse', // TODO: add GitHub repo
-        demo: "https://drive.google.com/file/d/1Pr8xoM5vnvuXAdkyqVTOKZajyLsv-RvP/view?usp=drive_link"    // TODO: add live demo (optional)
+        github: 'https://github.com/VincentSamuelPaul/ShadowBrowse',
+        demo: 'https://drive.google.com/file/d/1Pr8xoM5vnvuXAdkyqVTOKZajyLsv-RvP/view?usp=drive_link'
       }
     },
     {
       title: 'Lensix',
       category: 'Linux Tooling',
       description:
-        'A Linux-native “Circle to Search” tool that lets users draw a region on screen to perform instant OCR or visual search. Built in Python with PyQt6, OpenCV, and Tesseract, Lensix supports both Wayland and X11 via a resilient multi-strategy screen capture pipeline and integrates Google Lens through browser automation.',
+        'A Linux-native "Circle to Search" tool that lets users draw a region on screen to perform instant OCR or visual search. Built in Python with PyQt6, OpenCV, and Tesseract, Lensix supports both Wayland and X11 via a resilient multi-strategy screen capture pipeline and integrates Google Lens through browser automation.',
       tech: ['Python', 'PyQt6', 'OpenCV', 'Tesseract OCR', 'Playwright', 'Wayland & X11'],
+      comingSoon: true,
+      deprecated: true,
+      deprecatedNote: 'Not compatible with GNOME 46+',
       links: {
-        github: '#', // TODO: add GitHub repo
-        demo: null   // no demo yet
+        github: null,
+        demo: null
       }
     },
     {
@@ -38,8 +41,8 @@ export default function Work() {
         'NumPy'
       ],
       links: {
-        github: 'https://github.com/shashwathv/KanGen', // TODO: add GitHub repo
-        demo: null   // TODO: optional web UI / demo
+        github: 'https://github.com/shashwathv/KanGen',
+        demo: null
       }
     }
   ];
@@ -54,11 +57,32 @@ export default function Work() {
             {projects.map((project, index) => (
               <div key={index} className="work-item">
                 <div className="work-header">
-                  <h3 className="work-title">{project.title}</h3>
+                  <div className="work-title-row">
+                    <h3 className="work-title">{project.title}</h3>
+                    <div className="work-badges">
+                      {project.deprecated && (
+                        <span
+                          className="project-badge badge-deprecated"
+                          title={project.deprecatedNote}
+                        >
+                          Deprecated
+                        </span>
+                      )}
+                      {project.comingSoon && (
+                        <span className="project-badge badge-coming-soon">
+                          Repo Coming Soon
+                        </span>
+                      )}
+                    </div>
+                  </div>
                   <span className="work-category text-muted">
                     {project.category}
                   </span>
                 </div>
+
+                {project.deprecated && project.deprecatedNote && (
+                  <p className="deprecated-note">{project.deprecatedNote}</p>
+                )}
 
                 <p className="work-description text-strong">
                   {project.description}
@@ -83,7 +107,6 @@ export default function Work() {
                       GitHub →
                     </a>
                   )}
-
                   {project.links.demo && (
                     <a
                       href={project.links.demo}
