@@ -57,7 +57,7 @@ export default function Contact() {
                                 <div className="contact-links-list">
                                     <a href="mailto:shashwath@example.com" className="contact-link">Email</a>
                                     <a href="https://github.com/shashwathv" target="_blank" rel="noopener noreferrer" className="contact-link">GitHub</a>
-                                    <a href="https://linkedin.com/in/shashwathv" target="_blank" rel="noopener noreferrer" className="contact-link">LinkedIn</a>
+                                    <a href="https://linkedin.com/in/shashwathv4405" target="_blank" rel="noopener noreferrer" className="contact-link">LinkedIn</a>
                                 </div>
                             </div>
       </div>
