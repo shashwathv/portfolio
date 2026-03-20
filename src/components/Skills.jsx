@@ -16,6 +16,7 @@ export default function Skills() {
       skills: [
         { name: 'Gin/Echo', primary: false },
         { name: 'Flask', primary: false },
+        { name: 'FastAPI', primary: false },
         //{ name: 'gRPC', primary: false },
         { name: 'REST', primary: false }
       ]
@@ -33,7 +34,7 @@ export default function Skills() {
       name: 'Infrastructure',
       skills: [
         { name: 'Docker', primary: false },
-        //{ name: 'Kubernetes', primary: false },
+        { name: 'AWS', primary: false },
         { name: 'Linux', primary: true },
        // { name: 'CI/CD', primary: false }
       ]

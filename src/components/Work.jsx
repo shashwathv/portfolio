@@ -12,17 +12,16 @@ export default function Work() {
       }
     },
     {
-      title: 'Lensix',
+      title: 'KenXSearch',
       category: 'Linux Tooling',
       description:
-        'A Linux-native "Circle to Search" tool that lets users draw a region on screen to perform instant OCR or visual search. Built in Python with PyQt6, OpenCV, and Tesseract, Lensix supports both Wayland and X11 via a resilient multi-strategy screen capture pipeline and integrates Google Lens through browser automation.',
+        'Circle to Search for Linux. Draw a freehand circle around anything on screen to instantly search it — text, visual, translate, or shopping via Google Lens. Features a full-screen HUD overlay, smart multi-strategy OCR, persistent browser session, and a resilient screen capture pipeline that works across KDE, GNOME, Wayland, and X11.',
       tech: ['Python', 'PyQt6', 'OpenCV', 'Tesseract OCR', 'Playwright', 'Wayland & X11'],
-      comingSoon: true,
       deprecated: true,
-      deprecatedNote: 'Not compatible with GNOME 46+',
+      deprecatedNote: 'Partial support on GNOME 49+ Wayland — background capture restricted by compositor',
       links: {
-        github: null,
-        demo: null
+        github: 'https://github.com/shashwathv/KenXSearch',
+        demo: 'https://kenxsearch.vercel.app'
       }
     },
     {
@@ -65,7 +64,7 @@ export default function Work() {
                           className="project-badge badge-deprecated"
                           title={project.deprecatedNote}
                         >
-                          Deprecated
+                          GNOME 49+ Partial
                         </span>
                       )}
                       {project.comingSoon && (
