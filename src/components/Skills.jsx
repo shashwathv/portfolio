@@ -1,3 +1,6 @@
+import Reveal from './Reveal';
+import RevealHeading from './RevealHeading';
+
 export default function Skills() {
   const categories = [
     {
@@ -7,7 +10,7 @@ export default function Skills() {
         { name: 'Python', primary: true },
         { name: 'JavaScript', primary: false },
         { name: 'TypeScript', primary: false },
-        { name: 'C', primary: false },
+        { name: 'C', primary: false }
         //{ name: 'Rust', primary: false }
       ]
     },
@@ -35,8 +38,8 @@ export default function Skills() {
       skills: [
         { name: 'Docker', primary: false },
         { name: 'AWS', primary: false },
-        { name: 'Linux', primary: true },
-       // { name: 'CI/CD', primary: false }
+        { name: 'Linux', primary: true }
+        // { name: 'CI/CD', primary: false }
       ]
     },
     {
@@ -54,11 +57,15 @@ export default function Skills() {
     <section id="skills">
       <div className="container">
         <div style={{ width: '100%' }}>
-          <h2 className="serif">Skills & Tools</h2>
+          <Reveal>
+            <p className="section-label mono">Skills</p>
+          </Reveal>
+          <RevealHeading className="serif">Skills & Tools</RevealHeading>
+
           <div className="skills-grid">
             {categories.map((category, index) => (
-              <div key={index} className="skill-category">
-                <h3 className="text-muted">{category.name}</h3>
+              <Reveal key={index} delay={index * 50} className="skill-category">
+                <h3 className="mono">{category.name}</h3>
                 <ul className="skill-list">
                   {category.skills.map((skill, i) => (
                     <li
@@ -69,9 +76,15 @@ export default function Skills() {
                     </li>
                   ))}
                 </ul>
-              </div>
+              </Reveal>
             ))}
           </div>
+
+          <Reveal delay={120}>
+            <p className="skills-footnote text-muted">
+              <span className="mono">*</span> primary focus
+            </p>
+          </Reveal>
         </div>
       </div>
     </section>

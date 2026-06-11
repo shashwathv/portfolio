@@ -1,4 +1,5 @@
 import Background from './components/background/Background';
+import ScrollProgress from './components/ScrollProgress';
 import Navigation from './components/Navigation';
 import Hero from './components/Hero';
 import About from './components/About';
@@ -11,6 +12,7 @@ export default function App() {
   return (
     <>
       <Background />
+      <ScrollProgress />
       <Navigation />
       <main className="site-content">
         <Hero />

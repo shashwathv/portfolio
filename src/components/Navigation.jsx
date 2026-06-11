@@ -1,10 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import useScrollSpy from '../hooks/useScrollSpy';
 
 export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [visible, setVisible] = useState(true);
+  const [scrolled, setScrolled] = useState(false);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
+
+  const navItems = useMemo(() => ['about', 'work', 'skills', 'contact'], []);
+  const active = useScrollSpy(navItems);
 
   useEffect(() => {
     const root = document.getElementById('root');
@@ -19,6 +24,7 @@ export default function Navigation() {
             setVisible(diff < 0 || currentY < 60);
             lastScrollY.current = currentY;
           }
+          setScrolled(currentY > 24);
           ticking.current = false;
         });
         ticking.current = true;
@@ -37,16 +43,37 @@ export default function Navigation() {
     return () => { root.style.overflow = ''; };
   }, [mobileOpen]);
 
+  // Close menu on Escape
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const onKey = e => { if (e.key === 'Escape') setMobileOpen(false); };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [mobileOpen]);
+
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMobileOpen(false);
   };
 
-  const navItems = ['about', 'work', 'skills', 'contact'];
-
   return (
     <>
-      <nav className={visible ? 'nav-visible' : 'nav-hidden'}>
+      <nav className={`${visible ? 'nav-visible' : 'nav-hidden'} ${scrolled ? 'nav-scrolled' : ''}`}>
+        {/* Desktop links */}
+        <ul className="nav-desktop">
+          {navItems.map(id => (
+            <li key={id}>
+              <a
+                href={`#${id}`}
+                className={active === id ? 'nav-link-active' : ''}
+                onClick={e => { e.preventDefault(); scrollToSection(id); }}
+              >
+                {id.charAt(0).toUpperCase() + id.slice(1)}
+              </a>
+            </li>
+          ))}
+        </ul>
+
         {/* Hamburger — mobile only */}
         <button
           className="nav-toggle"
@@ -60,20 +87,6 @@ export default function Navigation() {
             <span />
           </span>
         </button>
-
-        {/* Desktop links */}
-        <ul className="nav-desktop">
-          {navItems.map(id => (
-            <li key={id}>
-              <a
-                href={`#${id}`}
-                onClick={e => { e.preventDefault(); scrollToSection(id); }}
-              >
-                {id.charAt(0).toUpperCase() + id.slice(1)}
-              </a>
-            </li>
-          ))}
-        </ul>
       </nav>
 
       {/* Backdrop dimmer */}

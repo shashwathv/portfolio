@@ -1,4 +1,6 @@
 import { useState } from 'react';
+import Reveal from './Reveal';
+import RevealHeading from './RevealHeading';
 
 // Sign up at https://formspree.io, create a form, and replace YOUR_FORM_ID below
 const FORMSPREE_ID = 'mdaljzrw';
@@ -38,48 +40,57 @@ export default function Contact() {
   return (
     <section id="contact">
       <div className="container contact-content">
-        <h2 className="serif">Get in Touch</h2>
+        <Reveal>
+          <p className="section-label section-label-center mono">Contact</p>
+        </Reveal>
+        <RevealHeading className="serif">Get in Touch</RevealHeading>
 
-        {done ? (
-          <p className="form-success">Thank you. I'll be in touch soon.</p>
-        ) : (
-          <form onSubmit={submit}>
-            {['name', 'email', 'message'].map(field => (
-              <div className="form-group" key={field}>
-                <label>{field}</label>
-                {field === 'message' ? (
-                  <textarea
-                    name={field}
-                    value={form[field]}
-                    onChange={e => setForm({ ...form, [field]: e.target.value })}
-                    required
-                  />
-                ) : (
-                  <input
-                    type={field === 'email' ? 'email' : 'text'}
-                    name={field}
-                    value={form[field]}
-                    onChange={e => setForm({ ...form, [field]: e.target.value })}
-                    required
-                  />
-                )}
-              </div>
-            ))}
-            {error && <p className="form-error">{error}</p>}
-            <button className="submit-button" disabled={sending}>
-              {sending ? 'Sending…' : 'Send Message'}
-            </button>
-          </form>
-        )}
+        <Reveal delay={80}>
+          {done ? (
+            <p className="form-success">Thank you. I'll be in touch soon.</p>
+          ) : (
+            <form onSubmit={submit}>
+              {['name', 'email', 'message'].map(field => (
+                <div className="form-group" key={field}>
+                  <label className="mono" htmlFor={`contact-${field}`}>{field}</label>
+                  {field === 'message' ? (
+                    <textarea
+                      id={`contact-${field}`}
+                      name={field}
+                      value={form[field]}
+                      onChange={e => setForm({ ...form, [field]: e.target.value })}
+                      required
+                    />
+                  ) : (
+                    <input
+                      id={`contact-${field}`}
+                      type={field === 'email' ? 'email' : 'text'}
+                      name={field}
+                      value={form[field]}
+                      onChange={e => setForm({ ...form, [field]: e.target.value })}
+                      required
+                    />
+                  )}
+                </div>
+              ))}
+              {error && <p className="form-error">{error}</p>}
+              <button className="submit-button" disabled={sending}>
+                {sending ? 'Sending…' : 'Send Message'}
+              </button>
+            </form>
+          )}
+        </Reveal>
 
-        <div className="contact-links">
-          <p>Or reach out directly</p>
-          <div className="contact-links-list">
-            <a href="mailto:shashwathv4405@gmail.com" className="contact-link">Email</a>
-            <a href="https://github.com/shashwathv" target="_blank" rel="noopener noreferrer" className="contact-link">GitHub</a>
-            <a href="https://linkedin.com/in/shashwathv4405" target="_blank" rel="noopener noreferrer" className="contact-link">LinkedIn</a>
+        <Reveal delay={140}>
+          <div className="contact-links">
+            <p className="mono">Or reach out directly</p>
+            <div className="contact-links-list">
+              <a href="mailto:shashwathv4405@gmail.com" className="contact-link">Email</a>
+              <a href="https://github.com/shashwathv" target="_blank" rel="noopener noreferrer" className="contact-link">GitHub</a>
+              <a href="https://linkedin.com/in/shashwathv4405" target="_blank" rel="noopener noreferrer" className="contact-link">LinkedIn</a>
+            </div>
           </div>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

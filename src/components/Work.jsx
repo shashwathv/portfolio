@@ -1,3 +1,6 @@
+import Reveal from './Reveal';
+import RevealHeading from './RevealHeading';
+
 export default function Work() {
   const projects = [
     {
@@ -50,74 +53,83 @@ export default function Work() {
     <section id="work">
       <div className="container">
         <div style={{ width: '100%' }}>
-          <h2 className="serif">Selected Work</h2>
+          <Reveal>
+            <p className="section-label mono">Selected Work</p>
+          </Reveal>
+          <RevealHeading className="serif">Things I've built</RevealHeading>
 
           <div className="work-list">
             {projects.map((project, index) => (
-              <div key={index} className="work-item">
-                <div className="work-header">
-                  <div className="work-title-row">
-                    <h3 className="work-title">{project.title}</h3>
-                    <div className="work-badges">
-                      {project.deprecated && (
-                        <span
-                          className="project-badge badge-deprecated"
-                          title={project.deprecatedNote}
-                        >
-                          GNOME 49+ Partial
-                        </span>
-                      )}
-                      {project.comingSoon && (
-                        <span className="project-badge badge-coming-soon">
-                          Repo Coming Soon
-                        </span>
-                      )}
+              <Reveal key={index} delay={index * 60} className="work-item">
+                <span className="work-index mono" aria-hidden="true">
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+
+                <div className="work-body">
+                  <div className="work-header">
+                    <div className="work-title-row">
+                      <h3 className="work-title serif">{project.title}</h3>
+                      <div className="work-badges">
+                        {project.deprecated && (
+                          <span
+                            className="project-badge badge-deprecated mono"
+                            title={project.deprecatedNote}
+                          >
+                            GNOME 49+ Partial
+                          </span>
+                        )}
+                        {project.comingSoon && (
+                          <span className="project-badge badge-coming-soon mono">
+                            Repo Coming Soon
+                          </span>
+                        )}
+                      </div>
                     </div>
-                  </div>
-                  <span className="work-category text-muted">
-                    {project.category}
-                  </span>
-                </div>
-
-                {project.deprecated && project.deprecatedNote && (
-                  <p className="deprecated-note">{project.deprecatedNote}</p>
-                )}
-
-                <p className="work-description text-strong">
-                  {project.description}
-                </p>
-
-                <div className="work-tech">
-                  {project.tech.map((tech, i) => (
-                    <span key={i} className="tech-item">
-                      {tech}
+                    <span className="work-category mono">
+                      {project.category}
                     </span>
-                  ))}
-                </div>
+                  </div>
 
-                <div className="work-links">
-                  {project.links.github && (
-                    <a
-                      href={project.links.github}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="work-link"
-                    >
-                      GitHub →
-                    </a>
+                  {project.deprecated && project.deprecatedNote && (
+                    <p className="deprecated-note">{project.deprecatedNote}</p>
                   )}
-                  {project.links.demo && (
-                    <a
-                      href={project.links.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="work-link"
-                    >
-                      Live Demo →
-                    </a>
-                  )}
+
+                  <p className="work-description text-strong">
+                    {project.description}
+                  </p>
+
+                  <div className="work-tech mono">
+                    {project.tech.map((tech, i) => (
+                      <span key={i} className="tech-item">
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
+
+                  <div className="work-links">
+                    {project.links.github && (
+                      <a
+                        href={project.links.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="work-link"
+                      >
+                        GitHub <span className="link-arrow" aria-hidden="true">→</span>
+                      </a>
+                    )}
+                    {project.links.demo && (
+                      <a
+                        href={project.links.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="work-link"
+                      >
+                        Live Demo <span className="link-arrow" aria-hidden="true">→</span>
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>
+              </Reveal>
             ))}
           </div>
         </div>
