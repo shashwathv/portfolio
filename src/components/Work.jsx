@@ -40,7 +40,7 @@ export default function Work() {
         'Cloudflare Zero Trust'
       ],
       links: {
-        github: null,
+        github: 'https://github.com/shashwathv/Behaviour-Vault',
         demo: null
       }
     },
