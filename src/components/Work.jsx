@@ -4,17 +4,6 @@ import RevealHeading from './RevealHeading';
 export default function Work() {
   const projects = [
     {
-      title: 'ShadowBrowse',
-      category: 'Backend Infrastructure',
-      description:
-        'Web scraping and browser automation framework built with Golang. Features headless browsing, proxy support, and intelligent rate limiting for enterprise-scale data extraction.',
-      tech: ['Golang', 'Chromedp', 'Redis', 'Docker'],
-      links: {
-        github: 'https://github.com/VincentSamuelPaul/ShadowBrowse',
-        demo: 'https://drive.google.com/file/d/1Pr8xoM5vnvuXAdkyqVTOKZajyLsv-RvP/view?usp=drive_link'
-      }
-    },
-    {
       title: 'KenXSearch',
       category: 'Linux Tooling',
       description:
@@ -28,19 +17,46 @@ export default function Work() {
       }
     },
     {
+      title: 'ShadowBrowse',
+      category: 'Backend Infrastructure',
+      description:
+        'Web scraping and browser automation framework built with Golang. Features headless browsing, proxy support, and intelligent rate limiting for enterprise-scale data extraction.',
+      tech: ['Golang', 'Chromedp', 'Redis', 'Docker'],
+      links: {
+        github: 'https://github.com/VincentSamuelPaul/ShadowBrowse',
+        demo: 'https://drive.google.com/file/d/1Pr8xoM5vnvuXAdkyqVTOKZajyLsv-RvP/view?usp=drive_link'
+      }
+    },
+    {
+      title: 'BehaviorVault 2.0',
+      category: 'ML / Security',
+      description:
+        'Behavioral biometric security layer for mobile banking. Uses five behavioral signals with per-user EWMA baselines and an Isolation Forest model distilled to a 3KB TFLite artifact for on-device anomaly detection, backed by a FastAPI inference service and Cloudflare Zero Trust gating.',
+      tech: [
+        'Python',
+        'FastAPI',
+        'TensorFlow Lite',
+        'scikit-learn',
+        'Cloudflare Zero Trust'
+      ],
+      links: {
+        github: null,
+        demo: null
+      }
+    },
+    {
       title: 'KanGen',
       category: 'AI / Computer Vision',
       description:
-        'An automated Kanji flashcard generation tool that converts images of physical study materials into high-quality Anki decks using computer vision, OCR, and AI-driven parsing with robust offline fallbacks.',
+        'An automated Japanese flashcard generation tool that converts photos of physical study materials into high-quality Anki decks. Built on a Gemini 2.5 Flash vision-first pipeline with a Redis job store and S3 upload, plus robust offline fallbacks.',
       tech: [
         'Python',
-        'OpenCV',
-        'EasyOCR',
-        'Google Gemini',
+        'Google Gemini 2.5 Flash',
+        'Redis',
+        'AWS S3',
         'SudachiPy',
         'Genanki',
-        'Pandas',
-        'NumPy'
+        'Pandas'
       ],
       links: {
         github: 'https://github.com/shashwathv/KanGen',
