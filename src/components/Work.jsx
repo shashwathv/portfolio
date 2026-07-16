@@ -13,7 +13,7 @@ export default function Work() {
       deprecatedNote: 'Partial support on GNOME 49+ Wayland — background capture restricted by compositor',
       links: {
         github: 'https://github.com/shashwathv/KenXSearch',
-        demo: 'https://kenxsearch.vercel.app'
+        demo: 'https://kenxsearch.nw-right.dev/'
       }
     },
     {
