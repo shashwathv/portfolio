@@ -1,10 +1,6 @@
-import useLocalTime from '../hooks/useLocalTime';
-
 const NAME = 'Shashwath V';
 
 export default function Hero() {
-  const time = useLocalTime();
-
   const scrollToWork = (e) => {
     e.preventDefault();
     document.getElementById('work')?.scrollIntoView({ behavior: 'smooth' });
@@ -32,8 +28,8 @@ export default function Hero() {
 
         <div className="hero-mask" style={{ '--d': '420ms' }}>
           <p className="intro">
-            Building backend systems and learning how scalable, reliable software is designed.
-            Interested in AI-driven systems, clean architecture, and thoughtful engineering.
+            Building backend systems, developer tooling, and self-hosted
+            infrastructure.
           </p>
         </div>
 

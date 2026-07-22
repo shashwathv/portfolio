@@ -18,14 +18,9 @@ export default function About() {
             </Reveal>
             <Reveal delay={80}>
               <p>
-                I enjoy building projects with Golang and Python while learning about
-                system design, performance, and clean architecture through hands-on work.
-              </p>
-              <p>
-                Currently focused on distributed systems, API design, and exploring how
-                AI can be integrated thoughtfully into real-world applications. Outside
-                of coursework, I run a self-hosted homelab where most of my projects
-                — including this site — live in production.
+                Mostly Golang and Python, currently focused on distributed systems and
+                API design. I run a self-hosted homelab where most of my projects —
+                including this site — live in production.
               </p>
             </Reveal>
 

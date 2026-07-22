@@ -8,14 +8,21 @@
    TOKENS
    ------------------------------------------------------------ */
 :root {
-  --bg: #0a0a0a;
+  --bg: #070708;
+  --surface: #0e0e10;      /* raised panels — cards, media wells */
+  --surface-hi: #141416;   /* hover state for those panels */
   --ink: #f2f0eb;          /* warm near-white for headings */
   --text: #b6b4ae;         /* body copy */
   --muted: #7c7a73;        /* secondary text */
   --faint: #54524c;        /* tertiary / decorative text */
-  --hairline: rgba(242, 240, 235, 0.08);
-  --hairline-strong: rgba(242, 240, 235, 0.18);
+  --hairline: rgba(242, 240, 235, 0.07);
+  --hairline-strong: rgba(242, 240, 235, 0.16);
   --error: #c0524a;
+
+  /* Single warm accent — interaction only, never decoration. */
+  --accent: #d8a24a;
+  --accent-dim: rgba(216, 162, 74, 0.35);
+  --accent-wash: rgba(216, 162, 74, 0.08);
 
   --font-serif: 'Crimson Pro', Georgia, serif;
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -66,7 +73,7 @@ body {
 #root {
   position: fixed;
   inset: 1px;
-  border: 1px solid #2a2a28;
+  border: 1px solid #232326;
   overflow-y: auto;
   overflow-x: hidden;
   background: transparent;
@@ -195,13 +202,16 @@ a {
    REVEAL SYSTEM
    Elements fade and rise as they enter the viewport.
    ------------------------------------------------------------ */
+/* No `will-change` here on purpose: this class is on nearly every block
+   on the page, and promoting all of them to their own compositor layer
+   for the life of the document costs far more than the one-off transition
+   it would smooth. */
 .reveal {
   opacity: 0;
   transform: translateY(28px);
   transition:
     opacity var(--reveal-duration) var(--ease-out),
     transform var(--reveal-duration) var(--ease-out);
-  will-change: opacity, transform;
 }
 
 .reveal.is-revealed {
@@ -538,45 +548,6 @@ section {
   line-height: 1.8;
 }
 
-/* Live meta row: status · location · time */
-.hero-meta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 0.875rem;
-  font-size: 0.72rem;
-  text-transform: uppercase;
-  letter-spacing: 0.12em;
-  color: var(--muted);
-  margin-bottom: 3.5rem;
-}
-
-.hero-meta-divider {
-  color: var(--faint);
-}
-
-.hero-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  color: #a8a6a0;
-}
-
-.status-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: #8fae8b;
-  box-shadow: 0 0 6px rgba(143, 174, 139, 0.7);
-  animation: status-pulse 2.4s ease-in-out infinite;
-}
-
-@keyframes status-pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.35; }
-}
-
 .hero-actions {
   display: flex;
   flex-direction: column;
@@ -587,18 +558,19 @@ section {
 .hero-cta {
   display: inline-block;
   padding: 0.875rem 2.5rem;
-  border: 1px solid rgba(255, 255, 255, 0.3);
+  border: 1px solid rgba(255, 255, 255, 0.22);
   color: #e0e0e0;
   font-size: 0.875rem;
   font-weight: 500;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  transition: background 0.3s ease, border-color 0.3s ease;
+  transition: background 0.4s ease, border-color 0.4s ease, color 0.4s ease;
 }
 
 .hero-cta:hover {
-  background: rgba(255, 255, 255, 0.06);
-  border-color: rgba(255, 255, 255, 0.6);
+  background: var(--accent-wash);
+  border-color: var(--accent-dim);
+  color: var(--accent);
 }
 
 .hero-socials {
@@ -726,116 +698,173 @@ section {
 
 /* ------------------------------------------------------------
    WORK
-   List layout, mono indices, hover micro-interactions
+   Two-column card grid. Each card leads with cover art —
+   a screenshot when one exists, generative SVG when it doesn't.
    ------------------------------------------------------------ */
-.work-list {
+.work-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 4.5rem 3.5rem;
   width: 100%;
 }
 
-.work-item {
-  display: grid;
-  grid-template-columns: 4rem 1fr;
-  gap: 1.5rem;
-  padding: 4rem 0;
-  position: relative;
+.work-card {
+  display: flex;
+  flex-direction: column;
 }
 
-/* Hairline that draws itself left-to-right on reveal */
-.work-item::before {
+/* --- Cover art well --- */
+.work-card-media {
+  position: relative;
+  display: block;
+  aspect-ratio: 16 / 11;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: 3px;
+  background: var(--surface);
+  margin-bottom: 1.75rem;
+  transition: border-color 0.5s ease, background 0.5s ease,
+    transform 0.6s var(--ease-out);
+}
+
+.work-card:hover .work-card-media {
+  border-color: var(--hairline-strong);
+  background: var(--surface-hi);
+  transform: translateY(-4px);
+}
+
+/* Parallax layer — --px/--py are written by the card's mousemove handler.
+   Scaled up so the drift never exposes an edge. */
+.work-card-media-inner {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(1.06);
+  transition: transform 0.5s var(--ease-out);
+  will-change: transform;
+}
+
+.work-card:hover .work-card-media-inner {
+  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(1.11);
+}
+
+.work-card-media-inner img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  filter: grayscale(0.35) contrast(1.05);
+  transition: filter 0.6s ease;
+}
+
+.work-card:hover .work-card-media-inner img {
+  filter: grayscale(0) contrast(1);
+}
+
+/* Keeps the index and badge legible over bright screenshots. */
+.work-card-media::after {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background: var(--hairline-strong);
-  transform: scaleX(0);
-  transform-origin: left;
-  transition: transform 1.1s var(--ease-out) 0.15s;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    to bottom,
+    rgba(7, 7, 8, 0.55) 0%,
+    rgba(7, 7, 8, 0) 35%,
+    rgba(7, 7, 8, 0) 65%,
+    rgba(7, 7, 8, 0.45) 100%
+  );
 }
 
-.work-item.is-revealed::before {
-  transform: scaleX(1);
-}
-
-.work-item:last-child {
-  border-bottom: 1px solid var(--hairline);
-}
-
-.work-index {
-  font-size: 0.75rem;
+.work-card-index {
+  position: absolute;
+  top: 1rem;
+  left: 1.125rem;
+  z-index: 2;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
   color: var(--faint);
-  padding-top: 0.6rem;
   transition: color 0.4s ease;
 }
 
-.work-item:hover .work-index {
+.work-card:hover .work-card-index {
+  color: var(--accent);
+}
+
+.work-card-media .project-badge {
+  position: absolute;
+  top: 0.875rem;
+  right: 0.875rem;
+  z-index: 2;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+}
+
+/* --- Card copy --- */
+.work-card-body {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.work-card-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.65rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 0.875rem;
+}
+
+.work-card-dot {
+  color: var(--faint);
+}
+
+.work-card-title {
+  font-size: 1.75rem;
+  font-weight: 400;
+  color: #eceae5;
+  margin-bottom: 0.875rem;
+  transition: color 0.4s ease;
+}
+
+.work-card:hover .work-card-title {
   color: var(--ink);
 }
 
-.work-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  margin-bottom: 1rem;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.work-title-row {
-  display: flex;
-  align-items: center;
-  gap: 0.875rem;
-  flex-wrap: wrap;
-}
-
-.work-title {
-  font-size: 1.9rem;
-  font-weight: 400;
-  color: #eceae5;
-  transition: transform 0.45s var(--ease-out);
-}
-
-.work-item:hover .work-title {
-  transform: translateX(6px);
-}
-
-.work-category {
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--muted);
-}
-
-.work-description {
-  max-width: 720px;
+.work-card-description {
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: #a9a7a1;
   margin-bottom: 1.5rem;
-  font-size: 1rem;
-  color: #b8b6b0;
 }
 
-.work-tech {
+.work-card-tech {
   display: flex;
-  gap: 0.6rem;
+  gap: 0.5rem;
   flex-wrap: wrap;
+  list-style: none;
+  margin-bottom: 1.5rem;
 }
 
 .tech-item {
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   color: var(--muted);
   letter-spacing: 0.04em;
-  padding: 0.25rem 0.65rem;
+  padding: 0.25rem 0.6rem;
   border: 1px solid var(--hairline);
   border-radius: 2px;
   transition: border-color 0.3s ease, color 0.3s ease;
 }
 
-.work-item:hover .tech-item {
+.work-card:hover .tech-item {
   border-color: var(--hairline-strong);
+  color: #98968f;
 }
 
-.work-links {
-  margin-top: 1.5rem;
+.work-card-links {
+  margin-top: auto;
   display: flex;
   gap: 1.75rem;
   flex-wrap: wrap;
@@ -853,7 +882,7 @@ section {
 }
 
 .work-link:hover {
-  color: var(--ink);
+  color: var(--accent);
 }
 
 .link-arrow {
@@ -886,12 +915,6 @@ section {
 }
 
 /* Project badges */
-.work-badges {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
-}
-
 .project-badge {
   font-size: 0.6rem;
   letter-spacing: 0.08em;
@@ -912,12 +935,171 @@ section {
   border-color: #333;
 }
 
-.deprecated-note {
-  font-size: 0.8rem;
-  color: var(--error);
-  opacity: 0.75;
-  margin-bottom: 0.75rem;
-  letter-spacing: 0.02em;
+/* ------------------------------------------------------------
+   GENERATIVE COVER ART
+   Fallback artwork for projects with no screenshot yet. Each
+   variant abstracts what the project does. Motion is gated on
+   card hover so idle cards cost nothing.
+   ------------------------------------------------------------ */
+.project-visual {
+  width: 100%;
+  height: 100%;
+  display: block;
+  background:
+    radial-gradient(ellipse 70% 90% at 50% 40%, #16161a 0%, #0b0b0d 100%);
+}
+
+.project-visual line,
+.project-visual path,
+.project-visual circle,
+.project-visual ellipse,
+.project-visual rect {
+  vector-effect: non-scaling-stroke;
+}
+
+/* --- scan: OCR sweep over text blocks (KenXSearch) --- */
+.pv-scan-text rect {
+  fill: var(--hairline-strong);
+}
+
+.pv-circle {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1.5;
+  opacity: 0.4;
+  transition: opacity 0.5s ease;
+}
+
+.work-card:hover .pv-circle {
+  opacity: 1;
+}
+
+.pv-sweep {
+  fill: var(--accent);
+  opacity: 0;
+}
+
+.work-card:hover .pv-sweep {
+  animation: pv-sweep-down 2.2s var(--ease-out) infinite;
+}
+
+@keyframes pv-sweep-down {
+  0%   { transform: translateY(0); opacity: 0; }
+  15%  { opacity: 0.5; }
+  85%  { opacity: 0.5; }
+  100% { transform: translateY(176px); opacity: 0; }
+}
+
+/* --- graph: crawl frontier (ShadowBrowse) --- */
+.pv-edges line {
+  stroke: var(--hairline-strong);
+  stroke-width: 1;
+  transition: stroke 0.5s ease;
+  transition-delay: calc(var(--i) * 60ms);
+}
+
+.work-card:hover .pv-edges line {
+  stroke: var(--accent-dim);
+}
+
+.pv-nodes circle {
+  fill: #45454b;
+  transition: fill 0.5s ease;
+  transition-delay: calc(var(--i) * 60ms);
+}
+
+.work-card:hover .pv-nodes circle {
+  fill: var(--accent);
+}
+
+/* --- wave: behavioural traces + anomaly (BehaviorVault) --- */
+.pv-baseline {
+  stroke: var(--hairline);
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+.pv-trace {
+  fill: none;
+  stroke: var(--hairline-strong);
+  stroke-width: 1.5;
+  transition: stroke 0.5s ease;
+}
+
+.pv-trace-b {
+  opacity: 0.5;
+}
+
+.work-card:hover .pv-trace-a {
+  stroke: rgba(216, 162, 74, 0.55);
+}
+
+.pv-anomaly {
+  opacity: 0.45;
+  transition: opacity 0.5s ease;
+}
+
+.work-card:hover .pv-anomaly {
+  opacity: 1;
+}
+
+.pv-anomaly line {
+  stroke: var(--accent);
+  stroke-width: 1;
+  stroke-dasharray: 2 4;
+  opacity: 0.6;
+}
+
+.pv-anomaly circle {
+  fill: var(--accent);
+}
+
+.work-card:hover .pv-anomaly circle {
+  animation: pv-pulse 1.6s ease-in-out infinite;
+}
+
+@keyframes pv-pulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.3; }
+}
+
+/* --- glyph: kanji field resolving into cards (KanGen) --- */
+.pv-glyphs text {
+  font-family: var(--font-serif);
+  font-size: 30px;
+  fill: #3a3a40;
+  text-anchor: middle;
+  transition: fill 0.5s ease;
+  transition-delay: calc(var(--i) * 55ms);
+}
+
+.work-card:hover .pv-glyphs text {
+  fill: #55555d;
+}
+
+.pv-card {
+  fill: var(--accent-wash);
+  stroke: var(--accent);
+  stroke-width: 1;
+  opacity: 0.45;
+  transform: translateY(6px);
+  transition: opacity 0.5s ease, transform 0.6s var(--ease-out);
+}
+
+.pv-card-2 {
+  transition-delay: 0.12s;
+}
+
+.work-card:hover .pv-card {
+  opacity: 0.95;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-visual * {
+    transition: none !important;
+    animation: none !important;
+  }
 }
 
 /* ------------------------------------------------------------
@@ -1016,7 +1198,7 @@ section {
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-bottom-color: rgba(255, 255, 255, 0.7);
+  border-bottom-color: var(--accent);
 }
 
 .form-group textarea {
@@ -1041,8 +1223,9 @@ section {
 }
 
 .submit-button:hover {
-  background: rgba(255, 255, 255, 0.05);
-  border-color: rgba(255, 255, 255, 0.7);
+  background: var(--accent-wash);
+  border-color: var(--accent-dim);
+  color: var(--accent);
 }
 
 .submit-button:disabled {
@@ -1208,12 +1391,6 @@ footer p {
     margin-bottom: 1.5rem;
   }
 
-  .hero-meta {
-    font-size: 0.62rem;
-    gap: 0.6rem;
-    margin-bottom: 2.5rem;
-  }
-
   .hero-actions {
     gap: 1.5rem;
   }
@@ -1249,32 +1426,27 @@ footer p {
     padding-top: 1.5rem;
   }
 
-  .work-item {
+  .work-grid {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
-    padding: 2.75rem 0;
+    gap: 3.5rem;
   }
 
-  .work-index {
-    padding-top: 0;
-  }
-
-  .work-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 0.5rem;
-  }
-
-  .work-title {
+  .work-card-title {
     font-size: 1.45rem;
   }
 
-  .work-item:hover .work-title {
+  .work-card-description {
+    font-size: 0.9375rem;
+  }
+
+  /* No cursor to parallax against on touch — keep the art still. */
+  .work-card:hover .work-card-media {
     transform: none;
   }
 
-  .work-description {
-    font-size: 0.9375rem;
+  .work-card-media-inner,
+  .work-card:hover .work-card-media-inner {
+    transform: none;
   }
 
   .skills-grid {
@@ -1330,8 +1502,8 @@ footer p {
     gap: 1.25rem;
   }
 
-  .work-tech {
-    gap: 0.5rem;
+  .work-card-tech {
+    gap: 0.4rem;
   }
 
   .contact-links-list {
@@ -1365,8 +1537,8 @@ footer p {
     transform: none;
   }
 
-  .work-item::before {
-    transform: scaleX(1);
+  .work-card-media-inner {
+    transform: none;
   }
 
   .scroll-progress {
@@ -1389,6 +1561,6 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 1px solid #8a8880;
+  outline: 1px solid var(--accent);
   outline-offset: 3px;
 }

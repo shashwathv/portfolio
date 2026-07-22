@@ -1,0 +1,88 @@
+.background-layer {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+  background: var(--bg);
+  pointer-events: none;
+}
+
+/* The canvas sits slightly oversized so the scene's soft edges
+   never resolve into a visible boundary. */
+.field-wrap {
+  position: absolute;
+  inset: -8%;
+  transition: opacity 0.9s ease;
+}
+
+/* Past the hero the sun stays in frame — it just steps back so the
+   sections in front of it keep full contrast. */
+.field-wrap.is-dimmed {
+  opacity: 0.42;
+}
+
+.hero-scene-canvas {
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Centre scrim rather than an edge vignette. An edge vignette would
+   crush the sun in the corner, which is the one thing that has to stay
+   visible; darkening the middle instead protects the type where it
+   actually sits and leaves the light source alone. */
+.background-layer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    /* Bottom scrim — the terrain is densest where it's nearest the
+       camera, which is exactly where the scroll cue sits. */
+    linear-gradient(
+      to bottom,
+      rgba(7, 7, 8, 0) 78%,
+      rgba(7, 7, 8, 0.55) 92%,
+      rgba(7, 7, 8, 0.8) 100%
+    ),
+    /* Centre scrim rather than an edge vignette: an edge vignette would
+       crush the forms in the corners, which are the whole point. This
+       protects the type where it actually sits and leaves them alone. */
+    radial-gradient(
+      ellipse 58% 52% at 50% 50%,
+      rgba(7, 7, 8, 0.78) 0%,
+      rgba(7, 7, 8, 0.55) 48%,
+      rgba(7, 7, 8, 0.18) 76%,
+      rgba(7, 7, 8, 0) 100%
+    );
+}
+
+/* Fine film grain. Breaks up the flat black and the banding the
+   gradients would otherwise show on wide displays. */
+/* Kept just large enough to cover the 4% drift below. At inset -50%
+   this layer was four times the viewport area, and compositing that
+   much surface every step of the animation was pure waste. */
+.background-grain {
+  position: absolute;
+  inset: -8%;
+  z-index: 1;
+  opacity: 0.028;
+  pointer-events: none;
+  will-change: transform;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation: grain-shift 8s steps(6) infinite;
+}
+
+@keyframes grain-shift {
+  0%   { transform: translate(0, 0); }
+  16%  { transform: translate(-2%, -3%); }
+  33%  { transform: translate(-4%, 2%); }
+  50%  { transform: translate(2%, -4%); }
+  66%  { transform: translate(-1%, 3%); }
+  83%  { transform: translate(3%, 1%); }
+  100% { transform: translate(0, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .background-grain {
+    animation: none;
+  }
+}
