@@ -9,19 +9,27 @@
    TOKENS
    ------------------------------------------------------------ */
 :root {
+  /* The board. Deep press blue rather than black — the cut-outs are
+     pasted onto something, and something is never neutral. */
+  --field: #131a36;
+  --field-2: #1b2447;   /* raised panel */
+  --field-3: #0d1226;   /* recessed / behind */
+  --rule: rgba(237, 232, 218, 0.16);
+
   /* Stock. Greyer and cooler than a cream — this is newsprint,
-     not letterpress cotton. */
-  --paper: #e6e2d6;
-  --paper-2: #dbd6c7;   /* a second, slightly darker scrap */
-  --paper-3: #cfc9b6;   /* deepest scrap / rules */
+     not letterpress cotton. Doubles as the primary text colour. */
+  --paper: #ede8da;
+  --paper-2: #dcd5c2;   /* a second, slightly darker scrap */
+  --paper-3: #c9c1ac;   /* deepest scrap / rules */
+  --paper-dim: #9aa2c2; /* secondary text on the board */
 
   /* Inks */
-  --ink: #16130f;
+  --ink: #14110e;
   --ink-2: #454037;
-  --ink-3: #78716353;
-  --red: #f0442e;
-  --blue: #2547c8;
-  --overprint: #6e2f8e;  /* where red and blue cross */
+  --red: #ff4a32;
+  --blue: #5c86ff;      /* lifted, so it still reads on the board */
+  --blue-deep: #2547c8; /* the same ink, for use on paper */
+  --overprint: #7b2f9e;
 
   --font-display: 'Anton', Impact, sans-serif;
   --font-black: 'Archivo Black', Arial Black, sans-serif;
@@ -51,8 +59,8 @@ body {
   font-family: var(--font-body);
   font-size: 17px;
   line-height: 1.62;
-  color: var(--ink);
-  background: var(--paper);
+  color: var(--paper);
+  background: var(--field);
   -webkit-font-smoothing: antialiased;
 }
 
@@ -68,7 +76,7 @@ body {
   inset: 0;
   overflow-y: auto;
   overflow-x: hidden;
-  background: var(--paper);
+  background: var(--field);
 }
 
 #root::-webkit-scrollbar {
@@ -76,12 +84,12 @@ body {
 }
 
 #root::-webkit-scrollbar-track {
-  background: var(--paper-2);
+  background: var(--field-3);
 }
 
 #root::-webkit-scrollbar-thumb {
-  background: var(--ink);
-  border: 3px solid var(--paper-2);
+  background: var(--paper-3);
+  border: 3px solid var(--field-3);
 }
 
 .site-content {
@@ -95,19 +103,20 @@ body {
    at very low opacity, the way ink sits *on* stock rather than
    behind it.
    ------------------------------------------------------------ */
+/* Multiply would vanish on a dark board, so the rosette prints light
+   here — the same halftone, pulled the other way. */
 .press-texture {
   position: fixed;
   inset: 0;
   z-index: 60;
   pointer-events: none;
-  opacity: 0.5;
+  opacity: 0.35;
   background-image: radial-gradient(
     circle at 50% 50%,
-    rgba(22, 19, 15, 0.5) 0.6px,
+    rgba(237, 232, 218, 0.16) 0.6px,
     transparent 0.7px
   );
   background-size: 4px 4px;
-  mix-blend-mode: multiply;
 }
 
 .press-grain {
@@ -115,8 +124,8 @@ body {
   inset: 0;
   z-index: 61;
   pointer-events: none;
-  opacity: 0.16;
-  mix-blend-mode: multiply;
+  opacity: 0.09;
+  mix-blend-mode: overlay;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
 }
 
@@ -162,7 +171,7 @@ section {
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--paper);
   background: var(--red);
   display: inline-block;
   padding: 0.3rem 0.7rem;
@@ -176,7 +185,7 @@ section {
   line-height: 0.94;
   letter-spacing: -0.01em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--paper);
   margin-bottom: 3rem;
   max-width: 16ch;
 }
@@ -188,20 +197,12 @@ section {
 }
 
 p {
-  color: var(--ink-2);
+  color: var(--paper-dim);
 }
 
 a {
-  color: var(--ink);
+  color: var(--paper);
   text-decoration: none;
-}
-
-/* Heavy rule that ends the article, like a column break. */
-.rule-thick {
-  height: 6px;
-  background: var(--ink);
-  border: 0;
-  margin: 0;
 }
 
 /* ------------------------------------------------------------
@@ -253,9 +254,10 @@ a {
   justify-content: space-between;
   gap: 1.5rem;
   padding: 0.85rem 3rem;
-  background: var(--ink);
-  color: var(--paper);
-  border-bottom: 3px solid var(--ink);
+  /* A pasted strip across the top of the board — light on dark, the
+     inverse of the colophon that closes the page. */
+  background: var(--paper);
+  color: var(--ink);
   transition: transform 0.4s var(--ease);
 }
 
@@ -268,7 +270,7 @@ a {
   font-size: 1.15rem;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--paper);
+  color: var(--ink);
   white-space: nowrap;
 }
 
@@ -282,7 +284,7 @@ a {
   font-size: 0.7rem;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: #a49d8e;
+  color: #6b6558;
   white-space: nowrap;
 }
 
@@ -298,7 +300,7 @@ a {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--paper);
+  color: var(--ink);
   padding-bottom: 2px;
   border-bottom: 2px solid transparent;
   transition: color 0.2s, border-color 0.2s;
@@ -324,7 +326,7 @@ a {
   display: block;
   width: 26px;
   height: 3px;
-  background: var(--paper);
+  background: var(--ink);
   margin: 5px 0;
   transition: transform 0.3s var(--ease), opacity 0.2s;
 }
@@ -345,7 +347,7 @@ a {
   position: fixed;
   inset: 0;
   z-index: 99;
-  background: var(--ink);
+  background: var(--field-3);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -392,7 +394,7 @@ a {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--paper);
   margin-bottom: 2rem;
   opacity: 0;
   animation: fade-up 0.7s var(--ease) 0.15s forwards;
@@ -475,14 +477,15 @@ a {
 .clip-playfair  { font-family: var(--font-editorial); font-style: italic; font-weight: 900; }
 .clip-courier   { font-family: var(--font-type); font-weight: 700; font-size: clamp(2.5rem, 8.5vw, 7rem); }
 
-/* Inks */
+/* Inks. A near-black scrap would disappear into the board, so the
+   dark clipping prints in overprint purple instead. */
 .ink-ink       { background: var(--paper-2); color: var(--ink); }
 .ink-shade     { background: var(--paper-3); color: var(--ink); }
-.ink-invert    { background: var(--ink); color: var(--paper); }
+.ink-invert    { background: var(--overprint); color: var(--paper); }
 .ink-red       { background: var(--paper-2); color: var(--red); }
-.ink-blue      { background: var(--paper-2); color: var(--blue); }
+.ink-blue      { background: var(--paper-2); color: var(--blue-deep); }
 .ink-red-fill  { background: var(--red); color: var(--paper); }
-.ink-blue-fill { background: var(--blue); color: var(--paper); }
+.ink-blue-fill { background: var(--blue-deep); color: var(--paper); }
 
 /* The word break. Without it the surname collides with the given
    name and the whole thing reads as one word. */
@@ -504,7 +507,7 @@ a {
   font-size: clamp(1.15rem, 2.1vw, 1.6rem);
   font-style: italic;
   line-height: 1.45;
-  color: var(--ink);
+  color: var(--paper);
   max-width: 34ch;
   border-left: 4px solid var(--blue);
   padding-left: 1.25rem;
@@ -527,31 +530,31 @@ a {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   padding: 0.85rem 1.6rem;
-  border: 3px solid var(--ink);
+  border: 3px solid var(--paper);
   display: inline-block;
   transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
 .btn-primary {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--paper);
+  color: var(--ink);
   box-shadow: 5px 5px 0 var(--red);
 }
 
 .btn-ghost {
   background: transparent;
-  color: var(--ink);
+  color: var(--paper);
   box-shadow: 5px 5px 0 var(--blue);
 }
 
 .btn:hover {
   transform: translate(3px, 3px);
-  box-shadow: 2px 2px 0 var(--ink);
+  box-shadow: 2px 2px 0 var(--paper);
 }
 
 .btn:active {
   transform: translate(5px, 5px);
-  box-shadow: 0 0 0 var(--ink);
+  box-shadow: 0 0 0 var(--paper);
 }
 
 /* ------------------------------------------------------------
@@ -570,7 +573,7 @@ a {
 
 .about-body p:first-child {
   font-size: 1.2rem;
-  color: var(--ink);
+  color: var(--paper);
 }
 
 /* Drop cap, because this is set as an article. */
@@ -584,11 +587,11 @@ a {
 }
 
 .fact-stack {
-  border-top: 3px solid var(--ink);
+  border-top: 3px solid var(--paper);
 }
 
 .fact {
-  border-bottom: 1px solid var(--paper-3);
+  border-bottom: 1px solid var(--rule);
   padding: 1rem 0;
 }
 
@@ -605,192 +608,253 @@ a {
 .fact dd {
   font-family: var(--font-body);
   font-size: 0.98rem;
-  color: var(--ink);
+  color: var(--paper);
 }
 
 .fact dd span {
   display: block;
-  color: var(--ink-2);
+  color: var(--paper-dim);
   font-size: 0.88rem;
 }
 
 /* ------------------------------------------------------------
-   WORK — clippings pasted to the page
+   WORK — the index
+   Not cards. A ruled index of everything built, set in the
+   display face at full width; the artwork rides the cursor
+   instead of sitting in a grid.
    ------------------------------------------------------------ */
-.clippings {
+.index {
+  list-style: none;
+  border-top: 3px solid var(--paper);
+}
+
+.index-row {
+  border-bottom: 3px solid var(--paper);
+}
+
+.index-row > li {
+  list-style: none;
+}
+
+.index-link {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 4.5rem 3rem;
-}
-
-.clipping {
-  --rest-tilt: -0.7deg;
-  background: var(--paper-2);
-  border: 3px solid var(--ink);
-  box-shadow: 8px 8px 0 var(--ink);
-  transition: transform 0.35s var(--ease), box-shadow 0.35s var(--ease);
-}
-
-/* Alternate the paste angle so the column doesn't march. */
-.clipping:nth-child(even) {
-  --rest-tilt: 0.8deg;
-  box-shadow: 8px 8px 0 var(--blue);
-}
-
-.clipping:nth-child(4n + 3) {
-  box-shadow: 8px 8px 0 var(--red);
-}
-
-.clipping:hover {
-  transform: translate(-3px, -3px) rotate(0deg) !important;
-  box-shadow: 13px 13px 0 var(--ink);
-}
-
-.clipping-media {
-  display: block;
+  grid-template-columns: 4.5rem minmax(0, 1fr) auto auto 3rem;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1.9rem 0.5rem 1.6rem;
   position: relative;
-  aspect-ratio: 16 / 10;
-  overflow: hidden;
-  border-bottom: 3px solid var(--ink);
-  background: var(--paper-3);
+  transition: padding-left 0.35s var(--ease), color 0.25s;
 }
 
-.clipping-media-inner {
+/* The wash that fills the row from the left on hover. */
+.index-link::before {
+  content: '';
   position: absolute;
   inset: 0;
-  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(1.05);
-  transition: transform 0.4s var(--ease);
+  background: var(--paper);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.45s var(--ease);
+  z-index: 0;
 }
 
-.clipping:hover .clipping-media-inner {
-  transform: translate3d(var(--px, 0px), var(--py, 0px), 0) scale(1.1);
+.index-row.is-lit .index-link::before {
+  transform: scaleX(1);
 }
 
-.clipping-media-inner img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  /* Printed, not photographed: crushed to high-contrast duotone
-     until you hover it. */
-  filter: grayscale(1) contrast(1.35);
-  transition: filter 0.4s ease;
+.index-link > * {
+  position: relative;
+  z-index: 1;
 }
 
-.clipping:hover .clipping-media-inner img {
-  filter: grayscale(0) contrast(1.05);
+.index-row.is-lit .index-link {
+  padding-left: 1.5rem;
 }
 
-.clipping-index {
-  position: absolute;
-  top: 0;
-  left: 0;
-  z-index: 2;
-  font-family: var(--font-display);
-  font-size: 1.5rem;
-  line-height: 1;
-  color: var(--paper);
-  background: var(--ink);
-  padding: 0.4rem 0.7rem 0.3rem;
-}
-
-.clipping-flag {
-  position: absolute;
-  top: 0.75rem;
-  right: 0;
-  z-index: 2;
+.index-num {
   font-family: var(--font-type);
-  font-size: 0.65rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.1em;
+  color: var(--red);
+}
+
+.index-name {
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 4.6vw, 3.4rem);
+  line-height: 0.95;
+  letter-spacing: 0.005em;
   text-transform: uppercase;
-  background: var(--red);
   color: var(--paper);
-  padding: 0.25rem 0.6rem;
-  transform: rotate(1.5deg);
+  transition: color 0.25s;
 }
 
-.clipping-body {
-  padding: 1.5rem 1.5rem 1.75rem;
-}
-
-.clipping-tag {
+.index-tag,
+.index-year {
   font-family: var(--font-type);
-  font-size: 0.68rem;
+  font-size: 0.72rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--blue);
-  margin-bottom: 0.6rem;
+  color: var(--paper-dim);
+  transition: color 0.25s;
 }
 
-.clipping-title {
-  font-family: var(--font-black);
-  font-size: 1.65rem;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
-  text-transform: uppercase;
+.index-go {
+  font-size: 1.5rem;
+  line-height: 1;
+  color: var(--paper-dim);
+  justify-self: end;
+  transition: transform 0.35s var(--ease), color 0.25s;
+}
+
+/* Everything flips to ink once the row is filled with paper. */
+.index-row.is-lit .index-name,
+.index-row.is-lit .index-go {
   color: var(--ink);
-  margin-bottom: 0.75rem;
 }
 
-.clipping-desc {
-  font-size: 0.94rem;
-  line-height: 1.6;
+.index-row.is-lit .index-tag,
+.index-row.is-lit .index-year {
   color: var(--ink-2);
-  margin-bottom: 1.25rem;
 }
 
-.clipping-tech {
+.index-row.is-lit .index-go {
+  transform: translateX(8px);
+}
+
+/* --- The detail that opens under a row --- */
+.index-detail {
+  display: grid;
+  grid-template-rows: 0fr;
+  transition: grid-template-rows 0.45s var(--ease);
+}
+
+.index-row.is-lit .index-detail {
+  grid-template-rows: 1fr;
+}
+
+.index-detail-inner {
+  overflow: hidden;
+  min-height: 0;
+}
+
+.index-desc {
+  max-width: 62ch;
+  font-size: 0.95rem;
+  line-height: 1.65;
+  color: var(--paper-dim);
+  padding: 0 0.5rem 1.1rem;
+}
+
+.index-flag {
+  font-style: normal;
+  font-family: var(--font-type);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: var(--red);
+  padding: 0.1rem 0.4rem;
+  margin-left: 0.4rem;
+  white-space: nowrap;
+}
+
+.index-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0 0.5rem 1.6rem;
+}
+
+.index-tech {
   display: flex;
   flex-wrap: wrap;
   gap: 0.4rem;
   list-style: none;
-  margin-bottom: 1.4rem;
 }
 
-.clipping-tech li {
+.index-tech li {
   font-family: var(--font-type);
   font-size: 0.68rem;
   letter-spacing: 0.04em;
+  color: var(--paper-dim);
+  border: 1px solid var(--rule);
   padding: 0.18rem 0.5rem;
-  border: 2px solid var(--ink);
-  background: var(--paper);
 }
 
-.clipping-links {
+.index-links {
   display: flex;
   gap: 1.25rem;
-  flex-wrap: wrap;
-  border-top: 2px solid var(--ink);
-  padding-top: 1rem;
 }
 
-.clipping-link {
+.index-links a {
   font-family: var(--font-type);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--ink);
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
+  color: var(--paper);
+  border-bottom: 2px solid var(--red);
+  padding-bottom: 1px;
+  transition: color 0.2s;
 }
 
-.clipping-link:hover {
+.index-links a:hover {
   color: var(--red);
-  border-bottom-color: var(--red);
 }
 
-.clipping-link span {
-  transition: transform 0.25s var(--ease);
+/* --- Artwork pinned to the cursor --- */
+.preview-stack {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
 }
 
-.clipping-link:hover span {
-  transform: translateX(3px);
+.preview {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 25rem;
+  aspect-ratio: 16 / 10;
+  margin: 0;
+  border: 3px solid var(--ink);
+  background: var(--paper-3);
+  box-shadow: 10px 10px 0 rgba(13, 18, 38, 0.55);
+  opacity: 0;
+  visibility: hidden;
+  transform: translate3d(
+      calc(var(--x, 50vw) - 50%),
+      calc(var(--y, 50vh) - 50%), 0
+    )
+    rotate(-4deg) scale(0.9);
+  transition:
+    opacity 0.28s var(--ease),
+    transform 0.28s var(--ease),
+    visibility 0s linear 0.28s;
+}
+
+.preview.is-active {
+  opacity: 1;
+  visibility: visible;
+  transform: translate3d(
+      calc(var(--x, 50vw) - 50%),
+      calc(var(--y, 50vh) - 50%), 0
+    )
+    rotate(-4deg) scale(1);
+  transition-delay: 0s;
+}
+
+.preview img,
+.preview .project-visual {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 /* ------------------------------------------------------------
@@ -816,7 +880,7 @@ a {
 
 .pv-sweep { fill: var(--blue); opacity: 0; }
 
-.clipping:hover .pv-sweep {
+.preview.is-active .pv-sweep {
   animation: pv-sweep-down 2.2s var(--ease) infinite;
 }
 
@@ -829,7 +893,7 @@ a {
 
 .pv-edges line { stroke: var(--ink); stroke-width: 1.5; opacity: 0.4; }
 .pv-nodes circle { fill: var(--ink); transition: fill 0.3s ease; }
-.clipping:hover .pv-nodes circle { fill: var(--red); }
+.preview.is-active .pv-nodes circle { fill: var(--red); }
 
 .pv-baseline { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 5; opacity: 0.35; }
 .pv-trace { fill: none; stroke: var(--ink); stroke-width: 2.5; }
@@ -837,7 +901,7 @@ a {
 .pv-anomaly line { stroke: var(--red); stroke-width: 2; stroke-dasharray: 3 3; }
 .pv-anomaly circle { fill: var(--red); }
 
-.clipping:hover .pv-anomaly circle {
+.preview.is-active .pv-anomaly circle {
   animation: pv-pulse 1.4s ease-in-out infinite;
 }
 
@@ -869,13 +933,13 @@ a {
 .type-case {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
-  border-top: 3px solid var(--ink);
-  border-left: 3px solid var(--ink);
+  border-top: 3px solid var(--paper);
+  border-left: 3px solid var(--paper);
 }
 
 .type-drawer {
-  border-right: 3px solid var(--ink);
-  border-bottom: 3px solid var(--ink);
+  border-right: 3px solid var(--paper);
+  border-bottom: 3px solid var(--paper);
   padding: 1.5rem 1.35rem;
 }
 
@@ -892,8 +956,8 @@ a {
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--paper);
-  background: var(--ink);
+  color: var(--ink);
+  background: var(--paper);
   display: inline-block;
   padding: 0.25rem 0.55rem;
   margin-bottom: 1rem;
@@ -911,16 +975,17 @@ a {
   font-size: 1.15rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: var(--paper-dim);
   padding: 0.05rem 0.45rem;
-  background: var(--paper-2);
+  border: 1px solid var(--rule);
 }
 
 /* The ones he actually reaches for get set in the loud face. */
 .type-drawer li.is-primary {
   font-family: var(--font-black);
   font-size: 0.92rem;
-  background: var(--ink);
+  background: var(--red);
+  border-color: var(--red);
   color: var(--paper);
   padding: 0.25rem 0.5rem;
 }
@@ -928,12 +993,12 @@ a {
 .type-note {
   font-family: var(--font-type);
   font-size: 0.78rem;
-  color: var(--ink-2);
+  color: var(--paper-dim);
   margin-top: 1.5rem;
 }
 
 .type-note b {
-  background: var(--ink);
+  background: var(--red);
   color: var(--paper);
   padding: 0.1rem 0.35rem;
 }
@@ -959,7 +1024,7 @@ a {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--paper);
   margin-bottom: 0.4rem;
 }
 
@@ -968,9 +1033,9 @@ a {
   width: 100%;
   font-family: var(--font-body);
   font-size: 1rem;
-  color: var(--ink);
-  background: var(--paper-2);
-  border: 3px solid var(--ink);
+  color: var(--paper);
+  background: var(--field-3);
+  border: 3px solid var(--paper);
   padding: 0.7rem 0.85rem;
   transition: box-shadow 0.2s var(--ease);
 }
@@ -995,16 +1060,16 @@ a {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 1rem;
-  border: 3px solid var(--ink);
+  border: 3px solid var(--paper);
   background: var(--red);
   color: var(--paper);
-  box-shadow: 5px 5px 0 var(--ink);
+  box-shadow: 5px 5px 0 var(--paper);
   transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 
 .btn-submit:hover:not(:disabled) {
   transform: translate(3px, 3px);
-  box-shadow: 2px 2px 0 var(--ink);
+  box-shadow: 2px 2px 0 var(--paper);
 }
 
 .btn-submit:disabled {
@@ -1017,7 +1082,7 @@ a {
   font-size: 0.85rem;
   padding: 0.75rem;
   margin-bottom: 1rem;
-  border: 3px solid var(--ink);
+  border: 3px solid var(--paper);
 }
 
 .form-note.is-error {
@@ -1036,7 +1101,7 @@ a {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--ink-2);
+  color: var(--paper-dim);
   margin-bottom: 0.25rem;
 }
 
@@ -1048,7 +1113,7 @@ a {
   font-family: var(--font-black);
   font-size: 1.35rem;
   text-transform: uppercase;
-  color: var(--ink);
+  color: var(--paper);
   border-bottom: 3px solid var(--red);
   transition: color 0.2s;
   word-break: break-word;
@@ -1062,8 +1127,8 @@ a {
    COLOPHON (footer)
    ------------------------------------------------------------ */
 .colophon {
-  background: var(--ink);
-  color: var(--paper);
+  background: var(--paper);
+  color: var(--ink);
   padding: 3rem 0;
 }
 
@@ -1079,7 +1144,7 @@ a {
   font-family: var(--font-type);
   font-size: 0.78rem;
   letter-spacing: 0.06em;
-  color: #a49d8e;
+  color: #6b6558;
 }
 
 .colophon a {
@@ -1088,7 +1153,7 @@ a {
   font-weight: 700;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--paper);
+  color: var(--ink);
   border-bottom: 2px solid var(--red);
 }
 
@@ -1117,16 +1182,26 @@ a {
     gap: 2.5rem;
   }
 
-  .clippings {
-    grid-template-columns: 1fr;
-    gap: 3rem;
+  /* No cursor to pin artwork to on touch, so the preview is dropped
+     entirely and every row's detail stays open instead of waiting
+     for a hover that never comes. */
+  .preview-stack { display: none; }
+
+  .index-link {
+    grid-template-columns: 3rem minmax(0, 1fr) auto;
+    gap: 0.75rem 1rem;
+    padding: 1.4rem 0.25rem 1.1rem;
   }
 
-  /* No cursor to parallax against, and the paste angles read as
-     sloppy rather than deliberate in a single column. */
-  .clipping { --rest-tilt: 0deg; box-shadow: 6px 6px 0 var(--ink); }
-  .clipping-media-inner,
-  .clipping:hover .clipping-media-inner { transform: none; }
+  .index-year,
+  .index-go { display: none; }
+
+  .index-tag { grid-column: 2 / -1; }
+
+  .index-detail { grid-template-rows: 1fr; }
+
+  .index-desc,
+  .index-foot { padding-left: 0.25rem; padding-right: 0.25rem; }
 
   .about-body p:first-child::first-letter { font-size: 3em; }
 }
@@ -1143,7 +1218,7 @@ a:focus-visible,
 button:focus-visible,
 input:focus-visible,
 textarea:focus-visible {
-  outline: 3px solid var(--blue);
+  outline: 3px solid var(--red);
   outline-offset: 3px;
 }
 

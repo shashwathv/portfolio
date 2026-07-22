@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import Reveal from './Reveal';
 import ProjectVisual from './ProjectVisual';
 
@@ -11,6 +11,7 @@ const projects = [
   {
     title: 'KenXSearch',
     tag: 'Linux tooling',
+    year: '2025',
     description:
       'Circle to Search, for Linux. Draw a ring around anything on screen and it searches it — text, image, or translation. The hard part was capture: it works across KDE, GNOME, Wayland and X11.',
     tech: ['Python', 'PyQt6', 'OpenCV', 'Tesseract', 'Playwright'],
@@ -25,6 +26,7 @@ const projects = [
   {
     title: 'ShadowBrowse',
     tag: 'Backend infrastructure',
+    year: '2025',
     description:
       'A scraping and browser-automation framework in Go. Headless sessions, proxy rotation and rate limiting that holds up at enterprise volume.',
     tech: ['Golang', 'Chromedp', 'Redis', 'Docker'],
@@ -38,6 +40,7 @@ const projects = [
   {
     title: 'BehaviorVault 2.0',
     tag: 'ML / security',
+    year: '2025',
     description:
       'Behavioural biometrics for mobile banking. Five signals, per-user EWMA baselines, and an Isolation Forest squeezed into a 3KB TFLite model so detection runs on the handset.',
     tech: ['Python', 'FastAPI', 'TensorFlow Lite', 'scikit-learn'],
@@ -51,6 +54,7 @@ const projects = [
   {
     title: 'KanGen',
     tag: 'AI / computer vision',
+    year: '2025',
     description:
       'Photograph a page of Japanese study material, get back a properly built Anki deck. Gemini 2.5 Flash does the reading; Redis and S3 do the queueing, with offline fallbacks when the API is down.',
     tech: ['Python', 'Gemini 2.5 Flash', 'Redis', 'AWS S3', 'SudachiPy'],
@@ -63,98 +67,40 @@ const projects = [
   }
 ];
 
-function Clipping({ project, index }) {
-  const mediaRef = useRef(null);
-
-  // Cursor parallax on the cover art, written straight to CSS custom
-  // properties so the transform stays on the compositor and the card
-  // never re-renders on mousemove.
-  const handleMove = e => {
-    const el = mediaRef.current;
-    if (!el) return;
-    const { left, top, width, height } = el.getBoundingClientRect();
-    el.style.setProperty('--px', `${((e.clientX - left) / width - 0.5) * 14}px`);
-    el.style.setProperty('--py', `${((e.clientY - top) / height - 0.5) * 14}px`);
-  };
-
-  const handleLeave = () => {
-    const el = mediaRef.current;
-    if (!el) return;
-    el.style.setProperty('--px', '0px');
-    el.style.setProperty('--py', '0px');
-  };
-
-  const primaryLink = project.links.demo || project.links.github;
-
-  return (
-    <Reveal delay={index * 90} className="clipping">
-      {/* Decorative duplicate of the links below — kept out of the tab
-          order and the a11y tree so the card isn't announced twice. */}
-      <a
-        ref={mediaRef}
-        className="clipping-media"
-        href={primaryLink}
-        target="_blank"
-        rel="noopener noreferrer"
-        onMouseMove={handleMove}
-        onMouseLeave={handleLeave}
-        tabIndex={-1}
-        aria-hidden="true"
-      >
-        <div className="clipping-media-inner">
-          {project.image ? (
-            <img src={project.image} alt="" loading="lazy" decoding="async" />
-          ) : (
-            <ProjectVisual variant={project.visual} />
-          )}
-        </div>
-
-        <span className="clipping-index">
-          {String(index + 1).padStart(2, '0')}
-        </span>
-
-        {project.flag && <span className="clipping-flag">{project.flag}</span>}
-      </a>
-
-      <div className="clipping-body">
-        <p className="clipping-tag">{project.tag}</p>
-        <h3 className="clipping-title">{project.title}</h3>
-        <p className="clipping-desc">{project.description}</p>
-
-        <ul className="clipping-tech">
-          {project.tech.map(tech => (
-            <li key={tech}>{tech}</li>
-          ))}
-        </ul>
-
-        <div className="clipping-links">
-          {project.links.github && (
-            <a
-              href={project.links.github}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="clipping-link"
-            >
-              Source <span aria-hidden="true">→</span>
-            </a>
-          )}
-          {project.links.demo && (
-            <a
-              href={project.links.demo}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="clipping-link"
-            >
-              Live <span aria-hidden="true">→</span>
-            </a>
-          )}
-        </div>
-      </div>
-    </Reveal>
-  );
-}
-
 export default function Work() {
+  const [active, setActive] = useState(null);
+  const stackRef = useRef(null);
+
+  // The preview follows the pointer. Position is written straight to CSS
+  // custom properties inside a rAF, so moving the mouse never re-renders
+  // the list — only the compositor sees the change.
+  useEffect(() => {
+    const stack = stackRef.current;
+    if (!stack) return;
+
+    let frame = 0;
+    let x = 0;
+    let y = 0;
+
+    const apply = () => {
+      stack.style.setProperty('--x', `${x}px`);
+      stack.style.setProperty('--y', `${y}px`);
+      frame = 0;
+    };
+
+    const onMove = e => {
+      x = e.clientX;
+      y = e.clientY;
+      if (!frame) frame = window.requestAnimationFrame(apply);
+    };
+
+    window.addEventListener('pointermove', onMove, { passive: true });
+    return () => {
+      window.removeEventListener('pointermove', onMove);
+      if (frame) window.cancelAnimationFrame(frame);
+    };
+  }, []);
+
   return (
     <section id="work">
       <div className="sheet">
@@ -168,11 +114,97 @@ export default function Work() {
           </h2>
         </Reveal>
 
-        <div className="clippings">
-          {projects.map((project, index) => (
-            <Clipping key={project.title} project={project} index={index} />
-          ))}
-        </div>
+        <ol className="index" onMouseLeave={() => setActive(null)}>
+          {projects.map((project, i) => {
+            const primaryLink = project.links.demo || project.links.github;
+            return (
+              <Reveal
+                key={project.title}
+                delay={i * 70}
+                className={`index-row ${active === i ? 'is-lit' : ''}`}
+              >
+                <li>
+                  <a
+                    className="index-link"
+                    href={primaryLink}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onMouseEnter={() => setActive(i)}
+                    onFocus={() => setActive(i)}
+                    onBlur={() => setActive(null)}
+                  >
+                    <span className="index-num">
+                      {String(i + 1).padStart(2, '0')}
+                    </span>
+                    <span className="index-name">{project.title}</span>
+                    <span className="index-tag">{project.tag}</span>
+                    <span className="index-year">{project.year}</span>
+                    <span className="index-go" aria-hidden="true">→</span>
+                  </a>
+
+                  <div className="index-detail">
+                    {/* Single wrapper: the 0fr/1fr collapse only sizes the
+                        first grid row, so both blocks have to share one. */}
+                    <div className="index-detail-inner">
+                    <p className="index-desc">
+                      {project.description}
+                      {project.flag && (
+                        <em className="index-flag"> {project.flag}</em>
+                      )}
+                    </p>
+
+                    <div className="index-foot">
+                      <ul className="index-tech">
+                        {project.tech.map(tech => (
+                          <li key={tech}>{tech}</li>
+                        ))}
+                      </ul>
+
+                      <div className="index-links">
+                        {project.links.github && (
+                          <a
+                            href={project.links.github}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Source
+                          </a>
+                        )}
+                        {project.links.demo && (
+                          <a
+                            href={project.links.demo}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            Live
+                          </a>
+                        )}
+                      </div>
+                    </div>
+                    </div>
+                  </div>
+                </li>
+              </Reveal>
+            );
+          })}
+        </ol>
+      </div>
+
+      {/* Pinned to the cursor. Decorative — every project is already
+          reachable through the list above. */}
+      <div className="preview-stack" ref={stackRef} aria-hidden="true">
+        {projects.map((project, i) => (
+          <figure
+            key={project.title}
+            className={`preview ${active === i ? 'is-active' : ''}`}
+          >
+            {project.image ? (
+              <img src={project.image} alt="" loading="lazy" decoding="async" />
+            ) : (
+              <ProjectVisual variant={project.visual} />
+            )}
+          </figure>
+        ))}
       </div>
     </section>
   );
