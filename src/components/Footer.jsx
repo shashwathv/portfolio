@@ -1,14 +1,17 @@
 export default function Footer() {
-  const backToTop = (e) => {
+  const backToTop = e => {
     e.preventDefault();
     document.getElementById('home')?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <footer>
-      <div className="container footer-row">
-        <p>© 2026 Shashwath V</p>
-        <a href="#home" className="footer-top mono" onClick={backToTop}>
+    <footer className="colophon">
+      <div className="sheet">
+        <p>
+          © 2026 Shashwath V — set in Anton, Archivo &amp; Courier Prime.
+          Self-hosted.
+        </p>
+        <a href="#home" onClick={backToTop}>
           Back to top ↑
         </a>
       </div>

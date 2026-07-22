@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import Reveal from './Reveal';
-import RevealHeading from './RevealHeading';
 
-// Sign up at https://formspree.io, create a form, and replace YOUR_FORM_ID below
 const FORMSPREE_ID = 'mdaljzrw';
 
 export default function Contact() {
@@ -26,71 +24,106 @@ export default function Contact() {
       if (res.ok) {
         setDone(true);
         setForm({ name: '', email: '', message: '' });
-        setTimeout(() => setDone(false), 4000);
+        setTimeout(() => setDone(false), 5000);
       } else {
-        setError('Something went wrong. Please try again or reach out directly.');
+        setError("That didn't send. Try again, or email me directly.");
       }
     } catch {
-      setError('Failed to send. Please reach out via email directly.');
+      setError('No connection. Email me directly and it will reach me.');
     } finally {
       setSending(false);
     }
   };
 
+  const field = (name, label, type = 'text') => (
+    <div className="form-field" key={name}>
+      <label htmlFor={`contact-${name}`}>{label}</label>
+      {type === 'textarea' ? (
+        <textarea
+          id={`contact-${name}`}
+          name={name}
+          value={form[name]}
+          onChange={e => setForm({ ...form, [name]: e.target.value })}
+          required
+        />
+      ) : (
+        <input
+          id={`contact-${name}`}
+          type={type}
+          name={name}
+          value={form[name]}
+          onChange={e => setForm({ ...form, [name]: e.target.value })}
+          required
+        />
+      )}
+    </div>
+  );
+
   return (
     <section id="contact">
-      <div className="container contact-content">
+      <div className="sheet">
         <Reveal>
-          <p className="section-label section-label-center mono">Contact</p>
-        </Reveal>
-        <RevealHeading className="serif">Get in Touch</RevealHeading>
-
-        <Reveal delay={80}>
-          {done ? (
-            <p className="form-success">Thank you. I'll be in touch soon.</p>
-          ) : (
-            <form onSubmit={submit}>
-              {['name', 'email', 'message'].map(field => (
-                <div className="form-group" key={field}>
-                  <label className="mono" htmlFor={`contact-${field}`}>{field}</label>
-                  {field === 'message' ? (
-                    <textarea
-                      id={`contact-${field}`}
-                      name={field}
-                      value={form[field]}
-                      onChange={e => setForm({ ...form, [field]: e.target.value })}
-                      required
-                    />
-                  ) : (
-                    <input
-                      id={`contact-${field}`}
-                      type={field === 'email' ? 'email' : 'text'}
-                      name={field}
-                      value={form[field]}
-                      onChange={e => setForm({ ...form, [field]: e.target.value })}
-                      required
-                    />
-                  )}
-                </div>
-              ))}
-              {error && <p className="form-error">{error}</p>}
-              <button className="submit-button" disabled={sending}>
-                {sending ? 'Sending…' : 'Send Message'}
-              </button>
-            </form>
-          )}
+          <p className="section-kicker">Letters to the editor</p>
         </Reveal>
 
-        <Reveal delay={140}>
-          <div className="contact-links">
-            <p className="mono">Or reach out directly</p>
-            <div className="contact-links-list">
-              <a href="mailto:shashwathv4405@gmail.com" className="contact-link">Email</a>
-              <a href="https://github.com/shashwathv" target="_blank" rel="noopener noreferrer" className="contact-link">GitHub</a>
-              <a href="https://linkedin.com/in/shashwathv4405" target="_blank" rel="noopener noreferrer" className="contact-link">LinkedIn</a>
-            </div>
-          </div>
+        <Reveal delay={60}>
+          <h2 className="section-title">
+            Say something <em>useful</em>
+          </h2>
         </Reveal>
+
+        <div className="contact-spread">
+          <Reveal delay={100}>
+            {done ? (
+              <p className="form-note is-success">
+                Sent. I'll write back within a day or two.
+              </p>
+            ) : (
+              <form onSubmit={submit}>
+                {error && <p className="form-note is-error">{error}</p>}
+                {field('name', 'Your name')}
+                {field('email', 'Email', 'email')}
+                {field('message', 'Message', 'textarea')}
+                <button className="btn-submit" disabled={sending}>
+                  {sending ? 'Sending…' : 'Send it'}
+                </button>
+              </form>
+            )}
+          </Reveal>
+
+          <Reveal delay={160}>
+            <dl className="direct-line">
+              <dt>Email</dt>
+              <dd>
+                <a href="mailto:shashwathv4405@gmail.com">
+                  shashwathv4405@gmail.com
+                </a>
+              </dd>
+
+              <dt>GitHub</dt>
+              <dd>
+                <a
+                  href="https://github.com/shashwathv"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  @shashwathv
+                </a>
+              </dd>
+
+              <dt>LinkedIn</dt>
+              <dd>
+                <a
+                  href="https://linkedin.com/in/shashwathv4405"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  shashwathv4405
+                </a>
+              </dd>
+            </dl>
+          </Reveal>
+        </div>
       </div>
     </section>
   );

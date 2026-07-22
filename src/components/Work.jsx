@@ -1,6 +1,5 @@
 import { useRef } from 'react';
 import Reveal from './Reveal';
-import RevealHeading from './RevealHeading';
 import ProjectVisual from './ProjectVisual';
 
 /**
@@ -11,16 +10,13 @@ import ProjectVisual from './ProjectVisual';
 const projects = [
   {
     title: 'KenXSearch',
-    category: 'Linux Tooling',
-    year: '2025',
+    tag: 'Linux tooling',
     description:
-      'Circle to Search for Linux. Draw a freehand circle around anything on screen to search it instantly — text, visual, or translate. Multi-strategy OCR behind a capture pipeline that survives KDE, GNOME, Wayland and X11.',
+      'Circle to Search, for Linux. Draw a ring around anything on screen and it searches it — text, image, or translation. The hard part was capture: it works across KDE, GNOME, Wayland and X11.',
     tech: ['Python', 'PyQt6', 'OpenCV', 'Tesseract', 'Playwright'],
     image: null,
     visual: 'scan',
-    deprecated: true,
-    deprecatedNote:
-      'Partial support on GNOME 49+ Wayland — background capture restricted by compositor',
+    flag: 'Partial on GNOME 49+',
     links: {
       github: 'https://github.com/shashwathv/KenXSearch',
       demo: 'https://kenxsearch.nw-right.dev/'
@@ -28,10 +24,9 @@ const projects = [
   },
   {
     title: 'ShadowBrowse',
-    category: 'Backend Infrastructure',
-    year: '2025',
+    tag: 'Backend infrastructure',
     description:
-      'Web scraping and browser automation in Go. Headless browsing, proxy support and intelligent rate limiting, built for enterprise-scale data extraction.',
+      'A scraping and browser-automation framework in Go. Headless sessions, proxy rotation and rate limiting that holds up at enterprise volume.',
     tech: ['Golang', 'Chromedp', 'Redis', 'Docker'],
     image: null,
     visual: 'graph',
@@ -42,11 +37,10 @@ const projects = [
   },
   {
     title: 'BehaviorVault 2.0',
-    category: 'ML / Security',
-    year: '2025',
+    tag: 'ML / security',
     description:
-      'Behavioural biometrics for mobile banking. Five signals with per-user EWMA baselines and an Isolation Forest distilled to a 3KB TFLite artifact for on-device anomaly detection.',
-    tech: ['Python', 'FastAPI', 'TensorFlow Lite', 'scikit-learn', 'Cloudflare'],
+      'Behavioural biometrics for mobile banking. Five signals, per-user EWMA baselines, and an Isolation Forest squeezed into a 3KB TFLite model so detection runs on the handset.',
+    tech: ['Python', 'FastAPI', 'TensorFlow Lite', 'scikit-learn'],
     image: null,
     visual: 'wave',
     links: {
@@ -56,10 +50,9 @@ const projects = [
   },
   {
     title: 'KanGen',
-    category: 'AI / Computer Vision',
-    year: '2025',
+    tag: 'AI / computer vision',
     description:
-      'Photos of physical Japanese study material in, high-quality Anki decks out. A Gemini 2.5 Flash vision-first pipeline with a Redis job store, S3 upload and offline fallbacks.',
+      'Photograph a page of Japanese study material, get back a properly built Anki deck. Gemini 2.5 Flash does the reading; Redis and S3 do the queueing, with offline fallbacks when the API is down.',
     tech: ['Python', 'Gemini 2.5 Flash', 'Redis', 'AWS S3', 'SudachiPy'],
     image: null,
     visual: 'glyph',
@@ -70,20 +63,18 @@ const projects = [
   }
 ];
 
-function WorkCard({ project, index }) {
+function Clipping({ project, index }) {
   const mediaRef = useRef(null);
 
-  // Cursor parallax on the cover art. Written straight to CSS custom
+  // Cursor parallax on the cover art, written straight to CSS custom
   // properties so the transform stays on the compositor and the card
   // never re-renders on mousemove.
   const handleMove = e => {
     const el = mediaRef.current;
     if (!el) return;
     const { left, top, width, height } = el.getBoundingClientRect();
-    const x = (e.clientX - left) / width - 0.5;
-    const y = (e.clientY - top) / height - 0.5;
-    el.style.setProperty('--px', `${x * 16}px`);
-    el.style.setProperty('--py', `${y * 16}px`);
+    el.style.setProperty('--px', `${((e.clientX - left) / width - 0.5) * 14}px`);
+    el.style.setProperty('--py', `${((e.clientY - top) / height - 0.5) * 14}px`);
   };
 
   const handleLeave = () => {
@@ -96,12 +87,12 @@ function WorkCard({ project, index }) {
   const primaryLink = project.links.demo || project.links.github;
 
   return (
-    <Reveal delay={index * 80} className="work-card">
-      {/* Decorative duplicate of the links below — hidden from AT and
-          the tab order so the card isn't announced twice. */}
+    <Reveal delay={index * 90} className="clipping">
+      {/* Decorative duplicate of the links below — kept out of the tab
+          order and the a11y tree so the card isn't announced twice. */}
       <a
         ref={mediaRef}
-        className="work-card-media"
+        className="clipping-media"
         href={primaryLink}
         target="_blank"
         rel="noopener noreferrer"
@@ -110,7 +101,7 @@ function WorkCard({ project, index }) {
         tabIndex={-1}
         aria-hidden="true"
       >
-        <div className="work-card-media-inner">
+        <div className="clipping-media-inner">
           {project.image ? (
             <img src={project.image} alt="" loading="lazy" decoding="async" />
           ) : (
@@ -118,49 +109,33 @@ function WorkCard({ project, index }) {
           )}
         </div>
 
-        <span className="work-card-index mono">
+        <span className="clipping-index">
           {String(index + 1).padStart(2, '0')}
         </span>
 
-        {project.deprecated && (
-          <span
-            className="project-badge badge-deprecated mono"
-            title={project.deprecatedNote}
-          >
-            Partial Support
-          </span>
-        )}
+        {project.flag && <span className="clipping-flag">{project.flag}</span>}
       </a>
 
-      <div className="work-card-body">
-        <div className="work-card-meta mono">
-          <span>{project.category}</span>
-          <span className="work-card-dot" aria-hidden="true">·</span>
-          <span>{project.year}</span>
-        </div>
+      <div className="clipping-body">
+        <p className="clipping-tag">{project.tag}</p>
+        <h3 className="clipping-title">{project.title}</h3>
+        <p className="clipping-desc">{project.description}</p>
 
-        <h3 className="work-card-title serif">{project.title}</h3>
-
-        <p className="work-card-description">{project.description}</p>
-
-        <ul className="work-card-tech mono">
+        <ul className="clipping-tech">
           {project.tech.map(tech => (
-            <li key={tech} className="tech-item">
-              {tech}
-            </li>
+            <li key={tech}>{tech}</li>
           ))}
         </ul>
 
-        <div className="work-card-links">
+        <div className="clipping-links">
           {project.links.github && (
             <a
               href={project.links.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="work-link"
+              className="clipping-link"
             >
-              GitHub
-              <span className="link-arrow" aria-hidden="true">→</span>
+              Source <span aria-hidden="true">→</span>
             </a>
           )}
           {project.links.demo && (
@@ -168,10 +143,9 @@ function WorkCard({ project, index }) {
               href={project.links.demo}
               target="_blank"
               rel="noopener noreferrer"
-              className="work-link"
+              className="clipping-link"
             >
-              Live Demo
-              <span className="link-arrow" aria-hidden="true">→</span>
+              Live <span aria-hidden="true">→</span>
             </a>
           )}
         </div>
@@ -183,18 +157,21 @@ function WorkCard({ project, index }) {
 export default function Work() {
   return (
     <section id="work">
-      <div className="container">
-        <div style={{ width: '100%' }}>
-          <Reveal>
-            <p className="section-label mono">Selected Work</p>
-          </Reveal>
-          <RevealHeading className="serif">Things I've built</RevealHeading>
+      <div className="sheet">
+        <Reveal>
+          <p className="section-kicker">Filed under: built it</p>
+        </Reveal>
 
-          <div className="work-grid">
-            {projects.map((project, index) => (
-              <WorkCard key={project.title} project={project} index={index} />
-            ))}
-          </div>
+        <Reveal delay={60}>
+          <h2 className="section-title">
+            Four things that <em>actually ship</em>
+          </h2>
+        </Reveal>
+
+        <div className="clippings">
+          {projects.map((project, index) => (
+            <Clipping key={project.title} project={project} index={index} />
+          ))}
         </div>
       </div>
     </section>

@@ -1,91 +1,94 @@
 import Reveal from './Reveal';
-import RevealHeading from './RevealHeading';
+
+const drawers = [
+  {
+    name: 'Languages',
+    items: [
+      { name: 'Golang', primary: true },
+      { name: 'Python', primary: true },
+      { name: 'JavaScript' },
+      { name: 'TypeScript' },
+      { name: 'C' }
+    ]
+  },
+  {
+    name: 'Backend & APIs',
+    items: [
+      { name: 'Gin' },
+      { name: 'Echo' },
+      { name: 'FastAPI' },
+      { name: 'Flask' },
+      { name: 'REST' }
+    ]
+  },
+  {
+    name: 'Data & storage',
+    items: [
+      { name: 'PostgreSQL' },
+      { name: 'MySQL' },
+      { name: 'MariaDB' },
+      { name: 'SQLite' },
+      { name: 'Redis' }
+    ]
+  },
+  {
+    name: 'Infrastructure',
+    items: [
+      { name: 'Linux', primary: true },
+      { name: 'Docker' },
+      { name: 'AWS' },
+      { name: 'Cloudflare' }
+    ]
+  },
+  {
+    name: 'Focus',
+    items: [
+      { name: 'API design', primary: true },
+      { name: 'AI integration', primary: true },
+      { name: 'Distributed systems' }
+    ]
+  }
+];
 
 export default function Skills() {
-  const categories = [
-    {
-      name: 'Languages',
-      skills: [
-        { name: 'Golang', primary: true },
-        { name: 'Python', primary: true },
-        { name: 'JavaScript', primary: false },
-        { name: 'TypeScript', primary: false },
-        { name: 'C', primary: false }
-        //{ name: 'Rust', primary: false }
-      ]
-    },
-    {
-      name: 'Backend & APIs',
-      skills: [
-        { name: 'Gin/Echo', primary: false },
-        { name: 'Flask', primary: false },
-        { name: 'FastAPI', primary: false },
-        //{ name: 'gRPC', primary: false },
-        { name: 'REST', primary: false }
-      ]
-    },
-    {
-      name: 'Data & Storage',
-      skills: [
-        { name: 'PostgreSQL', primary: false },
-        { name: 'MySQL', primary: false },
-        { name: 'MariaDB', primary: false },
-        { name: 'SQLite', primary: false }
-      ]
-    },
-    {
-      name: 'Infrastructure',
-      skills: [
-        { name: 'Docker', primary: false },
-        { name: 'AWS', primary: false },
-        { name: 'Linux', primary: true }
-        // { name: 'CI/CD', primary: false }
-      ]
-    },
-    {
-      name: 'Specializations',
-      skills: [
-        { name: 'Distributed Systems', primary: false },
-        //{ name: 'System Architecture', primary: false },
-        { name: 'AI Integration', primary: true },
-        { name: 'API Design', primary: true }
-      ]
-    }
-  ];
-
   return (
     <section id="skills">
-      <div className="container">
-        <div style={{ width: '100%' }}>
-          <Reveal>
-            <p className="section-label mono">Skills</p>
-          </Reveal>
-          <RevealHeading className="serif">Skills & Tools</RevealHeading>
+      <div className="sheet">
+        <Reveal>
+          <p className="section-kicker">The type case</p>
+        </Reveal>
 
-          <div className="skills-grid">
-            {categories.map((category, index) => (
-              <Reveal key={index} delay={index * 50} className="skill-category">
-                <h3 className="mono">{category.name}</h3>
-                <ul className="skill-list">
-                  {category.skills.map((skill, i) => (
+        <Reveal delay={60}>
+          <h2 className="section-title">
+            Tools I reach for <em>without thinking</em>
+          </h2>
+        </Reveal>
+
+        <Reveal delay={100}>
+          <div className="type-case">
+            {drawers.map(drawer => (
+              <div className="type-drawer" key={drawer.name}>
+                <h3>{drawer.name}</h3>
+                <ul>
+                  {drawer.items.map(item => (
                     <li
-                      key={i}
-                      className={`${skill.primary ? 'skill-primary text-strong' : 'text-muted'}`}
+                      key={item.name}
+                      className={item.primary ? 'is-primary' : ''}
                     >
-                      {skill.name}
+                      {item.name}
                     </li>
                   ))}
                 </ul>
-              </Reveal>
+              </div>
             ))}
           </div>
+        </Reveal>
 
-          <Reveal delay={120}>
-            <p className="skills-footnote text-muted">
-              <span className="mono">*</span> primary focus
-            </p>
-          </Reveal>
-        </div>
+        <Reveal delay={140}>
+          <p className="type-note">
+            Set in <b>bold</b>: what I'd reach for first on a new project.
+          </p>
+        </Reveal>
       </div>
     </section>
   );

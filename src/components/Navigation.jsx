@@ -3,8 +3,7 @@ import useScrollSpy from '../hooks/useScrollSpy';
 
 export default function Navigation() {
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [visible, setVisible] = useState(true);
-  const [scrolled, setScrolled] = useState(false);
+  const [hidden, setHidden] = useState(false);
   const lastScrollY = useRef(0);
   const ticking = useRef(false);
 
@@ -16,26 +15,24 @@ export default function Navigation() {
     if (!root) return;
 
     const handleScroll = () => {
-      if (!ticking.current) {
-        window.requestAnimationFrame(() => {
-          const currentY = root.scrollTop;
-          const diff = currentY - lastScrollY.current;
-          if (Math.abs(diff) > 8) {
-            setVisible(diff < 0 || currentY < 60);
-            lastScrollY.current = currentY;
-          }
-          setScrolled(currentY > 24);
-          ticking.current = false;
-        });
-        ticking.current = true;
-      }
+      if (ticking.current) return;
+      window.requestAnimationFrame(() => {
+        const y = root.scrollTop;
+        const diff = y - lastScrollY.current;
+        if (Math.abs(diff) > 8) {
+          setHidden(diff > 0 && y > 80);
+          lastScrollY.current = y;
+        }
+        ticking.current = false;
+      });
+      ticking.current = true;
     };
 
     root.addEventListener('scroll', handleScroll, { passive: true });
     return () => root.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Lock scroll when menu open
+  // Lock the page behind the mobile sheet.
   useEffect(() => {
     const root = document.getElementById('root');
     if (!root) return;
@@ -43,7 +40,6 @@ export default function Navigation() {
     return () => { root.style.overflow = ''; };
   }, [mobileOpen]);
 
-  // Close menu on Escape
   useEffect(() => {
     if (!mobileOpen) return;
     const onKey = e => { if (e.key === 'Escape') setMobileOpen(false); };
@@ -51,69 +47,60 @@ export default function Navigation() {
     return () => window.removeEventListener('keydown', onKey);
   }, [mobileOpen]);
 
-  const scrollToSection = (id) => {
+  const goTo = id => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMobileOpen(false);
   };
 
   return (
     <>
-      <nav className={`${visible ? 'nav-visible' : 'nav-hidden'} ${scrolled ? 'nav-scrolled' : ''}`}>
-        {/* Desktop links */}
-        <ul className="nav-desktop">
-          {navItems.map(id => (
-            <li key={id}>
-              <a
-                href={`#${id}`}
-                className={active === id ? 'nav-link-active' : ''}
-                onClick={e => { e.preventDefault(); scrollToSection(id); }}
-              >
-                {id.charAt(0).toUpperCase() + id.slice(1)}
-              </a>
-            </li>
-          ))}
-        </ul>
+      <header className={`masthead ${hidden && !mobileOpen ? 'is-hidden' : ''}`}>
+        <a
+          href="#home"
+          className="masthead-title"
+          onClick={e => { e.preventDefault(); goTo('home'); }}
+        >
+          Shashwath V<span className="dot">.</span>
+        </a>
 
-        {/* Hamburger — mobile only */}
+        <p className="masthead-meta">Backend &amp; infrastructure — Bengaluru</p>
+
+        <nav>
+          <ul className="masthead-nav">
+            {navItems.map(id => (
+              <li key={id}>
+                <a
+                  href={`#${id}`}
+                  className={active === id ? 'is-active' : ''}
+                  onClick={e => { e.preventDefault(); goTo(id); }}
+                >
+                  {id}
+                </a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
         <button
-          className="nav-toggle"
+          className={`masthead-toggle ${mobileOpen ? 'is-open' : ''}`}
           onClick={() => setMobileOpen(o => !o)}
-          aria-label="Toggle navigation"
+          aria-label={mobileOpen ? 'Close menu' : 'Open menu'}
           aria-expanded={mobileOpen}
         >
-          <span className={`hamburger-icon ${mobileOpen ? 'is-open' : ''}`}>
-            <span />
-            <span />
-            <span />
-          </span>
+          <span /><span /><span />
         </button>
-      </nav>
+      </header>
 
-      {/* Backdrop dimmer */}
-      <div
-        className={`mobile-menu-backdrop ${mobileOpen ? 'backdrop-open' : ''}`}
-        onClick={() => setMobileOpen(false)}
-      />
-
-      {/* Frosted glass slide-in panel */}
-      <div className={`mobile-menu-panel ${mobileOpen ? 'panel-open' : ''}`}>
-        <ul>
-          {navItems.map((id, i) => (
-            <li
-              key={id}
-              className={mobileOpen ? 'item-visible' : ''}
-              style={{ transitionDelay: mobileOpen ? `${80 + i * 55}ms` : '0ms' }}
-            >
-              <a
-                href={`#${id}`}
-                onClick={e => { e.preventDefault(); scrollToSection(id); }}
-              >
-                <span className="mobile-nav-number">0{i + 1}</span>
-                {id.charAt(0).toUpperCase() + id.slice(1)}
-              </a>
-            </li>
-          ))}
-        </ul>
+      <div className={`mobile-sheet ${mobileOpen ? 'is-open' : ''}`}>
+        {navItems.map(id => (
+          <a
+            key={id}
+            href={`#${id}`}
+            onClick={e => { e.preventDefault(); goTo(id); }}
+          >
+            {id}
+          </a>
+        ))}
       </div>
     </>
   );
