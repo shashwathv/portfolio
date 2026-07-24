@@ -76,8 +76,10 @@ export default function Work() {
   const drag = useRef({ down: false, moved: false, startX: 0, startLeft: 0 });
 
   const onPointerDown = e => {
-    // Left button / touch / pen only.
-    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    // Mouse only. Touch and pen get the browser's native horizontal
+    // scroll — smoother, with momentum and snap — and driving scrollLeft
+    // from JS as well would fight it.
+    if (e.pointerType !== 'mouse' || e.button !== 0) return;
     const reel = reelRef.current;
     drag.current = {
       down: true,

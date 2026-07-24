@@ -222,9 +222,14 @@ export default function Halftone({
     // saturate to white.
     gl.clearColor(0, 0, 0, 0);
 
-    let dpr = Math.min(window.devicePixelRatio || 1, 2);
+    // Phones run at DPR 3 and are the most fill-rate constrained, so the
+    // per-pixel shader is capped lower there to protect the frame rate
+    // and the battery. The dot cell scales with dpr, so the halftone
+    // looks the same size regardless.
+    const dprCap = () => (window.innerWidth < 700 ? 1.5 : 2);
+    let dpr = Math.min(window.devicePixelRatio || 1, dprCap());
     const resize = () => {
-      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      dpr = Math.min(window.devicePixelRatio || 1, dprCap());
       const w = Math.floor(canvas.clientWidth * dpr);
       const h = Math.floor(canvas.clientHeight * dpr);
       if (canvas.width !== w || canvas.height !== h) {
