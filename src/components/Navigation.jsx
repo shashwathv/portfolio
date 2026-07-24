@@ -55,25 +55,36 @@ export default function Navigation() {
   return (
     <>
       <header className={`masthead ${hidden && !mobileOpen ? 'is-hidden' : ''}`}>
+        {/* Crop marks — the corners of a sheet on the press bed. */}
+        <span className="crop crop-tl" aria-hidden="true" />
+        <span className="crop crop-tr" aria-hidden="true" />
+        <span className="crop crop-bl" aria-hidden="true" />
+        <span className="crop crop-br" aria-hidden="true" />
+
         <a
           href="#home"
-          className="masthead-title"
+          className="nameplate"
           onClick={e => { e.preventDefault(); goTo('home'); }}
         >
-          Shashwath V<span className="dot">.</span>
+          <span className="nameplate-name">Shashwath&nbsp;V</span>
+          <span className="nameplate-dot" aria-hidden="true">●</span>
+          <span className="nameplate-folio">
+            Backend &amp; Infra — Bengaluru — Est. 2024
+          </span>
         </a>
-
-        <p className="masthead-meta">Backend &amp; infrastructure — Bengaluru</p>
 
         <nav>
           <ul className="masthead-nav">
-            {navItems.map(id => (
+            {navItems.map((id, i) => (
               <li key={id}>
                 <a
                   href={`#${id}`}
                   className={active === id ? 'is-active' : ''}
                   onClick={e => { e.preventDefault(); goTo(id); }}
                 >
+                  <span className="nav-num" aria-hidden="true">
+                    {String(i + 1).padStart(2, '0')}
+                  </span>
                   {id}
                 </a>
               </li>

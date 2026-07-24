@@ -1,3 +1,4 @@
+import Background from './components/background/Background';
 import Navigation from './components/Navigation';
 import ScrollProgress from './components/ScrollProgress';
 import Hero from './components/Hero';
@@ -10,6 +11,7 @@ import Footer from './components/Footer';
 export default function App() {
   return (
     <>
+      <Background />
       <Navigation />
       <ScrollProgress />
 
@@ -23,8 +25,8 @@ export default function App() {
 
       <Footer />
 
-      {/* Ink sits on top of the stock, not behind it. */}
-      <div className="press-texture" aria-hidden="true" />
+      {/* Paper fibre over the whole board. The halftone behind the
+          content supplies the dot texture now. */}
       <div className="press-grain" aria-hidden="true" />
     </>
   );

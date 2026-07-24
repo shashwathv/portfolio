@@ -1,19 +1,20 @@
-import { useRef, useState, useEffect } from 'react';
 import Reveal from './Reveal';
 import ProjectVisual from './ProjectVisual';
 
 /**
  * Drop a screenshot into `public/work/` and set `image` to its path
  * (e.g. '/work/kenxsearch.png') — the generative `visual` is only the
- * fallback for projects that don't have one yet.
+ * fallback for projects that don't have one yet. The first project runs
+ * as the lead story; the rest set below it in columns.
  */
 const projects = [
   {
     title: 'KenXSearch',
     tag: 'Linux tooling',
     year: '2025',
+    standfirst: 'Circle to Search, for Linux.',
     description:
-      'Circle to Search, for Linux. Draw a ring around anything on screen and it searches it — text, image, or translation. The hard part was capture: it works across KDE, GNOME, Wayland and X11.',
+      'Draw a ring around anything on screen and it searches it — text, image, or translation. The hard part was capture: it survives KDE, GNOME, Wayland and X11, four environments that agree on almost nothing.',
     tech: ['Python', 'PyQt6', 'OpenCV', 'Tesseract', 'Playwright'],
     image: null,
     visual: 'scan',
@@ -67,39 +68,33 @@ const projects = [
   }
 ];
 
+function Cover({ project }) {
+  return project.image ? (
+    <img src={project.image} alt="" loading="lazy" decoding="async" />
+  ) : (
+    <ProjectVisual variant={project.visual} />
+  );
+}
+
+function StoryLinks({ links }) {
+  return (
+    <div className="story-links">
+      {links.github && (
+        <a href={links.github} target="_blank" rel="noopener noreferrer">
+          Source <span aria-hidden="true">→</span>
+        </a>
+      )}
+      {links.demo && (
+        <a href={links.demo} target="_blank" rel="noopener noreferrer">
+          Live <span aria-hidden="true">→</span>
+        </a>
+      )}
+    </div>
+  );
+}
+
 export default function Work() {
-  const [active, setActive] = useState(null);
-  const stackRef = useRef(null);
-
-  // The preview follows the pointer. Position is written straight to CSS
-  // custom properties inside a rAF, so moving the mouse never re-renders
-  // the list — only the compositor sees the change.
-  useEffect(() => {
-    const stack = stackRef.current;
-    if (!stack) return;
-
-    let frame = 0;
-    let x = 0;
-    let y = 0;
-
-    const apply = () => {
-      stack.style.setProperty('--x', `${x}px`);
-      stack.style.setProperty('--y', `${y}px`);
-      frame = 0;
-    };
-
-    const onMove = e => {
-      x = e.clientX;
-      y = e.clientY;
-      if (!frame) frame = window.requestAnimationFrame(apply);
-    };
-
-    window.addEventListener('pointermove', onMove, { passive: true });
-    return () => {
-      window.removeEventListener('pointermove', onMove);
-      if (frame) window.cancelAnimationFrame(frame);
-    };
-  }, []);
+  const [lead, ...rest] = projects;
 
   return (
     <section id="work">
@@ -114,97 +109,67 @@ export default function Work() {
           </h2>
         </Reveal>
 
-        <ol className="index" onMouseLeave={() => setActive(null)}>
-          {projects.map((project, i) => {
-            const primaryLink = project.links.demo || project.links.github;
-            return (
+        {/* Folio line — sets the section up as a front page. */}
+        <Reveal delay={90}>
+          <div className="broadsheet-folio">
+            <span>The Work — Selected Projects</span>
+            <span>Vol. IV · Bengaluru · No. 04</span>
+          </div>
+        </Reveal>
+
+        <div className="broadsheet">
+          {/* Lead story */}
+          <Reveal delay={110} className="lead-story">
+            <article>
+              <figure className="lead-figure">
+                <div className="lead-figure-frame">
+                  <Cover project={lead} />
+                </div>
+                <figcaption>
+                  Fig. 1 — {lead.title}
+                  {lead.flag && <em className="story-flag"> {lead.flag}</em>}
+                </figcaption>
+              </figure>
+
+              <div className="lead-text">
+                <p className="story-tag">
+                  {lead.tag} <span aria-hidden="true">·</span> {lead.year}
+                </p>
+                <h3 className="lead-head">{lead.title}</h3>
+                {lead.standfirst && (
+                  <p className="lead-standfirst">{lead.standfirst}</p>
+                )}
+                <p className="lead-body">{lead.description}</p>
+                <p className="story-byline">
+                  Built with {lead.tech.join(' · ')}
+                </p>
+                <StoryLinks links={lead.links} />
+              </div>
+            </article>
+          </Reveal>
+
+          {/* Column stories */}
+          <div className="broadsheet-columns">
+            {rest.map((project, i) => (
               <Reveal
                 key={project.title}
-                delay={i * 70}
-                className={`index-row ${active === i ? 'is-lit' : ''}`}
+                delay={160 + i * 70}
+                className="column-story"
               >
-                <li>
-                  <a
-                    className="index-link"
-                    href={primaryLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onMouseEnter={() => setActive(i)}
-                    onFocus={() => setActive(i)}
-                    onBlur={() => setActive(null)}
-                  >
-                    <span className="index-num">
-                      {String(i + 1).padStart(2, '0')}
-                    </span>
-                    <span className="index-name">{project.title}</span>
-                    <span className="index-tag">{project.tag}</span>
-                    <span className="index-year">{project.year}</span>
-                    <span className="index-go" aria-hidden="true">→</span>
-                  </a>
-
-                  <div className="index-detail">
-                    {/* Single wrapper: the 0fr/1fr collapse only sizes the
-                        first grid row, so both blocks have to share one. */}
-                    <div className="index-detail-inner">
-                    <p className="index-desc">
-                      {project.description}
-                      {project.flag && (
-                        <em className="index-flag"> {project.flag}</em>
-                      )}
-                    </p>
-
-                    <div className="index-foot">
-                      <ul className="index-tech">
-                        {project.tech.map(tech => (
-                          <li key={tech}>{tech}</li>
-                        ))}
-                      </ul>
-
-                      <div className="index-links">
-                        {project.links.github && (
-                          <a
-                            href={project.links.github}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Source
-                          </a>
-                        )}
-                        {project.links.demo && (
-                          <a
-                            href={project.links.demo}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                          >
-                            Live
-                          </a>
-                        )}
-                      </div>
-                    </div>
-                    </div>
-                  </div>
-                </li>
+                <article>
+                  <p className="story-tag">
+                    {project.tag} <span aria-hidden="true">·</span>{' '}
+                    {project.year}
+                  </p>
+                  <h3 className="column-head">{project.title}</h3>
+                  <p className="column-body">{project.description}</p>
+                  <p className="story-byline">{project.tech.join(' · ')}</p>
+                  <StoryLinks links={project.links} />
+                </article>
               </Reveal>
-            );
-          })}
-        </ol>
-      </div>
-
-      {/* Pinned to the cursor. Decorative — every project is already
-          reachable through the list above. */}
-      <div className="preview-stack" ref={stackRef} aria-hidden="true">
-        {projects.map((project, i) => (
-          <figure
-            key={project.title}
-            className={`preview ${active === i ? 'is-active' : ''}`}
-          >
-            {project.image ? (
-              <img src={project.image} alt="" loading="lazy" decoding="async" />
-            ) : (
-              <ProjectVisual variant={project.visual} />
-            )}
-          </figure>
-        ))}
+            ))}
+          </div>
+        </div>
       </div>
     </section>
   );
