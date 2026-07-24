@@ -1,20 +1,19 @@
+import { useRef } from 'react';
 import Reveal from './Reveal';
 import ProjectVisual from './ProjectVisual';
 
 /**
  * Drop a screenshot into `public/work/` and set `image` to its path
  * (e.g. '/work/kenxsearch.png') — the generative `visual` is only the
- * fallback for projects that don't have one yet. The first project runs
- * as the lead story; the rest set below it in columns.
+ * fallback for projects that don't have one yet.
  */
 const projects = [
   {
     title: 'KenXSearch',
     tag: 'Linux tooling',
     year: '2025',
-    standfirst: 'Circle to Search, for Linux.',
     description:
-      'Draw a ring around anything on screen and it searches it — text, image, or translation. The hard part was capture: it survives KDE, GNOME, Wayland and X11, four environments that agree on almost nothing.',
+      'Circle to Search, for Linux. Draw a ring around anything on screen and it searches it — text, image, or translation. The hard part was capture: it survives KDE, GNOME, Wayland and X11.',
     tech: ['Python', 'PyQt6', 'OpenCV', 'Tesseract', 'Playwright'],
     image: null,
     visual: 'scan',
@@ -68,107 +67,143 @@ const projects = [
   }
 ];
 
-function Cover({ project }) {
-  return project.image ? (
-    <img src={project.image} alt="" loading="lazy" decoding="async" />
-  ) : (
-    <ProjectVisual variant={project.visual} />
-  );
-}
-
-function StoryLinks({ links }) {
-  return (
-    <div className="story-links">
-      {links.github && (
-        <a href={links.github} target="_blank" rel="noopener noreferrer">
-          Source <span aria-hidden="true">→</span>
-        </a>
-      )}
-      {links.demo && (
-        <a href={links.demo} target="_blank" rel="noopener noreferrer">
-          Live <span aria-hidden="true">→</span>
-        </a>
-      )}
-    </div>
-  );
-}
-
 export default function Work() {
-  const [lead, ...rest] = projects;
+  const reelRef = useRef(null);
+
+  // Drag-to-scroll the reel. Distinguishes a drag from a click so the
+  // project links still work: only past a small threshold do we treat
+  // the gesture as a scroll and swallow the click.
+  const drag = useRef({ down: false, moved: false, startX: 0, startLeft: 0 });
+
+  const onPointerDown = e => {
+    // Left button / touch / pen only.
+    if (e.pointerType === 'mouse' && e.button !== 0) return;
+    const reel = reelRef.current;
+    drag.current = {
+      down: true,
+      moved: false,
+      startX: e.clientX,
+      startLeft: reel.scrollLeft
+    };
+  };
+
+  const onPointerMove = e => {
+    const d = drag.current;
+    if (!d.down) return;
+    const dx = e.clientX - d.startX;
+    if (Math.abs(dx) > 6) d.moved = true;
+    reelRef.current.scrollLeft = d.startLeft - dx;
+  };
+
+  const endDrag = e => {
+    const d = drag.current;
+    if (d.down && d.moved) {
+      // Cancel the click that would otherwise fire after a drag.
+      const swallow = ev => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        window.removeEventListener('click', swallow, true);
+      };
+      window.addEventListener('click', swallow, true);
+      setTimeout(() => window.removeEventListener('click', swallow, true), 0);
+      if (e?.currentTarget?.releasePointerCapture && e.pointerId != null) {
+        try { e.currentTarget.releasePointerCapture(e.pointerId); } catch { /* ignore */ }
+      }
+    }
+    drag.current.down = false;
+  };
 
   return (
     <section id="work">
-      <div className="sheet">
+      <div className="sheet reel-head">
         <Reveal>
           <p className="section-kicker">Filed under: built it</p>
         </Reveal>
-
         <Reveal delay={60}>
           <h2 className="section-title">
             Four things that <em>actually ship</em>
           </h2>
         </Reveal>
-
-        {/* Folio line — sets the section up as a front page. */}
         <Reveal delay={90}>
-          <div className="broadsheet-folio">
-            <span>The Work — Selected Projects</span>
-            <span>Vol. IV · Bengaluru · No. 04</span>
-          </div>
+          <p className="reel-hint">
+            <span className="reel-hint-rule" aria-hidden="true" />
+            Drag or swipe through the plates
+            <span aria-hidden="true"> →</span>
+          </p>
         </Reveal>
+      </div>
 
-        <div className="broadsheet">
-          {/* Lead story */}
-          <Reveal delay={110} className="lead-story">
-            <article>
-              <figure className="lead-figure">
-                <div className="lead-figure-frame">
-                  <Cover project={lead} />
-                </div>
-                <figcaption>
-                  Fig. 1 — {lead.title}
-                  {lead.flag && <em className="story-flag"> {lead.flag}</em>}
-                </figcaption>
-              </figure>
+      <div
+        className="reel"
+        ref={reelRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerLeave={endDrag}
+        onPointerCancel={endDrag}
+      >
+        {projects.map((project, i) => (
+          <article className="plate" key={project.title}>
+            <div className="plate-head">
+              <span className="plate-no">Nº {String(i + 1).padStart(2, '0')}</span>
+              <span className="plate-tag">
+                {project.tag} <span aria-hidden="true">·</span> {project.year}
+              </span>
+            </div>
 
-              <div className="lead-text">
-                <p className="story-tag">
-                  {lead.tag} <span aria-hidden="true">·</span> {lead.year}
-                </p>
-                <h3 className="lead-head">{lead.title}</h3>
-                {lead.standfirst && (
-                  <p className="lead-standfirst">{lead.standfirst}</p>
-                )}
-                <p className="lead-body">{lead.description}</p>
-                <p className="story-byline">
-                  Built with {lead.tech.join(' · ')}
-                </p>
-                <StoryLinks links={lead.links} />
-              </div>
-            </article>
-          </Reveal>
+            <div className="plate-figure">
+              {project.image ? (
+                <img
+                  src={project.image}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  draggable="false"
+                />
+              ) : (
+                <ProjectVisual variant={project.visual} />
+              )}
+              {project.flag && (
+                <span className="plate-flag">{project.flag}</span>
+              )}
+            </div>
 
-          {/* Column stories */}
-          <div className="broadsheet-columns">
-            {rest.map((project, i) => (
-              <Reveal
-                key={project.title}
-                delay={160 + i * 70}
-                className="column-story"
-              >
-                <article>
-                  <p className="story-tag">
-                    {project.tag} <span aria-hidden="true">·</span>{' '}
-                    {project.year}
-                  </p>
-                  <h3 className="column-head">{project.title}</h3>
-                  <p className="column-body">{project.description}</p>
-                  <p className="story-byline">{project.tech.join(' · ')}</p>
-                  <StoryLinks links={project.links} />
-                </article>
-              </Reveal>
-            ))}
-          </div>
+            <h3 className="plate-title">{project.title}</h3>
+            <p className="plate-desc">{project.description}</p>
+
+            <ul className="plate-tech">
+              {project.tech.map(tech => (
+                <li key={tech}>{tech}</li>
+              ))}
+            </ul>
+
+            <div className="plate-links">
+              {project.links.github && (
+                <a
+                  href={project.links.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Source <span aria-hidden="true">→</span>
+                </a>
+              )}
+              {project.links.demo && (
+                <a
+                  href={project.links.demo}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Live <span aria-hidden="true">→</span>
+                </a>
+              )}
+            </div>
+          </article>
+        ))}
+
+        {/* Colophon end-stop for the reel. */}
+        <div className="plate plate-end" aria-hidden="true">
+          <span>End of<br />run</span>
+          <span className="plate-end-mark">✦</span>
         </div>
       </div>
     </section>

@@ -16,6 +16,8 @@
   --field-3: #0d1226;   /* recessed / behind */
   --rule: rgba(237, 232, 218, 0.16);
 
+  --spine: 78px;        /* width of the fixed left nav spine */
+
   /* Stock. Greyer and cooler than a cream — this is newsprint,
      not letterpress cotton. Doubles as the primary text colour. */
   --paper: #ede8da;
@@ -97,6 +99,13 @@ body {
   z-index: 1;
 }
 
+/* Everything clears the fixed spine on the left. The halftone board
+   still runs full-bleed behind it. */
+.site-content,
+.colophon {
+  padding-left: var(--spine);
+}
+
 /* ------------------------------------------------------------
    PRESS GRAIN
    Paper fibre over the whole board — the one static texture left now
@@ -114,13 +123,13 @@ body {
 
 /* ------------------------------------------------------------
    SCROLL PROGRESS
-   Sits directly under the masthead, reading as the press's
-   registration bar.
+   A registration bar along the top of the content area, starting
+   where the spine ends.
    ------------------------------------------------------------ */
 .scroll-progress {
   position: fixed;
   top: 0;
-  left: 0;
+  left: var(--spine);
   right: 0;
   height: 5px;
   z-index: 101;
@@ -224,37 +233,31 @@ a {
 }
 
 /* ------------------------------------------------------------
-   MASTHEAD (nav)
+   SPINE (side nav)
+   A bound-volume edge down the left, paper on the dark board.
    ------------------------------------------------------------ */
-.masthead {
+.spine {
   position: fixed;
   top: 0;
   left: 0;
-  right: 0;
+  bottom: 0;
+  width: var(--spine);
   z-index: 100;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: space-between;
-  gap: 1.5rem;
-  padding: 0.7rem 2.75rem;
-  /* A pasted strip across the top of the board — light on dark, the
-     inverse of the colophon that closes the page. Double rule beneath
-     it, like a nameplate. */
+  padding: 1.75rem 0;
   background: var(--paper);
   color: var(--ink);
-  border-bottom: 3px double var(--ink);
-  transition: transform 0.4s var(--ease);
+  border-right: 3px double var(--ink);
 }
 
-.masthead.is-hidden {
-  transform: translateY(-100%);
-}
-
-/* Crop marks in the corners — the sheet registered on the bed. */
+/* Crop marks — the sheet registered on the bed. */
 .crop {
   position: absolute;
-  width: 12px;
-  height: 12px;
+  width: 11px;
+  height: 11px;
   pointer-events: none;
 }
 .crop::before,
@@ -263,87 +266,125 @@ a {
   position: absolute;
   background: var(--ink);
 }
-.crop::before { width: 12px; height: 2px; top: 0; }
-.crop::after  { width: 2px;  height: 12px; left: 0; }
-.crop-tl { top: 6px;  left: 8px; }
-.crop-tr { top: 6px;  right: 8px; transform: scaleX(-1); }
-.crop-bl { bottom: 6px; left: 8px; transform: scaleY(-1); }
-.crop-br { bottom: 6px; right: 8px; transform: scale(-1); }
+.crop::before { width: 11px; height: 2px; top: 0; }
+.crop::after  { width: 2px;  height: 11px; left: 0; }
+.crop-tl { top: 7px;    left: 7px; }
+.crop-bl { bottom: 7px; left: 7px; transform: scaleY(-1); }
 
-/* --- Nameplate --- */
-.nameplate {
+/* --- Nameplate, read up the spine --- */
+.spine-plate {
   display: flex;
-  align-items: baseline;
+  flex-direction: column;
+  align-items: center;
   gap: 0.7rem;
-  white-space: nowrap;
 }
 
-.nameplate-name {
+.spine-dot {
+  font-size: 0.5rem;
+  color: var(--red);
+}
+
+.spine-name {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
   font-family: var(--font-condensed);
-  font-size: 1.5rem;
-  letter-spacing: 0.1em;
+  font-size: 1.35rem;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--ink);
   line-height: 1;
 }
 
-.nameplate-dot {
-  font-size: 0.5rem;
-  color: var(--red);
-  transform: translateY(-0.35em);
+/* --- Nav, stacked and set to read up the spine --- */
+.spine-nav ul {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
 }
 
-.nameplate-folio {
+.spine-nav a {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
   font-family: var(--font-type);
-  font-size: 0.68rem;
-  letter-spacing: 0.08em;
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color 0.2s;
+}
+
+.spine-num {
+  font-size: 0.62rem;
+  color: var(--red);
+}
+
+.spine-nav a:hover .spine-label {
+  color: var(--red);
+}
+
+/* Active item gets a rule down its edge. */
+.spine-nav a.is-active .spine-label {
+  box-shadow: -3px 0 0 var(--red);
+  padding-left: 3px;
+}
+
+.spine-folio {
+  writing-mode: vertical-rl;
+  transform: rotate(180deg);
+  font-family: var(--font-type);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: #6b6558;
 }
 
-.masthead-nav {
-  display: flex;
-  gap: 1.6rem;
-  list-style: none;
+/* ------------------------------------------------------------
+   TOPBAR — the spine folded flat for mobile
+   ------------------------------------------------------------ */
+.topbar {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 100;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.5rem;
+  background: var(--paper);
+  color: var(--ink);
+  border-bottom: 3px double var(--ink);
 }
 
-.masthead-nav a {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 0.35rem;
-  font-family: var(--font-type);
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.1em;
+.topbar-name {
+  font-family: var(--font-condensed);
+  font-size: 1.3rem;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--ink);
-  padding-bottom: 2px;
-  border-bottom: 2px solid transparent;
-  transition: color 0.2s, border-color 0.2s;
 }
 
-.nav-num {
-  font-size: 0.6rem;
+.topbar-dot {
+  font-size: 0.5rem;
   color: var(--red);
+  vertical-align: middle;
+  margin-left: 0.35rem;
 }
 
-.masthead-nav a:hover {
-  color: var(--red);
-}
-
-.masthead-nav a.is-active {
-  border-bottom-color: var(--red);
-}
-
-.masthead-toggle {
-  display: none;
+.topbar-toggle {
   background: none;
   border: 0;
   cursor: pointer;
   padding: 0.25rem;
 }
 
-.masthead-toggle span {
+.topbar-toggle span {
   display: block;
   width: 26px;
   height: 3px;
@@ -352,15 +393,11 @@ a {
   transition: transform 0.3s var(--ease), opacity 0.2s;
 }
 
-.masthead-toggle.is-open span:nth-child(1) {
+.topbar-toggle.is-open span:nth-child(1) {
   transform: translateY(8px) rotate(45deg);
 }
-
-.masthead-toggle.is-open span:nth-child(2) {
-  opacity: 0;
-}
-
-.masthead-toggle.is-open span:nth-child(3) {
+.topbar-toggle.is-open span:nth-child(2) { opacity: 0; }
+.topbar-toggle.is-open span:nth-child(3) {
   transform: translateY(-8px) rotate(-45deg);
 }
 
@@ -639,158 +676,187 @@ a {
 }
 
 /* ------------------------------------------------------------
-   WORK — the front page
-   A broadsheet: one lead story with a press photo, the rest set
-   below it in ruled columns. Not cards, not a list — a page.
+   WORK — the reel
+   A horizontal run of plates you drag or swipe through. Not cards,
+   not a list, not a page — a filmstrip pulled across the press bed.
    ------------------------------------------------------------ */
-.broadsheet-folio {
+/* Left-aligned (not the centered .sheet default) so the heading's left
+   edge always lines up with the reel's first plate, at any width. */
+.reel-head {
+  max-width: none;
+  margin: 0;
+  margin-bottom: 2.5rem;
+}
+
+.reel-hint {
   display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 0.5rem 1.5rem;
+  align-items: center;
+  gap: 1rem;
   font-family: var(--font-type);
-  font-size: 0.72rem;
+  font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--paper-dim);
-  padding-bottom: 0.9rem;
-  border-bottom: 3px solid var(--paper);
-  margin-bottom: 2.5rem;
 }
 
-/* --- Lead story --- */
-.lead-story article {
-  display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
-  gap: 2.5rem 3rem;
-  align-items: start;
-  padding-bottom: 3rem;
-  margin-bottom: 3rem;
-  border-bottom: 1px solid var(--rule);
+.reel-hint-rule {
+  width: 3rem;
+  height: 3px;
+  background: var(--blue);
 }
 
-.lead-figure {
-  margin: 0;
+.reel {
+  display: flex;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-snap-type: x mandatory;
+  cursor: grab;
+  /* First plate lines up with the heading's left gutter; the reel
+     itself runs full-bleed to the right edge. */
+  padding: 0.5rem 3rem 2rem;
+  scroll-padding-left: 3rem;
+  -webkit-overflow-scrolling: touch;
 }
 
-.lead-figure-frame {
+.reel:active {
+  cursor: grabbing;
+}
+
+/* A slim registration scrollbar rather than the OS default. */
+.reel::-webkit-scrollbar { height: 6px; }
+.reel::-webkit-scrollbar-track { background: var(--field-3); }
+.reel::-webkit-scrollbar-thumb { background: var(--paper-3); }
+
+.plate {
+  flex: 0 0 clamp(340px, 40vw, 480px);
+  scroll-snap-align: start;
+  border-left: 3px solid var(--paper);
+  padding: 1.5rem 2.25rem 0 0;
+  margin-right: 2.25rem;
+  /* Keep the caption text selectable off, so a drag never highlights
+     a paragraph mid-swipe. */
+  user-select: none;
+}
+
+.plate-head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding-left: 1.5rem;
+  margin-bottom: 1.25rem;
+}
+
+.plate-no {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  line-height: 0.8;
+  color: var(--paper);
+}
+
+.plate-tag {
+  font-family: var(--font-type);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--blue);
+  text-align: right;
+}
+
+.plate-tag span { color: var(--paper-dim); }
+
+.plate-figure {
+  position: relative;
   aspect-ratio: 16 / 11;
   overflow: hidden;
+  margin-left: 1.5rem;
+  margin-bottom: 1.4rem;
   border: 3px solid var(--paper);
   background: var(--paper-3);
-  box-shadow: 10px 10px 0 rgba(13, 18, 38, 0.6);
+  box-shadow: 8px 8px 0 rgba(13, 18, 38, 0.6);
 }
 
-.lead-figure-frame img,
-.lead-figure-frame .project-visual {
+.plate-figure img,
+.plate-figure .project-visual {
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
+  pointer-events: none;
 }
 
-/* Printed halftone, not a photo — crushed until hovered. */
-.lead-figure-frame img {
+.plate-figure img {
   filter: grayscale(1) contrast(1.3);
   transition: filter 0.4s ease;
 }
 
-.lead-story:hover .lead-figure-frame img {
+.plate:hover .plate-figure img {
   filter: grayscale(0) contrast(1.05);
 }
 
-.lead-figure figcaption {
+.plate-flag {
+  position: absolute;
+  top: 0.75rem;
+  right: 0;
   font-family: var(--font-type);
-  font-size: 0.72rem;
-  letter-spacing: 0.04em;
-  color: var(--paper-dim);
-  padding-top: 0.7rem;
-  border-top: 1px solid var(--rule);
-  margin-top: 0.7rem;
-}
-
-.story-flag {
-  font-style: normal;
+  font-size: 0.62rem;
   font-weight: 700;
+  letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--paper);
   background: var(--red);
-  padding: 0.08rem 0.4rem;
-  margin-left: 0.35rem;
-  white-space: nowrap;
+  color: var(--paper);
+  padding: 0.2rem 0.5rem;
 }
 
-.story-tag {
-  font-family: var(--font-type);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--blue);
-  margin-bottom: 0.75rem;
-}
-
-.story-tag span {
-  color: var(--paper-dim);
-  margin: 0 0.15rem;
-}
-
-.lead-head {
+.plate-title {
   font-family: var(--font-display);
-  font-size: clamp(2.5rem, 5.5vw, 4rem);
-  line-height: 0.94;
+  font-size: 2.4rem;
+  line-height: 0.92;
   letter-spacing: 0.005em;
   text-transform: uppercase;
   color: var(--paper);
-  margin-bottom: 1rem;
+  padding-left: 1.5rem;
+  margin-bottom: 0.85rem;
 }
 
-.lead-standfirst {
-  font-family: var(--font-editorial);
-  font-style: italic;
-  font-size: 1.35rem;
-  line-height: 1.35;
-  color: var(--paper);
-  margin-bottom: 1rem;
-}
-
-.lead-body {
-  font-size: 1rem;
-  line-height: 1.7;
+.plate-desc {
+  font-size: 0.94rem;
+  line-height: 1.6;
   color: var(--paper-dim);
+  padding-left: 1.5rem;
   margin-bottom: 1.25rem;
 }
 
-/* Drop cap opens the lead like a real article. */
-.lead-body::first-letter {
-  font-family: var(--font-display);
-  font-size: 3.1em;
-  line-height: 0.72;
-  float: left;
-  padding: 0.05em 0.12em 0 0;
-  color: var(--red);
+.plate-tech {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  list-style: none;
+  padding-left: 1.5rem;
+  margin-bottom: 1.4rem;
 }
 
-.story-byline {
+.plate-tech li {
   font-family: var(--font-type);
-  font-size: 0.75rem;
-  letter-spacing: 0.05em;
+  font-size: 0.66rem;
+  letter-spacing: 0.04em;
   color: var(--paper-dim);
-  padding-top: 0.9rem;
-  border-top: 1px solid var(--rule);
-  margin-bottom: 1rem;
+  border: 1px solid var(--rule);
+  padding: 0.16rem 0.45rem;
 }
 
-.story-links {
+.plate-links {
   display: flex;
   gap: 1.5rem;
-  flex-wrap: wrap;
+  padding-left: 1.5rem;
 }
 
-.story-links a {
+.plate-links a {
   font-family: var(--font-type);
-  font-size: 0.78rem;
+  font-size: 0.76rem;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -803,53 +869,30 @@ a {
   transition: color 0.2s;
 }
 
-.story-links a:hover {
-  color: var(--red);
-}
+.plate-links a:hover { color: var(--red); }
 
-.story-links span {
-  transition: transform 0.25s var(--ease);
-}
+.plate-links span { transition: transform 0.25s var(--ease); }
+.plate-links a:hover span { transform: translateX(3px); }
 
-.story-links a:hover span {
-  transform: translateX(3px);
-}
-
-/* --- Column stories --- */
-.broadsheet-columns {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-}
-
-.column-story {
-  padding: 0 2rem;
-  border-left: 1px solid var(--rule);
-}
-
-.column-story:first-child {
-  padding-left: 0;
-  border-left: 0;
-}
-
-.column-story:last-child {
-  padding-right: 0;
-}
-
-.column-head {
-  font-family: var(--font-black);
-  font-size: 1.5rem;
-  line-height: 1.05;
-  letter-spacing: -0.02em;
+/* End-stop plate — the run runs out. */
+.plate-end {
+  flex-basis: 220px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 1rem;
+  padding-left: 1.5rem;
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  line-height: 0.9;
   text-transform: uppercase;
-  color: var(--paper);
-  margin-bottom: 0.85rem;
+  color: var(--paper-dim);
 }
 
-.column-body {
-  font-size: 0.92rem;
-  line-height: 1.65;
-  color: var(--paper-dim);
-  margin-bottom: 1rem;
+.plate-end-mark {
+  font-size: 1.4rem;
+  color: var(--red);
 }
 
 /* ------------------------------------------------------------
@@ -875,7 +918,7 @@ a {
 
 .pv-sweep { fill: var(--blue); opacity: 0; }
 
-.lead-story:hover .pv-sweep {
+.plate:hover .pv-sweep {
   animation: pv-sweep-down 2.2s var(--ease) infinite;
 }
 
@@ -888,7 +931,7 @@ a {
 
 .pv-edges line { stroke: var(--ink); stroke-width: 1.5; opacity: 0.4; }
 .pv-nodes circle { fill: var(--ink); transition: fill 0.3s ease; }
-.lead-story:hover .pv-nodes circle { fill: var(--red); }
+.plate:hover .pv-nodes circle { fill: var(--red); }
 
 .pv-baseline { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 5; opacity: 0.35; }
 .pv-trace { fill: none; stroke: var(--ink); stroke-width: 2.5; }
@@ -896,7 +939,7 @@ a {
 .pv-anomaly line { stroke: var(--red); stroke-width: 2; stroke-dasharray: 3 3; }
 .pv-anomaly circle { fill: var(--red); }
 
-.lead-story:hover .pv-anomaly circle {
+.plate:hover .pv-anomaly circle {
   animation: pv-pulse 1.4s ease-in-out infinite;
 }
 
@@ -1257,15 +1300,18 @@ a {
    RESPONSIVE
    ------------------------------------------------------------ */
 @media (max-width: 900px) {
+  /* The spine folds down into a top bar; content no longer clears a
+     left gutter. */
+  :root { --spine: 0px; }
+
+  .spine { display: none; }
+  .topbar { display: flex; }
+  .scroll-progress { top: 56px; left: 0; }
+
   .sheet { padding: 0 1.5rem; }
   section { padding: 4.5rem 0; }
 
-  .masthead { padding: 0.75rem 1.5rem; }
-  .nameplate-folio { display: none; }
-  .masthead-nav { display: none; }
-  .masthead-toggle { display: block; }
-
-  .hero { padding-top: 6.5rem; }
+  .hero { padding-top: 7rem; }
 
   .hero-lower,
   .about-spread,
@@ -1274,30 +1320,10 @@ a {
     gap: 2.5rem;
   }
 
-  /* Broadsheet collapses to a single column: lead stacks, and the
-     three column stories run vertically with rules between rather
-     than beside them. */
-  .lead-story article {
-    grid-template-columns: 1fr;
-    gap: 1.75rem;
-  }
-
-  .broadsheet-columns {
-    grid-template-columns: 1fr;
-  }
-
-  .column-story {
-    padding: 1.75rem 0 0;
-    border-left: 0;
-    border-top: 1px solid var(--rule);
-    margin-top: 1.75rem;
-  }
-
-  .column-story:first-child {
-    padding-top: 0;
-    border-top: 0;
-    margin-top: 0;
-  }
+  /* The reel keeps swiping horizontally — natural on touch — but its
+     gutter matches the narrower page padding. */
+  .reel { padding-left: 1.5rem; padding-right: 1.5rem; scroll-padding-left: 1.5rem; }
+  .plate { flex-basis: min(82vw, 400px); }
 
   .colophon-grid { grid-template-columns: 1fr; gap: 1.25rem; }
 
