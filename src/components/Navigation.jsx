@@ -63,7 +63,7 @@ export default function Navigation() {
           </ul>
         </nav>
 
-        <span className="spine-folio">Est. 2024 · Bengaluru</span>
+        <span className="spine-folio">Est. 2024</span>
       </header>
 
       {/* Mobile: the spine folds into a top bar with a menu sheet. */}

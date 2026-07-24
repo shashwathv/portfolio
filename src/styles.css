@@ -271,12 +271,12 @@ a {
 .crop-tl { top: 7px;    left: 7px; }
 .crop-bl { bottom: 7px; left: 7px; transform: scaleY(-1); }
 
-/* --- Nameplate, read up the spine --- */
+/* --- Nameplate: letters upright, stacked, flowing top to bottom --- */
 .spine-plate {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 0.7rem;
+  gap: 0.6rem;
 }
 
 .spine-dot {
@@ -286,49 +286,57 @@ a {
 
 .spine-name {
   writing-mode: vertical-rl;
-  transform: rotate(180deg);
+  text-orientation: upright;
   font-family: var(--font-condensed);
-  font-size: 1.35rem;
-  letter-spacing: 0.18em;
+  font-size: 1.05rem;
+  letter-spacing: -0.06em;   /* tightens the vertical stack */
   text-transform: uppercase;
   color: var(--ink);
   line-height: 1;
 }
 
-/* --- Nav, stacked and set to read up the spine --- */
+/* --- Nav: number flat on top, label upright and stacked below --- */
 .spine-nav ul {
   list-style: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.5rem;
+  gap: 1.15rem;
 }
 
 .spine-nav a {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 0.5rem;
-  writing-mode: vertical-rl;
-  transform: rotate(180deg);
-  font-family: var(--font-type);
-  font-size: 0.8rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  gap: 0.3rem;
   color: var(--ink);
   transition: color 0.2s;
 }
 
 .spine-num {
-  font-size: 0.62rem;
+  font-family: var(--font-type);
+  font-size: 0.6rem;
+  font-weight: 700;
   color: var(--red);
+}
+
+.spine-label {
+  writing-mode: vertical-rl;
+  text-orientation: upright;
+  font-family: var(--font-type);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+  transition: color 0.2s;
 }
 
 .spine-nav a:hover .spine-label {
   color: var(--red);
 }
 
-/* Active item gets a rule down its edge. */
+/* Active item gets a rule down the left of its letter column. */
 .spine-nav a.is-active .spine-label {
   box-shadow: -3px 0 0 var(--red);
   padding-left: 3px;
@@ -336,10 +344,10 @@ a {
 
 .spine-folio {
   writing-mode: vertical-rl;
-  transform: rotate(180deg);
+  text-orientation: upright;
   font-family: var(--font-type);
-  font-size: 0.62rem;
-  letter-spacing: 0.14em;
+  font-size: 0.58rem;
+  letter-spacing: -0.02em;
   text-transform: uppercase;
   color: #6b6558;
 }
@@ -1299,6 +1307,16 @@ a {
 /* ------------------------------------------------------------
    RESPONSIVE
    ------------------------------------------------------------ */
+/* Short landscape screens can't fit the upright nav down the spine, so
+   it folds into the top bar there too. */
+@media (max-height: 720px) and (min-width: 901px) {
+  :root { --spine: 0px; }
+  .spine { display: none; }
+  .topbar { display: flex; }
+  .scroll-progress { top: 52px; left: 0; }
+  .hero { padding-top: 7rem; }
+}
+
 @media (max-width: 900px) {
   /* The spine folds down into a top bar; content no longer clears a
      left gutter. */
