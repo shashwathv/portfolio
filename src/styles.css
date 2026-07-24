@@ -1348,8 +1348,25 @@ a {
   .about-body p:first-child::first-letter { font-size: 3em; }
 }
 
+/* The ransom name is sized for a wide hero; on phones the big
+   clippings overflow and orphan the "V" on its own line. Scale them
+   down so the whole name holds together. */
+@media (max-width: 600px) {
+  .clip {
+    font-size: clamp(1.85rem, 8.8vw, 2.9rem);
+    padding: 0.09em 0.07em 0.05em;
+  }
+  .clip-archivo { font-size: clamp(1.5rem, 7.2vw, 2.4rem); }
+  .clip-courier { font-size: clamp(1.45rem, 7vw, 2.3rem); }
+
+  .ransom {
+    gap: 0.1em 0.05em;
+    margin-bottom: 2.5rem;
+  }
+  .clip.has-gap { margin-left: 0.3em; }
+}
+
 @media (max-width: 480px) {
-  .clip { padding: 0.08em 0.06em 0.05em; }
   .btn { padding: 0.75rem 1.15rem; font-size: 0.75rem; }
 }
 
