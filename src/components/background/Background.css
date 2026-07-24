@@ -15,23 +15,16 @@
   display: block;
 }
 
-/* The moiré is loudest at full strength dead centre, which is where
-   headlines and body copy live. This pulls it down on the left and
-   through the middle band so text keeps its contrast, and lets it run
-   brighter toward the right and edges where the layout is open. */
+/* A light touch — just enough to keep the halftone from competing with
+   body copy, without hiding it. The effect stays visible everywhere,
+   only a little quieter directly behind text on the left. */
 .background-scrim {
   position: absolute;
   inset: 0;
-  background:
-    linear-gradient(
-      90deg,
-      var(--field) 0%,
-      rgba(19, 26, 54, 0.55) 34%,
-      rgba(19, 26, 54, 0) 62%
-    ),
-    radial-gradient(
-      120% 80% at 50% 42%,
-      rgba(19, 26, 54, 0.4) 0%,
-      rgba(19, 26, 54, 0) 55%
-    );
+  background: linear-gradient(
+    90deg,
+    rgba(19, 26, 54, 0.45) 0%,
+    rgba(19, 26, 54, 0.2) 40%,
+    rgba(19, 26, 54, 0) 70%
+  );
 }

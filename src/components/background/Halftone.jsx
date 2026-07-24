@@ -115,16 +115,17 @@ void main(){
 
   // The flow field — two layers drifting in different directions so the
   // moiré never settles into a repeat.
-  float t = uTime * 0.02;
-  vec2 par = uPointer * 0.15;
-  float covA = fbm(p * 1.6 + vec2( t, t * 0.35) + par);
-  float covB = fbm(p * 1.6 + vec2(-t * 0.7, t * 0.5) + 17.0 - par);
+  float t = uTime * 0.045;
+  vec2 par = uPointer * 0.2;
+  float covA = fbm(p * 1.7 + vec2( t, t * 0.35) + par);
+  float covB = fbm(p * 1.7 + vec2(-t * 0.7, t * 0.5) + 17.0 - par);
 
   // Remap so every cell always carries a dot — one that swells and
-  // shrinks with the flow field rather than blinking in and out. That
-  // continuous screen is what reads as a living halftone.
-  covA = mix(0.14, 0.92, smoothstep(0.18, 0.82, covA));
-  covB = mix(0.14, 0.92, smoothstep(0.18, 0.82, covB));
+  // shrinks with the flow field rather than blinking in and out. The
+  // wide range makes the dots visibly grow and shrink, and where the two
+  // screens' big and small dots overlap the moiré bands bloom.
+  covA = mix(0.08, 1.0, smoothstep(0.12, 0.88, covA));
+  covB = mix(0.08, 1.0, smoothstep(0.12, 0.88, covB));
 
   float a = screen(gl_FragCoord.xy, 0.2618, uCell, covA);       // ~15°
   float b = screen(gl_FragCoord.xy, 1.3090, uCell * 1.07, covB); // ~75°
@@ -160,8 +161,8 @@ const hexToRGB = hex => {
 export default function Halftone({
   inkA = '#ff4a32',
   inkB = '#5c86ff',
-  opacity = 0.28,
-  cell = 10
+  opacity = 0.42,
+  cell = 13
 }) {
   const canvasRef = useRef(null);
 
