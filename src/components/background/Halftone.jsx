@@ -6,9 +6,14 @@ import { useEffect, useRef } from 'react';
  * Two halftone screens — one in each riso ink — printed at the classic
  * screen angles (15° and 75°) over the dark field. Their dot coverage is
  * driven by a slow-flowing noise field, so as the two grids drift across
- * each other they bloom into moiré and dissolve again. It reads as a flat
- * textured board until you actually watch it; then you notice the whole
- * thing is breathing.
+ * each other they bloom into moiré and dissolve again.
+ *
+ * Over that sits a broad swell of ink density crossing the sheet, one
+ * pass every `wave` seconds. The noise field alone is isotropic — it has
+ * no direction, so nothing ever reads as travelling — and the swell is
+ * what makes the motion legible as motion. It reads as a flat textured
+ * board until you actually watch it; then you notice the whole thing is
+ * breathing.
  *
  * Raw WebGL on one full-screen triangle — the entire effect is in the
  * fragment shader, so there's no geometry to speak of and no library.
@@ -33,6 +38,7 @@ uniform vec3  uInkA;
 uniform vec3  uInkB;
 uniform float uOpacity;
 uniform float uCell;
+uniform float uWave;   // seconds for one pass of the density wave
 
 // --- Ashima simplex noise (3D) ---
 vec3 mod289(vec3 x){ return x - floor(x*(1.0/289.0))*289.0; }
@@ -115,7 +121,7 @@ void main(){
 
   // The flow field — two layers drifting in different directions so the
   // moiré never settles into a repeat.
-  float t = uTime * 0.045;
+  float t = uTime * 0.0585;
   vec2 par = uPointer * 0.2;
   float covA = fbm(p * 1.7 + vec2( t, t * 0.35) + par);
   float covB = fbm(p * 1.7 + vec2(-t * 0.7, t * 0.5) + 17.0 - par);
@@ -127,15 +133,44 @@ void main(){
   covA = mix(0.08, 1.0, smoothstep(0.12, 0.88, covA));
   covB = mix(0.08, 1.0, smoothstep(0.12, 0.88, covB));
 
+  // --- Ink-density drift ---------------------------------------------
+  // The fbm above already makes the dots swell and shrink, but it does
+  // so isotropically — there is no direction to it, so nothing ever
+  // reads as travelling. This is the missing half: one broad swell of
+  // ink crossing the sheet, a single pass every uWave seconds.
+  //
+  // The axis is normalised by its own maximum, so one pass takes the
+  // same time whatever the aspect ratio. The two screens are separate
+  // drum passes on a real press, so they swell out of step — offsetting
+  // B by a third of a cycle keeps them from pulsing as one object.
+  float axis = (p.x * 0.85 + p.y * 0.35) / (aspect * 0.85 + 0.35);
+  float ph   = axis - uTime / uWave;
+  float swA  = sin(ph * 6.2831853);
+  float swB  = sin((ph - 0.37) * 6.2831853);
+
+  // Floored, not clamped to zero: the remap above exists to guarantee
+  // every cell always carries a dot, so the trough of the swell must
+  // shrink them rather than blink them out.
+  covA = clamp(covA + swA * 0.24, 0.05, 1.0);
+  covB = clamp(covB + swB * 0.24, 0.05, 1.0);
+
   float a = screen(gl_FragCoord.xy, 0.2618, uCell, covA);       // ~15°
   float b = screen(gl_FragCoord.xy, 1.3090, uCell * 1.07, covB); // ~75°
 
   vec3 col = uInkA * a + uInkB * b;
-  float alpha = max(a, b) * uOpacity;
+  // The same swell, carried a little way into alpha as well. Dot size is
+  // what actually carries tone in a halftone, so this stays the smaller
+  // of the two effects — it only keeps the crest from reading as purely
+  // geometric.
+  float density = 1.0 + (swA + swB) * 0.06;
+  float alpha = max(a, b) * uOpacity * density;
 
   gl_FragColor = vec4(col, alpha);
 }
 `;
+
+/** Slack for the phone frame cap, at a 60Hz display. */
+const HALF_FRAME_MS = 8;
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' &&
@@ -158,11 +193,15 @@ const hexToRGB = hex => {
   return [((n >> 16) & 255) / 255, ((n >> 8) & 255) / 255, (n & 255) / 255];
 };
 
+/* The two drums, in the same published RISO values the colophon names
+   and --red / --blue carry. These dots are the only actual ink on the
+   page, so they are the one place the claim has to hold. */
 export default function Halftone({
-  inkA = '#ff4a32',
-  inkB = '#5c86ff',
+  inkA = '#ff665e',
+  inkB = '#7e9cd8',
   opacity = 0.42,
-  cell = 13
+  cell = 13,
+  wave = 20   // seconds for one pass of the ink-density swell
 }) {
   const canvasRef = useRef(null);
 
@@ -214,6 +253,7 @@ export default function Halftone({
     gl.uniform3fv(u('uInkA'), hexToRGB(inkA));
     gl.uniform3fv(u('uInkB'), hexToRGB(inkB));
     gl.uniform1f(uOpacity, opacity);
+    gl.uniform1f(u('uWave'), wave);
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -228,8 +268,17 @@ export default function Halftone({
     // looks the same size regardless.
     const dprCap = () => (window.innerWidth < 700 ? 1.5 : 2);
     let dpr = Math.min(window.devicePixelRatio || 1, dprCap());
+
+    // Phones also get half the frame rate. The field drifts slowly enough
+    // that 30fps is not tellable from 60, and this is a fullscreen
+    // per-pixel shader — the most expensive thing on the page for a mobile
+    // GPU, and the one that costs battery for as long as the tab is open.
+    // Same width test as the dpr cap, so "phone" means one thing here.
+    let minFrameMs = 0;
+
     const resize = () => {
       dpr = Math.min(window.devicePixelRatio || 1, dprCap());
+      minFrameMs = window.innerWidth < 700 ? 1000 / 30 : 0;
       const w = Math.floor(canvas.clientWidth * dpr);
       const h = Math.floor(canvas.clientHeight * dpr);
       if (canvas.width !== w || canvas.height !== h) {
@@ -244,29 +293,45 @@ export default function Halftone({
     window.addEventListener('resize', resize);
 
     // Pointer parallax — smoothed, and only a gentle nudge to the field.
+    // `any-pointer` rather than `pointer`, so a touchscreen laptop still
+    // gets the parallax from its mouse; a phone has no fine pointer at all
+    // and never attaches the listener.
     const targetPtr = [0, 0];
     const ptr = [0, 0];
     const onMove = e => {
       targetPtr[0] = (e.clientX / window.innerWidth - 0.5) * 2;
       targetPtr[1] = -(e.clientY / window.innerHeight - 0.5) * 2;
     };
-    window.addEventListener('pointermove', onMove, { passive: true });
+    if (window.matchMedia('(any-pointer: fine)').matches) {
+      window.addEventListener('pointermove', onMove, { passive: true });
+    }
 
     const reduced = prefersReducedMotion();
     let raf = 0;
     let start = performance.now();
     let last = start;
+    let drawn = -Infinity;
 
     const frame = now => {
       // Clamp so a backgrounded tab doesn't fast-forward the flow.
       last = now;
+      raf = requestAnimationFrame(frame);
+
+      // Skipped frames still tick the clock above, so throttling changes
+      // the frame rate and not the speed the field flows at.
+      //
+      // The half-frame tolerance matters: two 16.6ms display frames come to
+      // 33.2ms, just under a 33.3ms budget, so a strict test waits a third
+      // frame and delivers a jittery 20fps instead of a steady 30.
+      if (now - drawn < minFrameMs - HALF_FRAME_MS) return;
+      drawn = now;
+
       ptr[0] += (targetPtr[0] - ptr[0]) * 0.04;
       ptr[1] += (targetPtr[1] - ptr[1]) * 0.04;
       gl.uniform1f(uTime, (now - start) / 1000);
       gl.uniform2f(uPointer, ptr[0], ptr[1]);
       gl.clear(gl.COLOR_BUFFER_BIT);
       gl.drawArrays(gl.TRIANGLES, 0, 3);
-      raf = requestAnimationFrame(frame);
     };
 
     if (reduced) {
@@ -313,7 +378,7 @@ export default function Halftone({
       // effect on the same element — forcibly losing the context would
       // leave that second mount with a dead context that can't compile.
     };
-  }, [inkA, inkB, opacity, cell]);
+  }, [inkA, inkB, opacity, cell, wave]);
 
   return <canvas ref={canvasRef} className="halftone-canvas" aria-hidden="true" />;
 }

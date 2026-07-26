@@ -3,11 +3,20 @@ import Reveal from './Reveal';
 
 const FORMSPREE_ID = 'mdaljzrw';
 
+/**
+ * The address is never written down as one string — not in this file,
+ * not in the built bundle, and not in the DOM until someone asks for
+ * it. Harvesters that grep static HTML or scrape the rendered page
+ * come away with a button that says "show address" and nothing else.
+ */
+const MAILBOX = ['shashwathv4405', 'gmail.com'];
+
 export default function Contact() {
   const [form, setForm] = useState({ name: '', email: '', message: '' });
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [error, setError] = useState(null);
+  const [address, setAddress] = useState(null);
 
   const submit = async e => {
     e.preventDefault();
@@ -68,7 +77,7 @@ export default function Contact() {
 
         <Reveal delay={60}>
           <h2 className="section-title">
-            Say something <em>useful</em>
+            The desk is <em>always open</em>
           </h2>
         </Reveal>
 
@@ -95,9 +104,17 @@ export default function Contact() {
             <dl className="direct-line">
               <dt>Email</dt>
               <dd>
-                <a href="mailto:shashwathv4405@gmail.com">
-                  shashwathv4405@gmail.com
-                </a>
+                {address ? (
+                  <a href={`mailto:${address}`}>{address}</a>
+                ) : (
+                  <button
+                    type="button"
+                    className="unmask"
+                    onClick={() => setAddress(MAILBOX.join('@'))}
+                  >
+                    Show address
+                  </button>
+                )}
               </dd>
 
               <dt>GitHub</dt>
@@ -107,7 +124,7 @@ export default function Contact() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  @shashwathv
+                  github.com/shashwathv
                 </a>
               </dd>
 
@@ -118,7 +135,7 @@ export default function Contact() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  shashwathv4405
+                  linkedin.com/in/shashwathv4405
                 </a>
               </dd>
             </dl>

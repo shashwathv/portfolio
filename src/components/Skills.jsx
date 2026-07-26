@@ -16,7 +16,7 @@ const drawers = [
     items: [
       { name: 'Gin' },
       { name: 'Echo' },
-      { name: 'FastAPI' },
+      { name: 'FastAPI', primary: true },
       { name: 'Flask' },
       { name: 'REST' }
     ]
@@ -24,10 +24,11 @@ const drawers = [
   {
     name: 'Data & storage',
     items: [
-      { name: 'PostgreSQL' },
+      { name: 'PostgreSQL', primary: true },
       { name: 'MySQL' },
-      { name: 'MariaDB' },
+      { name: 'MariaDB', primary: true },
       { name: 'SQLite' },
+      { name: 'S3' },
       { name: 'Redis' }
     ]
   },
@@ -35,16 +36,19 @@ const drawers = [
     name: 'Infrastructure',
     items: [
       { name: 'Linux', primary: true },
-      { name: 'Docker' },
+      { name: 'Docker', primary: true },
       { name: 'AWS' },
-      { name: 'Cloudflare' }
+      { name: 'Coolify', primary: true },
+      { name: 'Nginx' },
+      { name: 'Cloudflare Zero Trust / Tunnel', primary: true }
     ]
   },
   {
     name: 'Focus',
     items: [
       { name: 'API design', primary: true },
-      { name: 'AI integration', primary: true },
+      { name: 'LLM pipelines', primary: true },
+      { name: 'On-device inference' },
       { name: 'Distributed systems' }
     ]
   }

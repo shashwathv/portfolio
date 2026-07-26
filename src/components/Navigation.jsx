@@ -40,7 +40,6 @@ export default function Navigation() {
           className="spine-plate"
           onClick={e => { e.preventDefault(); goTo('home'); }}
         >
-          <span className="spine-dot" aria-hidden="true">●</span>
           <span className="spine-name">Shashwath&nbsp;V</span>
         </a>
 
@@ -63,7 +62,16 @@ export default function Navigation() {
           </ul>
         </nav>
 
-        <span className="spine-folio">Est. 2024</span>
+        {/* Balances the nameplate at the head of the spine, and unlike
+            the "Est." folio it replaced, it goes somewhere. */}
+        <a
+          href="https://github.com/shashwathv"
+          className="spine-handle"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          @shashwathv
+        </a>
       </header>
 
       {/* Mobile: the spine folds into a top bar with a menu sheet. */}

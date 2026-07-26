@@ -23,15 +23,37 @@
   --paper: #ede8da;
   --paper-2: #dcd5c2;   /* a second, slightly darker scrap */
   --paper-3: #c9c1ac;   /* deepest scrap / rules */
-  --paper-dim: #9aa2c2; /* secondary text on the board */
+  /* Secondary text on the board. Light enough to clear AAA at the small
+     sizes it gets used at — kickers, field labels, captions. */
+  --paper-dim: #adb4d0;
 
-  /* Inks */
+  /* Inks. Two drums, exactly as the colophon claims — the published RISO
+     values, not web reds and blues that merely look the part.
+     ---------------------------------------------------------------
+     Each drum gets one value per substrate, because a spot colour laid
+     on a dark board and the same colour laid on newsprint are not the
+     same colour to read against. Which one to reach for:
+
+       on the board (--field)     --red        --blue
+       flood fill + light text    —            --blue-deep
+       flood fill + --ink text    --red        —
+       on the paper stock         --red-print  --blue-print
+
+     Red has no legible value on the stock at any coverage (the best is
+     3.9:1, and by then it is brick, not vermilion), so on paper red is
+     for marks and rules and blue carries the small type. */
   --ink: #14110e;
   --ink-2: #454037;
-  --red: #ff4a32;
-  --blue: #5c86ff;      /* lifted, so it still reads on the board */
-  --blue-deep: #2547c8; /* the same ink, for use on paper */
-  --overprint: #7b2f9e;
+
+  --red: #ff665e;       /* RISO Red, full coverage */
+  --red-print: #d93f28; /* the same drum overprinted — heavier on the
+                           stock, but the same vermilion, which #b83220
+                           was not: that read as a second, browner ink */
+
+  --blue-deep: #3255a4; /* RISO Medium Blue, full coverage */
+  --blue: #7e9cd8;      /* the same drum at partial coverage — same hue
+                           (220°), lifted so it reads on the board */
+  --blue-print: #2b4a94; /* overprinted, for small type on the stock */
 
   --font-display: 'Anton', Impact, sans-serif;
   --font-black: 'Archivo Black', Arial Black, sans-serif;
@@ -68,7 +90,7 @@ body {
 
 ::selection {
   background: var(--red);
-  color: var(--paper);
+  color: var(--ink);
 }
 
 /* The page scrolls inside #root — every scroll observer in
@@ -133,7 +155,7 @@ body {
   right: 0;
   height: 5px;
   z-index: 101;
-  background: var(--red);
+  background: var(--blue);
   transform: scaleX(0);
   transform-origin: left;
   pointer-events: none;
@@ -163,8 +185,12 @@ section {
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--paper);
-  background: var(--red);
+  /* The eyebrow is the cool drum's, at every section head — it pairs
+     against the hot drum in the title a line below, so each section
+     opens on both inks instead of on red alone. Ink text rather than
+     paper: this coverage is a light tint, and paper on it is 2.3:1. */
+  color: var(--ink);
+  background: var(--blue);
   display: inline-block;
   padding: 0.3rem 0.7rem;
   transform: rotate(-1.2deg);
@@ -281,7 +307,7 @@ a {
 
 .spine-dot {
   font-size: 0.5rem;
-  color: var(--red);
+  color: var(--red-print);
 }
 
 .spine-name {
@@ -295,21 +321,27 @@ a {
   line-height: 1;
 }
 
-/* --- Nav: number flat on top, label upright and stacked below --- */
+/* --- Nav: flat number at the foot, label rotated to read up from it.
+   The nameplate stays letter-stacked because it is decorative, but
+   these are controls and want scanning, so they take the margin-note
+   convention instead: one baseline, running bottom to top. --- */
 .spine-nav ul {
   list-style: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.15rem;
+  gap: 1.6rem;
 }
 
 .spine-nav a {
+  position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: column-reverse;  /* puts the number where reading starts */
   align-items: center;
-  gap: 0.3rem;
-  color: var(--ink);
+  gap: 0.45rem;
+  /* Inactive sections sit back a step; the active one comes forward to
+     full ink and takes the red bar. State by weight of ink, not by hue. */
+  color: var(--ink-2);
   transition: color 0.2s;
 }
 
@@ -317,39 +349,63 @@ a {
   font-family: var(--font-type);
   font-size: 0.6rem;
   font-weight: 700;
-  color: var(--red);
+  /* Numbering is structure, not emphasis — and on the paper spine the
+     bright drum reads at 2.4:1, which is no reading at all. */
+  color: var(--blue-print);
 }
 
 .spine-label {
   writing-mode: vertical-rl;
-  text-orientation: upright;
+  text-orientation: mixed;   /* glyphs on one baseline, not stacked */
+  transform: rotate(180deg); /* which then runs bottom-to-top */
   font-family: var(--font-type);
   font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: -0.04em;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--ink);
   transition: color 0.2s;
 }
 
 .spine-nav a:hover .spine-label {
-  color: var(--red);
+  color: var(--ink);
 }
 
-/* Active item gets a rule down the left of its letter column. */
+/* The rule rides on the link, not the label — the label is rotated, so
+   a shadow on it would land on the wrong side. */
+.spine-nav a.is-active::before {
+  content: '';
+  position: absolute;
+  left: -0.6rem;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--red-print);
+}
+
 .spine-nav a.is-active .spine-label {
-  box-shadow: -3px 0 0 var(--red);
-  padding-left: 3px;
+  color: var(--ink);
 }
 
-.spine-folio {
+/* Holds the foot of the spine — it is justified space-between, so
+   without something here the nav drifts down into the corner. Rotated
+   rather than stacked, like the nav: it is a link, not decoration. */
+.spine-handle {
   writing-mode: vertical-rl;
-  text-orientation: upright;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  flex: none;
   font-family: var(--font-type);
   font-size: 0.58rem;
-  letter-spacing: -0.02em;
+  font-weight: 700;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: #6b6558;
+  transition: color 0.2s;
+}
+
+.spine-handle:hover {
+  color: var(--ink);
 }
 
 /* ------------------------------------------------------------
@@ -380,7 +436,7 @@ a {
 
 .topbar-dot {
   font-size: 0.5rem;
-  color: var(--red);
+  color: var(--red-print);
   vertical-align: middle;
   margin-left: 0.35rem;
 }
@@ -443,7 +499,11 @@ a {
    HERO
    ------------------------------------------------------------ */
 .hero {
+  /* dvh, not vh: on a phone, vh is measured against the *large* viewport,
+     so the hero runs under the address bar and then resizes when the bar
+     collapses mid-scroll. vh stays as the fallback. */
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -478,85 +538,77 @@ a {
   to   { opacity: 1; transform: translateY(0); }
 }
 
-/* --- The signature: name as newsprint cut-outs --- */
-.ransom {
+/* --- The signature: one display face, one pasted letter --- */
+.signature {
   display: flex;
   flex-wrap: wrap;
-  align-items: flex-end;
-  gap: 0.12em 0.06em;
+  align-items: baseline;
+  gap: 0 0.24em;          /* the word space, set by the layout */
+
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(3.2rem, 11.5vw, 9.5rem);
+  line-height: 0.92;
+  letter-spacing: -0.015em;
+  color: var(--paper);
+
   margin-bottom: 3.5rem;
-  /* Room for the tilts and shadows so nothing clips. */
-  padding: 0.35em 0;
+  /* Room for the tilt and the drop shadow on the cut letter. */
+  padding: 0.1em 0 0.16em;
+
+  opacity: 0;
+  animation: fade-up 0.8s var(--ease) 0.3s forwards;
 }
 
-.clip {
-  --tilt: 0deg;
-  --shift: 0px;
-  --delay: 0ms;
+/* Each word is its own baseline group, so the cut letter can sit in
+   the flow of "Shashwath" while the surname still wraps as a unit. */
+.sig-word {
+  display: inline-flex;
+  align-items: baseline;
+  white-space: nowrap;
+}
+
+/* The one clipping left. Same face as the rest of the name — only the
+   ink and the hand-cut edge mark it out. */
+.sig-cut {
+  --tilt: -3.5deg;
 
   display: inline-block;
-  font-size: clamp(3.25rem, 11.5vw, 9.5rem);
-  line-height: 0.86;
   padding: 0.1em 0.075em 0.06em;
-  background: var(--paper-2);
+  margin-right: 0.03em;
+  background: var(--red);
   color: var(--ink);
-  box-shadow: 3px 4px 0 rgba(22, 19, 15, 0.28);
 
-  /* Each scrap is cut by hand, so no two edges match. */
+  /* Cut by hand, so no edge is quite straight. */
   clip-path: polygon(
     2% 3%, 46% 0%, 78% 4%, 100% 1%,
     98% 52%, 100% 97%, 55% 100%, 20% 96%, 0% 99%, 1% 48%
   );
 
-  transform: translateY(var(--shift)) rotate(var(--tilt));
-  opacity: 0;
-  animation: paste-down 0.65s var(--paste) forwards;
-  animation-delay: var(--delay);
+  /* Has to be a filter, not a box-shadow: clip-path clips everything
+     the element paints, shadow included. */
+  filter: drop-shadow(4px 5px 0 rgba(9, 12, 26, 0.55));
+
+  transform: rotate(var(--tilt));
   transition: transform 0.3s var(--paste);
+  animation: paste-down 0.7s var(--paste) 0.5s backwards;
 }
 
-/* Pasted down: drops in, slightly over-rotated, then settles. */
+/* Pasted down: drops in, over-rotated, then settles. */
 @keyframes paste-down {
   from {
     opacity: 0;
-    transform: translateY(calc(var(--shift) - 34px))
-               rotate(calc(var(--tilt) * 3.2))
-               scale(1.09);
+    transform: translateY(-30px) rotate(calc(var(--tilt) * 3.2)) scale(1.1);
   }
   to {
     opacity: 1;
-    transform: translateY(var(--shift)) rotate(var(--tilt)) scale(1);
+    transform: rotate(var(--tilt)) scale(1);
   }
 }
 
-/* Lift a clipping on hover, like catching it with a fingernail. */
-.clip:hover {
-  transform: translateY(calc(var(--shift) - 5px))
-             rotate(calc(var(--tilt) * -0.6));
-}
-
-/* Faces — the whole point is that they don't match. */
-.clip-anton     { font-family: var(--font-display); }
-.clip-archivo   { font-family: var(--font-black); font-size: clamp(2.6rem, 9vw, 7.6rem); }
-.clip-bebas     { font-family: var(--font-condensed); }
-.clip-editorial,
-.clip-playfair  { font-family: var(--font-editorial); font-style: italic; font-weight: 900; }
-.clip-courier   { font-family: var(--font-type); font-weight: 700; font-size: clamp(2.5rem, 8.5vw, 7rem); }
-
-/* Inks. A near-black scrap would disappear into the board, so the
-   dark clipping prints in overprint purple instead. */
-.ink-ink       { background: var(--paper-2); color: var(--ink); }
-.ink-shade     { background: var(--paper-3); color: var(--ink); }
-.ink-invert    { background: var(--overprint); color: var(--paper); }
-.ink-red       { background: var(--paper-2); color: var(--red); }
-.ink-blue      { background: var(--paper-2); color: var(--blue-deep); }
-.ink-red-fill  { background: var(--red); color: var(--paper); }
-.ink-blue-fill { background: var(--blue-deep); color: var(--paper); }
-
-/* The word break. Without it the surname collides with the given
-   name and the whole thing reads as one word. */
-.clip.has-gap {
-  margin-left: 0.4em;
+/* Lift the clipping on hover, like catching it with a fingernail. */
+.signature:hover .sig-cut {
+  transform: translateY(-5px) rotate(calc(var(--tilt) * -0.6));
 }
 
 .hero-lower {
@@ -609,8 +661,17 @@ a {
 
 .btn-ghost {
   background: transparent;
-  color: var(--paper);
-  box-shadow: 5px 5px 0 var(--blue);
+  /* The second ink's own button, not a paper outline with a blue
+     shadow behind it. */
+  color: var(--blue);
+  border-color: var(--blue);
+  box-shadow: 5px 5px 0 var(--blue-deep);
+}
+
+.btn-ghost:hover {
+  color: var(--ink);
+  background: var(--blue);
+  border-color: var(--blue);
 }
 
 .btn:hover {
@@ -726,16 +787,26 @@ a {
   padding: 0.5rem 3rem 2rem;
   scroll-padding-left: 3rem;
   -webkit-overflow-scrolling: touch;
+  /* A horizontal drag shouldn't arm the browser's back-navigation swipe. */
+  overscroll-behavior-x: contain;
+  /* No track. It reads as a browser artefact pasted on the board — the
+     hint line above and the half-plate at the right edge already say
+     the reel keeps going. */
+  scrollbar-width: none;
+  -ms-overflow-style: none;
 }
 
-.reel:active {
-  cursor: grabbing;
-}
+.reel::-webkit-scrollbar { display: none; }
 
-/* A slim registration scrollbar rather than the OS default. */
-.reel::-webkit-scrollbar { height: 6px; }
-.reel::-webkit-scrollbar-track { background: var(--field-3); }
-.reel::-webkit-scrollbar-thumb { background: var(--paper-3); }
+.reel.is-dragging { cursor: grabbing; }
+
+/* Snapping is suspended for the length of a mouse drag, and again while
+   the reel glides to its final plate. Left on, it re-snaps after every
+   scrollLeft written from JS and the plates judder under the pointer. */
+.reel.is-dragging,
+.reel.is-settling {
+  scroll-snap-type: none;
+}
 
 .plate {
   flex: 0 0 clamp(340px, 40vw, 480px);
@@ -787,22 +858,11 @@ a {
   box-shadow: 8px 8px 0 rgba(13, 18, 38, 0.6);
 }
 
-.plate-figure img,
-.plate-figure .project-visual {
+.plate-figure .schematic {
   width: 100%;
   height: 100%;
-  object-fit: cover;
   display: block;
   pointer-events: none;
-}
-
-.plate-figure img {
-  filter: grayscale(1) contrast(1.3);
-  transition: filter 0.4s ease;
-}
-
-.plate:hover .plate-figure img {
-  filter: grayscale(0) contrast(1.05);
 }
 
 .plate-flag {
@@ -815,7 +875,7 @@ a {
   letter-spacing: 0.08em;
   text-transform: uppercase;
   background: var(--red);
-  color: var(--paper);
+  color: var(--ink);
   padding: 0.2rem 0.5rem;
 }
 
@@ -872,12 +932,17 @@ a {
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
-  border-bottom: 2px solid var(--red);
+  /* Standing underline in the cool drum, hot on hover — the two inks
+     working shifts rather than one ink doing everything. */
+  border-bottom: 2px solid var(--blue);
   padding-bottom: 1px;
-  transition: color 0.2s;
+  transition: color 0.2s, border-color 0.2s;
 }
 
-.plate-links a:hover { color: var(--red); }
+.plate-links a:hover {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
 
 .plate-links span { transition: transform 0.25s var(--ease); }
 .plate-links a:hover span { transform: translateX(3px); }
@@ -904,81 +969,140 @@ a {
 }
 
 /* ------------------------------------------------------------
-   GENERATIVE COVER ART
-   Fallback until a screenshot is dropped in. Drawn as if
-   printed: flat inks, no gradients.
+   PROJECT SCHEMATIC
+   The plate figure: how the thing works, drawn as if printed.
+   Flat inks, no gradients, one red gloss per plate.
    ------------------------------------------------------------ */
-.project-visual {
+.schematic {
   width: 100%;
   height: 100%;
   display: block;
-  background: var(--paper-3);
+  /* Newsprint stock, plus the halftone screen it was printed through.
+     Kept faint — it has to sit under 9px monospace. */
+  background-color: var(--paper-3);
+  background-image: radial-gradient(
+    rgba(20, 17, 14, 0.13) 0.7px,
+    transparent 0.75px
+  );
+  background-size: 5px 5px;
 }
 
-.pv-scan-text rect { fill: var(--ink); opacity: 0.28; }
-
-.pv-circle {
-  fill: none;
-  stroke: var(--red);
-  stroke-width: 3;
-  opacity: 0.85;
-}
-
-.pv-sweep { fill: var(--blue); opacity: 0; }
-
-.plate:hover .pv-sweep {
-  animation: pv-sweep-down 2.2s var(--ease) infinite;
-}
-
-@keyframes pv-sweep-down {
-  0%   { transform: translateY(0); opacity: 0; }
-  15%  { opacity: 0.65; }
-  85%  { opacity: 0.65; }
-  100% { transform: translateY(176px); opacity: 0; }
-}
-
-.pv-edges line { stroke: var(--ink); stroke-width: 1.5; opacity: 0.4; }
-.pv-nodes circle { fill: var(--ink); transition: fill 0.3s ease; }
-.plate:hover .pv-nodes circle { fill: var(--red); }
-
-.pv-baseline { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 4 5; opacity: 0.35; }
-.pv-trace { fill: none; stroke: var(--ink); stroke-width: 2.5; }
-.pv-trace-b { stroke: var(--blue); opacity: 0.65; }
-.pv-anomaly line { stroke: var(--red); stroke-width: 2; stroke-dasharray: 3 3; }
-.pv-anomaly circle { fill: var(--red); }
-
-.plate:hover .pv-anomaly circle {
-  animation: pv-pulse 1.4s ease-in-out infinite;
-}
-
-@keyframes pv-pulse {
-  0%, 100% { opacity: 1; }
-  50%      { opacity: 0.25; }
-}
-
-.pv-glyphs text {
-  font-family: var(--font-editorial);
-  font-size: 30px;
+/* Plate header — figure number and what the figure shows. */
+.sc-head {
+  font-family: var(--font-type);
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
   fill: var(--ink);
-  opacity: 0.3;
-  text-anchor: middle;
+  opacity: 0.6;
 }
 
-.pv-card {
-  fill: var(--paper);
+.sc-rule { stroke: var(--ink); stroke-width: 2; opacity: 0.75; }
+
+/* The spine one job travels down, and the flow between stages. */
+.sc-spine { stroke: var(--ink); stroke-width: 2; opacity: 0.35; }
+
+.sc-flow path {
+  fill: none;
+  stroke: var(--blue-print);
+  stroke-width: 1.6;
+  stroke-linecap: square;
+  opacity: 0.55;
+}
+
+.sc-node { fill: var(--ink); }
+
+/* Terminal stage: the thing you actually get out. */
+.sc-node-out {
+  fill: var(--red-print);
   stroke: var(--ink);
-  stroke-width: 2.5;
-  transition: transform 0.4s var(--ease);
+  stroke-width: 1.5;
 }
 
-.pv-card-2 { fill: var(--red); opacity: 0.9; }
+.sc-no {
+  font-family: var(--font-type);
+  font-size: 8px;
+  font-weight: 700;
+  fill: var(--ink);
+  opacity: 0.4;
+}
+
+.sc-label {
+  font-family: var(--font-condensed);
+  font-size: 17px;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+  fill: var(--ink);
+}
+
+.sc-detail {
+  font-family: var(--font-type);
+  font-size: 9.5px;
+  letter-spacing: 0.02em;
+  fill: var(--ink);
+  opacity: 0.62;
+}
+
+/* Marginal note — the one detail that mattered. Printed in the cool
+   drum: the hot one reads at 1.6:1 on this stock, which is decorative
+   rather than legible, and this line is content. */
+.sc-gloss {
+  font-family: var(--font-type);
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  text-anchor: end;
+  fill: var(--blue-print);
+}
+
+/* Rubber stamp, pasted on crooked. */
+.sc-stamp rect {
+  fill: none;
+  stroke: var(--red-print);
+  stroke-width: 2;
+}
+
+.sc-stamp .sc-stamp-inner { stroke-width: 1; opacity: 0.55; }
+
+.sc-stamp text {
+  font-family: var(--font-type);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-anchor: middle;
+  /* The box carries the red; the words stay in ink so they can be read. */
+  fill: var(--ink);
+}
+
+/* A signal running the spine while the plate is hovered. */
+.sc-pulse {
+  fill: var(--red-print);
+  opacity: 0;
+}
+
+.plate:hover .sc-pulse {
+  animation: sc-travel 2.4s var(--ease) infinite;
+}
+
+@keyframes sc-travel {
+  0%        { transform: translateY(0); opacity: 0; }
+  12%, 82%  { opacity: 1; }
+  100%      { transform: translateY(102px); opacity: 0; }
+}
 
 /* ------------------------------------------------------------
    SKILLS — a compositor's type case
    ------------------------------------------------------------ */
+/* Three columns, not auto-fit. Five drawers over four columns left the
+   last one spanning the full width with three tags adrift in it; over
+   three, the case closes as 3 + (1 + a double-wide FOCUS) and every
+   compartment is filled by its contents. */
 .type-case {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   border-top: 3px solid var(--paper);
   border-left: 3px solid var(--paper);
 }
@@ -986,14 +1110,15 @@ a {
 .type-drawer {
   border-right: 3px solid var(--paper);
   border-bottom: 3px solid var(--paper);
-  padding: 1.5rem 1.35rem;
+  /* Packed tight: the label sits close under the top rule and the tags
+     close under the label, the way a compositor fills a case. */
+  padding: 1.1rem 1.15rem 1.15rem;
 }
 
-/* Five drawers never divide evenly into an auto-fit row, which left the
-   case hanging open on the last line. The final drawer takes the whole
-   width so the grid always closes. */
+/* FOCUS is the wide compartment — twice the width of the rest, and the
+   only one that states what the tools are *for*. */
 .type-drawer:last-child {
-  grid-column: 1 / -1;
+  grid-column: span 2;
 }
 
 .type-drawer h3 {
@@ -1006,7 +1131,7 @@ a {
   background: var(--paper);
   display: inline-block;
   padding: 0.25rem 0.55rem;
-  margin-bottom: 1rem;
+  margin-bottom: 0.7rem;
 }
 
 .type-drawer ul {
@@ -1032,8 +1157,20 @@ a {
   font-size: 0.92rem;
   background: var(--red);
   border-color: var(--red);
-  color: var(--paper);
+  color: var(--ink);
   padding: 0.25rem 0.5rem;
+}
+
+/* Bigger sorts in the bigger compartment, so the double-wide FOCUS row
+   is packed by its four tags rather than trailing off to the right. */
+.type-drawer:last-child li {
+  font-size: 1.38rem;
+  padding: 0.1rem 0.6rem;
+}
+
+.type-drawer:last-child li.is-primary {
+  font-size: 1.05rem;
+  padding: 0.3rem 0.65rem;
 }
 
 .type-note {
@@ -1045,7 +1182,7 @@ a {
 
 .type-note b {
   background: var(--red);
-  color: var(--paper);
+  color: var(--ink);
   padding: 0.1rem 0.35rem;
 }
 
@@ -1108,7 +1245,7 @@ a {
   padding: 1rem;
   border: 3px solid var(--paper);
   background: var(--red);
-  color: var(--paper);
+  color: var(--ink);
   box-shadow: 5px 5px 0 var(--paper);
   transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
@@ -1133,12 +1270,14 @@ a {
 
 .form-note.is-error {
   background: var(--red);
-  color: var(--paper);
+  color: var(--ink);
 }
 
+/* The blue drum at partial coverage is a light tint, so this note is
+   overprinted in ink rather than reversed out in paper. */
 .form-note.is-success {
   background: var(--blue);
-  color: var(--paper);
+  color: var(--ink);
 }
 
 .direct-line dt {
@@ -1160,13 +1299,36 @@ a {
   font-size: 1.35rem;
   text-transform: uppercase;
   color: var(--paper);
-  border-bottom: 3px solid var(--red);
-  transition: color 0.2s;
+  border-bottom: 3px solid var(--blue);
+  transition: color 0.2s, border-color 0.2s;
   word-break: break-word;
 }
 
 .direct-line a:hover {
   color: var(--red);
+  border-bottom-color: var(--red);
+}
+
+/* Stands in for the address until a human asks. Deliberately not
+   styled as a link — there is nothing behind it to copy yet. */
+.unmask {
+  cursor: pointer;
+  font-family: var(--font-type);
+  font-size: 0.82rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--paper);
+  background: transparent;
+  border: 3px solid var(--paper);
+  padding: 0.4rem 0.85rem;
+  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+
+.unmask:hover {
+  background: var(--red);
+  border-color: var(--red);
+  color: var(--ink);
 }
 
 /* ------------------------------------------------------------
@@ -1208,12 +1370,12 @@ a {
   letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink);
-  border-bottom: 2px solid var(--red);
-  transition: color 0.2s;
+  border-bottom: 2px solid var(--blue-print);
+  transition: color 0.2s, border-color 0.2s;
 }
 
 .colophon-top-link:hover {
-  color: var(--red);
+  border-bottom-color: var(--red-print);
 }
 
 .colophon-imprint {
@@ -1262,29 +1424,42 @@ a {
 
 .colophon-grid a {
   color: var(--ink);
-  border-bottom: 2px solid var(--red);
-  transition: color 0.2s;
+  border-bottom: 2px solid var(--blue-print);
+  transition: color 0.2s, border-color 0.2s;
 }
 
 .colophon-grid a:hover {
-  color: var(--red);
+  border-bottom-color: var(--red-print);
 }
 
+/* One ink per line, swatch then name then value — the way a real
+   colophon specs a press run. */
 .colophon-inks {
   display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.ink-line {
+  display: flex;
   align-items: center;
-  gap: 0.4rem;
-  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.ink-hex {
+  color: #6b6558;
+  letter-spacing: 0.04em;
+}
+
+.ink-hex::before {
+  content: '#';
 }
 
 .ink-swatch {
   width: 0.85rem;
   height: 0.85rem;
+  flex: none;
   border: 1px solid var(--ink);
-}
-
-.ink-swatch:not(:first-child) {
-  margin-left: 0.6rem;
 }
 
 .swatch-red { background: var(--red); }
@@ -1341,29 +1516,45 @@ a {
   /* The reel keeps swiping horizontally — natural on touch — but its
      gutter matches the narrower page padding. */
   .reel { padding-left: 1.5rem; padding-right: 1.5rem; scroll-padding-left: 1.5rem; }
-  .plate { flex-basis: min(82vw, 400px); }
+  .plate { flex-basis: min(88vw, 400px); padding-right: 1.25rem; }
+
+  /* The schematic is the one element that can't reflow — its type is set
+     in user units and shrinks with the frame. Give the frame back the
+     width the plate's gutters were taking, then scale the smallest type
+     up inside it. The copy limits in ProjectSchematic are sized for this
+     larger type: a 30-char detail and a 16-char gloss still clear. */
+  .plate-figure { margin-left: 1rem; }
+  .sc-head { font-size: 10px; }
+  .sc-detail { font-size: 10px; }
+  .sc-gloss { font-size: 9px; }
+  .sc-no { font-size: 9px; }
 
   .colophon-grid { grid-template-columns: 1fr; gap: 1.25rem; }
 
   .about-body p:first-child::first-letter { font-size: 3em; }
+
+  /* Two columns still close the case: 2 + 2 + a double-wide FOCUS. */
+  .type-case { grid-template-columns: repeat(2, 1fr); }
 }
 
-/* The ransom name is sized for a wide hero; on phones the big
-   clippings overflow and orphan the "V" on its own line. Scale them
-   down so the whole name holds together. */
+/* One face carries the name across a phone on a single line, but the
+   viewport-relative size has to come down a little to leave the
+   surname room beside it. */
 @media (max-width: 600px) {
-  .clip {
-    font-size: clamp(1.85rem, 8.8vw, 2.9rem);
-    padding: 0.09em 0.07em 0.05em;
-  }
-  .clip-archivo { font-size: clamp(1.5rem, 7.2vw, 2.4rem); }
-  .clip-courier { font-size: clamp(1.45rem, 7vw, 2.3rem); }
-
-  .ransom {
-    gap: 0.1em 0.05em;
+  .signature {
+    font-size: clamp(2.6rem, 11.5vw, 4.4rem);
     margin-bottom: 2.5rem;
   }
-  .clip.has-gap { margin-left: 0.3em; }
+  .sig-cut { filter: drop-shadow(3px 4px 0 rgba(9, 12, 26, 0.55)); }
+}
+
+@media (max-width: 560px) {
+  /* One column. FOCUS must drop its span here or the grid invents a
+     second, empty column to hold it. */
+  .type-case { grid-template-columns: 1fr; }
+  .type-drawer:last-child { grid-column: 1 / -1; }
+  .type-drawer:last-child li { font-size: 1.15rem; padding: 0.05rem 0.45rem; }
+  .type-drawer:last-child li.is-primary { font-size: 0.92rem; padding: 0.25rem 0.5rem; }
 }
 
 @media (max-width: 480px) {
@@ -1381,6 +1572,42 @@ textarea:focus-visible {
   outline-offset: 3px;
 }
 
+/* ------------------------------------------------------------
+   TOUCH
+   Everything that should differ on a finger rather than a cursor.
+   Keyed on the input device, not the viewport width — a small window
+   on a laptop still has a mouse.
+   ------------------------------------------------------------ */
+@media (pointer: coarse) {
+  /* Tap feedback in the second ink, instead of the browser's grey box. */
+  a,
+  button {
+    -webkit-tap-highlight-color: rgba(241, 80, 96, 0.24);
+  }
+
+  /* The plate links are set at caption size and the topbar name sits in
+     a slim bar — both are well under the 44px a fingertip needs. Grow the
+     hit area with a pseudo-element so the printed size doesn't change. */
+  .plate-links a,
+  .topbar-name {
+    position: relative;
+  }
+
+  .plate-links a::after,
+  .topbar-name::after {
+    content: '';
+    position: absolute;
+    inset: -12px -8px;
+  }
+
+  /* Anchor jumps land the section heading 9px below the fixed topbar.
+     Give it room to breathe — on #root, which is the scroll container
+     here, not on html. */
+  #root {
+    scroll-padding-top: 3.5rem;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   * {
     animation-duration: 0.01ms !important;
@@ -1390,13 +1617,14 @@ textarea:focus-visible {
 
   html { scroll-behavior: auto; }
 
-  .clip {
+  .sig-cut {
     opacity: 1;
-    transform: translateY(var(--shift)) rotate(var(--tilt));
+    transform: rotate(var(--tilt));
   }
 
   .hero-kicker,
-  .hero-lower { opacity: 1; }
+  .hero-lower,
+  .signature { opacity: 1; }
 
   .reveal { opacity: 1; transform: none; }
   .reveal-heading .rh-word { transform: none; }

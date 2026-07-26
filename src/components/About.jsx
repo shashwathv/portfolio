@@ -22,7 +22,7 @@ export default function About() {
             </p>
             <p>
               Most of what I build starts as a personal annoyance — a screenshot
-              I couldn't search, a deck I didn't want to make by hand — and ends
+              I couldn't search, a deck I didn't want to build myself — and ends
               up as a daemon on a machine in my room. That homelab is where this
               site lives too, behind a tunnel I maintain myself.
             </p>

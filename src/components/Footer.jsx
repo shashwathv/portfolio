@@ -27,10 +27,14 @@ export default function Footer() {
           <dl>
             <dt>Two inks</dt>
             <dd className="colophon-inks">
-              <span className="ink-swatch swatch-red" aria-hidden="true" />
-              Riso red
-              <span className="ink-swatch swatch-blue" aria-hidden="true" />
-              Riso blue
+              <span className="ink-line">
+                <span className="ink-swatch swatch-red" aria-hidden="true" />
+                RISO Red <span className="ink-hex">FF665E</span>
+              </span>
+              <span className="ink-line">
+                <span className="ink-swatch swatch-blue" aria-hidden="true" />
+                RISO Medium Blue <span className="ink-hex">3255A4</span>
+              </span>
             </dd>
           </dl>
           <dl>
@@ -46,8 +50,10 @@ export default function Footer() {
             </dd>
           </dl>
           <dl>
+            {/* Vol. IV is literal: this is the fourth time the site has
+                been set from scratch — Feb, Jun and two in Jul 2026. */}
             <dt>Edition</dt>
-            <dd>© 2026 — Vol. IV, No. 04</dd>
+            <dd>Vol. IV — the fourth setting, 2026</dd>
           </dl>
         </div>
 
