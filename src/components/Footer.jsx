@@ -18,7 +18,7 @@ export default function Footer() {
         <p className="colophon-imprint">
           This site was set in <b>Anton</b>, <b>Archivo Black</b>,{' '}
           <b>Bebas Neue</b>, <b>Playfair Display</b> and{' '}
-          <b>Courier Prime</b>, and printed by hand at a small homelab in
+          <b>Courier Prime</b>, and crafted at a small homelab in
           Bengaluru — Arch Linux, Coolify and nginx, behind a Cloudflare
           tunnel.
         </p>
