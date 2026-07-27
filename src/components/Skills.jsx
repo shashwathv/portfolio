@@ -15,7 +15,6 @@ const drawers = [
     name: 'Backend & APIs',
     items: [
       { name: 'Gin' },
-      { name: 'Echo' },
       { name: 'FastAPI', primary: true },
       { name: 'Flask' },
       { name: 'REST' }

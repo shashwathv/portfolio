@@ -81,7 +81,7 @@ export default function Navigation() {
           className="topbar-name"
           onClick={e => { e.preventDefault(); goTo('home'); }}
         >
-          Shashwath V<span className="topbar-dot">●</span>
+          Shashwath V
         </a>
         <button
           className={`topbar-toggle ${mobileOpen ? 'is-open' : ''}`}

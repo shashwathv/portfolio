@@ -1,13 +1,4 @@
-/* ============================================================
-   SHASHWATH V — PORTFOLIO  ·  "UP"
-   Cut-and-paste zine, printed on a two-colour riso press.
-   Newsprint stock, warm black ink, red and blue that overprint.
-   Anton / Archivo Black / Bebas / Playfair / Courier Prime
-   ============================================================ */
 
-/* ------------------------------------------------------------
-   TOKENS
-   ------------------------------------------------------------ */
 :root {
   /* The board. Deep press blue rather than black — the cut-outs are
      pasted onto something, and something is never neutral. */
@@ -15,8 +6,24 @@
   --field-2: #1b2447;   /* raised panel */
   --field-3: #0d1226;   /* recessed / behind */
   --rule: rgba(237, 232, 218, 0.16);
+  --rule-strong: rgba(237, 232, 218, 0.5);  /* a rule meant to be read as an edge */
 
   --spine: 78px;        /* width of the fixed left nav spine */
+
+  /* The measure, and the page padding either side of it. */
+  --sheet-max: 1240px;
+  --pad: 3rem;
+
+  /* The left spine every section's content sits on, expressed so that
+     anything can line up with the centred .sheet without being one:
+     the page padding, plus whatever the sheet's auto margin adds once
+     the content area is wider than the measure.
+
+     The 100% resolves against the containing block's width, which for
+     a section's children is the content area — so this lands on the
+     same pixel as margin:auto does, with no viewport units and no
+     scrollbar to guess at. */
+  --gutter: calc(var(--pad) + max(0px, (100% - var(--sheet-max)) / 2));
 
   /* Stock. Greyer and cooler than a cream — this is newsprint,
      not letterpress cotton. Doubles as the primary text colour. */
@@ -24,11 +31,26 @@
   --paper-2: #dcd5c2;   /* a second, slightly darker scrap */
   --paper-3: #c9c1ac;   /* deepest scrap / rules */
   /* Secondary text on the board. Light enough to clear AAA at the small
-     sizes it gets used at — kickers, field labels, captions. */
-  --paper-dim: #adb4d0;
+     sizes it gets used at — kickers, field labels, captions. Cool, and
+     specifically in the cool drum's family (207°, not the old 226°
+     lavender): most of the page's quiet text sits next to something
+     printed in blue, and two different blues that close together read
+     as a mistake rather than as a pair. */
+  --paper-dim: #a9b6c6;
 
   /* Inks. Two drums, exactly as the colophon claims — the published RISO
      values, not web reds and blues that merely look the part.
+
+     CURRENT RUN: Fluorescent Orange + Blue. The most-printed pairing on
+     any riso, and the reason: on a blue board the orange is the only
+     thing that can be a warning label, and the blue is the only thing
+     that can be quiet without disappearing.
+
+     Both drums are set at a coverage where they read as ink. The run
+     this replaced kept its blue at 2.42:1 on the board — a colour you
+     could only see by being told it was there — so everything visibly
+     blue was a pale tint of it, and the page read as red on navy with
+     a lavender ghost.
      ---------------------------------------------------------------
      Each drum gets one value per substrate, because a spot colour laid
      on a dark board and the same colour laid on newsprint are not the
@@ -39,21 +61,36 @@
        flood fill + --ink text    --red        —
        on the paper stock         --red-print  --blue-print
 
-     Red has no legible value on the stock at any coverage (the best is
-     3.9:1, and by then it is brick, not vermilion), so on paper red is
-     for marks and rules and blue carries the small type. */
+     The hot drum has no legible value on the stock at any coverage (the
+     best is 3.9:1, and by then it is rust, not orange), so on paper it
+     is for marks and rules and the cool drum carries the small type.
+     The variables keep their --red/--blue names across a change of
+     drum: they are slots in that table, not colour names. */
   --ink: #14110e;
   --ink-2: #454037;
+  --ink-3: #6b6558;     /* the ink let down for a caption on the stock —
+                           spine handle, colophon labels, ink values */
 
-  --red: #ff665e;       /* RISO Red, full coverage */
-  --red-print: #d93f28; /* the same drum overprinted — heavier on the
-                           stock, but the same vermilion, which #b83220
-                           was not: that read as a second, browner ink */
+  --red: #ff5c39;       /* RISO Fluorescent Orange, full coverage */
+  --red-print: #d9451f; /* the same drum overprinted — heavier on the
+                           stock, but the same orange, not a browner
+                           second ink */
 
-  --blue-deep: #3255a4; /* RISO Medium Blue, full coverage */
-  --blue: #7e9cd8;      /* the same drum at partial coverage — same hue
-                           (220°), lifted so it reads on the board */
-  --blue-print: #2b4a94; /* overprinted, for small type on the stock */
+  --blue-deep: #0078bf; /* RISO Blue, full coverage */
+  --blue: #4fb0e4;      /* the same drum at partial coverage — same hue
+                           (199°), lifted so it reads on the board */
+  --blue-print: #00527f; /* overprinted, for small type on the stock */
+
+  /* What floods behind a section eyebrow. Normally the cool drum; on a
+     run whose second ink is too loud to sit behind five headings — or
+     absent — the stock instead. */
+  --kicker-fill: var(--blue);
+
+  /* The two swatches in the colophon, which have to be the drums as
+     published — the values printed beside them — and not whichever
+     per-substrate variant the page happens to use most. */
+  --swatch-1: var(--red);
+  --swatch-2: #0078bf;
 
   --font-display: 'Anton', Impact, sans-serif;
   --font-black: 'Archivo Black', Arial Black, sans-serif;
@@ -166,9 +203,9 @@ body {
    ------------------------------------------------------------ */
 .sheet {
   width: 100%;
-  max-width: 1240px;
+  max-width: var(--sheet-max);
   margin: 0 auto;
-  padding: 0 3rem;
+  padding: 0 var(--pad);
 }
 
 section {
@@ -188,9 +225,11 @@ section {
   /* The eyebrow is the cool drum's, at every section head — it pairs
      against the hot drum in the title a line below, so each section
      opens on both inks instead of on red alone. Ink text rather than
-     paper: this coverage is a light tint, and paper on it is 2.3:1. */
+     paper: this coverage is a light tint, and paper on it is 2.3:1.
+     --kicker-fill so a run whose second ink is too loud to repeat five
+     times can drop it back to bare paper without touching this rule. */
   color: var(--ink);
-  background: var(--blue);
+  background: var(--kicker-fill);
   display: inline-block;
   padding: 0.3rem 0.7rem;
   transform: rotate(-1.2deg);
@@ -347,7 +386,7 @@ a {
 
 .spine-num {
   font-family: var(--font-type);
-  font-size: 0.6rem;
+  font-size: 0.68rem;
   font-weight: 700;
   /* Numbering is structure, not emphasis — and on the paper spine the
      bright drum reads at 2.4:1, which is no reading at all. */
@@ -359,11 +398,15 @@ a {
   text-orientation: mixed;   /* glyphs on one baseline, not stacked */
   transform: rotate(180deg); /* which then runs bottom-to-top */
   font-family: var(--font-type);
-  font-size: 0.66rem;
+  /* Set at reading size, not caption size — these are the only way
+     through the page, and a rotated word can carry it. */
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--ink);
+  /* Inactive sits a step back from full ink; the active one comes
+     forward and takes the red bar. */
+  color: var(--ink-2);
   transition: color 0.2s;
 }
 
@@ -400,7 +443,7 @@ a {
   font-weight: 700;
   letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #6b6558;
+  color: var(--ink-3);
   transition: color 0.2s;
 }
 
@@ -749,12 +792,16 @@ a {
    A horizontal run of plates you drag or swipe through. Not cards,
    not a list, not a page — a filmstrip pulled across the press bed.
    ------------------------------------------------------------ */
-/* Left-aligned (not the centered .sheet default) so the heading's left
-   edge always lines up with the reel's first plate, at any width. */
+/* The head runs the full content width rather than the centred .sheet
+   measure — the reel below it has to bleed off the right edge, and the
+   two have to share a left edge. So it drops the auto margin and takes
+   the gutter as padding instead, which puts its left edge on the same
+   spine as every centred .sheet on the page. */
 .reel-head {
   max-width: none;
-  margin: 0;
-  margin-bottom: 2.5rem;
+  margin: 0 0 2.5rem;
+  padding-left: var(--gutter);
+  padding-right: var(--pad);
 }
 
 .reel-hint {
@@ -782,10 +829,11 @@ a {
   overflow-y: hidden;
   scroll-snap-type: x mandatory;
   cursor: grab;
-  /* First plate lines up with the heading's left gutter; the reel
-     itself runs full-bleed to the right edge. */
-  padding: 0.5rem 3rem 2rem;
-  scroll-padding-left: 3rem;
+  /* The first plate's rule lands on the page's left spine, same as the
+     heading above it; the reel itself runs full-bleed off the right
+     edge, which is the whole "there is more, swipe" affordance. */
+  padding: 0.5rem var(--pad) 2rem var(--gutter);
+  scroll-padding-left: var(--gutter);
   -webkit-overflow-scrolling: touch;
   /* A horizontal drag shouldn't arm the browser's back-navigation swipe. */
   overscroll-behavior-x: contain;
@@ -1141,14 +1189,17 @@ a {
   gap: 0.4rem;
 }
 
+/* Every sort in the case is meant to be read. The distinction the
+   drawer makes is filled versus outlined, not visible versus not —
+   so the outlined ones take full paper and a rule you can see. */
 .type-drawer li {
   font-family: var(--font-condensed);
   font-size: 1.15rem;
   letter-spacing: 0.03em;
   text-transform: uppercase;
-  color: var(--paper-dim);
+  color: var(--paper);
   padding: 0.05rem 0.45rem;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--rule-strong);
 }
 
 /* The ones he actually reaches for get set in the loud face. */
@@ -1173,17 +1224,25 @@ a {
   padding: 0.3rem 0.65rem;
 }
 
+/* The key to the case. It explains the one distinction the grid makes,
+   so it is set as a legend — rule, paper, tracked out — rather than as
+   a caption dropped underneath. */
 .type-note {
+  display: inline-block;
   font-family: var(--font-type);
-  font-size: 0.78rem;
-  color: var(--paper-dim);
-  margin-top: 1.5rem;
+  font-size: 0.88rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--paper);
+  border-top: 3px solid var(--paper);
+  padding-top: 0.9rem;
+  margin-top: 1.75rem;
 }
 
 .type-note b {
   background: var(--red);
   color: var(--ink);
-  padding: 0.1rem 0.35rem;
+  padding: 0.15rem 0.4rem;
 }
 
 /* ------------------------------------------------------------
@@ -1412,7 +1471,7 @@ a {
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: #6b6558;
+  color: var(--ink-3);
   margin-bottom: 0.4rem;
 }
 
@@ -1447,7 +1506,7 @@ a {
 }
 
 .ink-hex {
-  color: #6b6558;
+  color: var(--ink-3);
   letter-spacing: 0.04em;
 }
 
@@ -1462,8 +1521,8 @@ a {
   border: 1px solid var(--ink);
 }
 
-.swatch-red { background: var(--red); }
-.swatch-blue { background: var(--blue-deep); }
+.swatch-red { background: var(--swatch-1); }
+.swatch-blue { background: var(--swatch-2); }
 
 /* Oversized wordmark bleeding off the bottom edge, like an imprint
    pressed into the back cover. */
@@ -1494,14 +1553,14 @@ a {
 
 @media (max-width: 900px) {
   /* The spine folds down into a top bar; content no longer clears a
-     left gutter. */
-  :root { --spine: 0px; }
+     left gutter, and the page padding comes in. Both the sheet and the
+     reel read --pad, so the left spine follows on its own. */
+  :root { --spine: 0px; --pad: 1.5rem; }
 
   .spine { display: none; }
   .topbar { display: flex; }
   .scroll-progress { top: 56px; left: 0; }
 
-  .sheet { padding: 0 1.5rem; }
   section { padding: 4.5rem 0; }
 
   .hero { padding-top: 7rem; }
@@ -1513,9 +1572,8 @@ a {
     gap: 2.5rem;
   }
 
-  /* The reel keeps swiping horizontally — natural on touch — but its
-     gutter matches the narrower page padding. */
-  .reel { padding-left: 1.5rem; padding-right: 1.5rem; scroll-padding-left: 1.5rem; }
+  /* The reel keeps swiping horizontally — natural on touch — and its
+     gutter follows --pad down with everything else. */
   .plate { flex-basis: min(88vw, 400px); padding-right: 1.25rem; }
 
   /* The schematic is the one element that can't reflow — its type is set
@@ -1579,10 +1637,11 @@ textarea:focus-visible {
    on a laptop still has a mouse.
    ------------------------------------------------------------ */
 @media (pointer: coarse) {
-  /* Tap feedback in the second ink, instead of the browser's grey box. */
+  /* Tap feedback in the hot drum, instead of the browser's grey box.
+     Literal rgba because the property takes no var() in Safari. */
   a,
   button {
-    -webkit-tap-highlight-color: rgba(241, 80, 96, 0.24);
+    -webkit-tap-highlight-color: rgba(255, 92, 57, 0.24);
   }
 
   /* The plate links are set at caption size and the topbar name sits in

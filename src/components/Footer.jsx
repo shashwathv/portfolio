@@ -29,11 +29,11 @@ export default function Footer() {
             <dd className="colophon-inks">
               <span className="ink-line">
                 <span className="ink-swatch swatch-red" aria-hidden="true" />
-                RISO Red <span className="ink-hex">FF665E</span>
+                RISO Fluorescent Orange <span className="ink-hex">FF5C39</span>
               </span>
               <span className="ink-line">
                 <span className="ink-swatch swatch-blue" aria-hidden="true" />
-                RISO Medium Blue <span className="ink-hex">3255A4</span>
+                RISO Blue <span className="ink-hex">0078BF</span>
               </span>
             </dd>
           </dl>

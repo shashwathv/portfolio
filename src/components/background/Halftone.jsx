@@ -197,8 +197,8 @@ const hexToRGB = hex => {
    and --red / --blue carry. These dots are the only actual ink on the
    page, so they are the one place the claim has to hold. */
 export default function Halftone({
-  inkA = '#ff665e',
-  inkB = '#7e9cd8',
+  inkA = '#ff5c39',
+  inkB = '#4fb0e4',
   opacity = 0.42,
   cell = 13,
   wave = 20   // seconds for one pass of the ink-density swell
