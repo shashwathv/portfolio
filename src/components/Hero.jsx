@@ -23,7 +23,7 @@ export default function Hero() {
 
         <h1 className="signature" aria-label={NAME}>
           <span className="sig-word" aria-hidden="true">
-            <span className="sig-cut">S</span>hashwath
+            <span className="sig-cut">s</span>hashwath
           </span>
           <span className="sig-word" aria-hidden="true">V</span>
         </h1>
