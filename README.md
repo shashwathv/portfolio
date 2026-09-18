@@ -1,12 +1,12 @@
 # Portfolio — Shashwath V
 
-Personal portfolio, live at [portfolio.nw-right.dev](https://portfolio.nw-right.dev/). Dark, editorial, minimal — built with React 19 + Vite (rolldown), with a WebGL beams background rendered via React Three Fiber.
+Personal portfolio, live at [portfolio.nw-right.dev](https://portfolio.nw-right.dev/). A riso-print zine — newsprint stock, deep press-blue board, two ink drums — built with React 19 + Vite (rolldown), over a halftone background drawn in raw WebGL.
 
 ## Stack
 
 - **React 19** + **Vite** (`rolldown-vite`)
-- **Three.js / @react-three/fiber** — animated shader background (`src/components/background/`)
-- Plain CSS, no framework — design tokens in `src/styles.css`
+- Plain CSS, no framework — all styling and design tokens in `src/styles.css`
+- Raw WebGL, no 3D library — the background is one fragment shader (`src/components/background/Halftone.jsx`)
 - **Formspree** — contact form backend
 - Self-hosted via Coolify behind Cloudflare Tunnel
 
@@ -16,24 +16,25 @@ Personal portfolio, live at [portfolio.nw-right.dev](https://portfolio.nw-right.
 src/
 ├── App.jsx
 ├── main.jsx
-├── styles.css            # all styling + design tokens
+├── styles.css              # all styling + design tokens
 ├── hooks/
-│   ├── useReveal.js      # IntersectionObserver scroll reveals
-│   ├── useScrollSpy.js   # active nav section tracking
-│   └── useLocalTime.js   # live IST clock
+│   ├── useReveal.js        # IntersectionObserver scroll reveals
+│   └── useScrollSpy.js     # active nav section tracking
 └── components/
-    ├── Reveal.jsx        # reveal-on-scroll wrapper
-    ├── Navigation.jsx
+    ├── Reveal.jsx          # reveal-on-scroll wrapper
+    ├── Navigation.jsx      # left spine; folds to a top bar + sheet on mobile
+    ├── ScrollProgress.jsx
     ├── Hero.jsx
     ├── About.jsx
     ├── Work.jsx
+    ├── ProjectSchematic.jsx  # the path one job takes through a project
     ├── Skills.jsx
     ├── Contact.jsx
     ├── Footer.jsx
     └── background/
-        ├── Background.jsx  # lazy-loads Beams, reduced-motion fallback
-        ├── Beams.jsx       # WebGL shader scene
-        └── Beams.css
+        ├── Background.jsx    # lazy-loads Halftone, plus the left-gutter scrim
+        ├── Background.css
+        └── Halftone.jsx      # WebGL halftone board
 ```
 
 ## Development
@@ -45,9 +46,13 @@ npm run build    # production build to dist/
 npm run lint
 ```
 
-Requires Node ≥ 22.12.
+Requires Node ≥ 22.12 (pinned in `.node-version`).
 
 ## Notes
 
 - The page scrolls inside `#root` (a 1px-inset frame), so any scroll observers must use it as their root — see the hooks.
-- Animations respect `prefers-reduced-motion`; the WebGL background is skipped entirely when it's set.
+- `useScrollSpy` deliberately measures against a fixed line rather than using an IntersectionObserver; the hook's comment records both ways the observer version failed.
+- Animations respect `prefers-reduced-motion`; the WebGL background is skipped entirely when it's set, and the CSS board shows through.
+- The two ink drums each carry one value per substrate — a spot colour on the dark board and the same colour on newsprint are not the same colour to read against. The table in `src/styles.css` says which to reach for.
+- The email address is never a single string in the source, the bundle, or the DOM until someone asks for it (`Contact.jsx`).
+- Deployment is configured in Coolify, not in this repo — there is no CI config here.
