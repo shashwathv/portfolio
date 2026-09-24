@@ -38,7 +38,7 @@ const projects = [
     slug: 'homelab',
     title: 'Homelab',
     kind: 'infra',
-    year: '[YYYY]',
+    year: '2026',
     category: 'Infrastructure',
     tech: ['Arch Linux', 'Docker', 'Cloudflare', 'Tailscale', 'Nginx', 'Coolify', 'llama.cpp'],
     summary: 'The laptop this all runs on — tunnelled out, locked behind Zero Trust, kept by its own agent.',
@@ -128,7 +128,7 @@ const projects = [
   {
     slug: 'kenxsearch',
     title: 'KenXSearch',
-    year: '[YYYY]',
+    year: '2025',
     category: 'Linux tooling',
     tech: ['Python', 'PyQt6', 'OpenCV', 'Tesseract', 'Playwright'],
     summary: 'Circle to Search, for Linux — ring anything on screen and search it.',
@@ -201,7 +201,7 @@ const projects = [
   {
     slug: 'shadowbrowse',
     title: 'ShadowBrowse',
-    year: '[YYYY]',
+    year: '2025',
     category: 'Security tooling',
     tech: ['Go', 'Gin', 'Docker', 'JavaScript', 'VirusTotal', 'SQLite'],
     summary: 'Open a suspicious link in a throwaway browser — scanned before it loads.',
@@ -273,7 +273,7 @@ const projects = [
   {
     slug: 'behaviorvault',
     title: 'BehaviorVault 2.0',
-    year: '[YYYY]',
+    year: '2026',
     category: 'ML / security',
     tech: ['Python', 'scikit-learn', 'TensorFlow Lite', 'FastAPI', 'Docker', 'Cloudflare'],
     summary: 'A second, silent login — behavioural biometrics scored all session long.',
@@ -346,7 +346,7 @@ const projects = [
   {
     slug: 'kanzen',
     title: 'KanZen',
-    year: '[YYYY]',
+    year: '2024',
     category: 'AI / computer vision',
     tech: ['Python', 'Gemini 2.5 Flash', 'SudachiPy', 'FastAPI', 'AWS S3', 'genanki'],
     summary: 'Photograph a page of kanji study material, get back an Anki deck.',
