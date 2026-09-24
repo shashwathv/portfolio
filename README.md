@@ -14,9 +14,12 @@ Personal portfolio, live at [portfolio.nw-right.dev](https://portfolio.nw-right.
 
 ```
 src/
-├── App.jsx
+├── App.jsx                 # picks the page: homepage, or /work/<slug>
 ├── main.jsx
+├── router.js               # usePath / navigate / Link — History API, no library
 ├── styles.css              # all styling + design tokens
+├── data/
+│   └── projects.js         # every project; the index and each project page read it
 ├── hooks/
 │   ├── useReveal.js        # IntersectionObserver scroll reveals
 │   └── useScrollSpy.js     # active nav section tracking
@@ -26,7 +29,9 @@ src/
     ├── ScrollProgress.jsx
     ├── Hero.jsx
     ├── About.jsx
-    ├── Work.jsx
+    ├── Work.jsx              # the numbered index of projects
+    ├── ProjectPage.jsx       # the one template for every /work/<slug> (kind: 'infra' gets its own parts)
+    ├── HomelabMap.jsx        # the homelab wiring drawing, redrawn from homelab.d2
     ├── ProjectPrintout.jsx   # a project's sample run, on tractor-feed paper
     ├── Skills.jsx
     ├── Contact.jsx
@@ -56,4 +61,6 @@ Requires Node ≥ 22.12 (pinned in `.node-version`).
 - Animations respect `prefers-reduced-motion`; the first message is drawn complete on the hero as a static print, with no ants.
 - The two ink drums each carry one value per substrate — a spot colour on the dark board and the same colour on newsprint are not the same colour to read against. The table in `src/styles.css` says which to reach for.
 - The email address is never a single string in the source, the bundle, or the DOM until someone asks for it (`Contact.jsx`).
+- Adding a project is one entry in `src/data/projects.js` — the index row, its page at `/work/<slug>`, and prev/next all follow.
+- `/work/<slug>` works on refresh because the server answers unknown paths with `index.html`: Vite's dev and preview servers do, and so does Coolify's static-site nginx config. Change that config and direct project links will 404.
 - Deployment is configured in Coolify, not in this repo — there is no CI config here.

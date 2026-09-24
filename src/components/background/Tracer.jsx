@@ -43,11 +43,12 @@ const rgbOf = hex => {
    Text is measured by its line boxes, not its element box — a heading
    is a block that spans the whole sheet, but its glyphs cover a third
    of that, and the rest is ground. Boxes (buttons, figures, forms,
-   plates) are measured as boxes. */
+   index rows) are measured as boxes. */
 const TEXT = ['main h1', 'main h2', 'main h3', 'main p', 'main li', 'main dt', 'main dd', 'main label',
-  'main a:not(.btn)', 'main .section-kicker', 'main .reel-hint'].join(', ');
+  'main a:not(.btn)', 'main .section-kicker'].join(', ');
 const BOXES = ['main .btn', 'main button', 'main form', 'main input', 'main textarea', 'main figure',
-  'main svg', 'main img', 'main .plate', 'main .case', 'main .reply-card', '.colophon'].join(', ');
+  'main svg', 'main img', 'main .entry', 'main .job-ticket', 'main .clipping', 'main .station-box',
+  'main .stamps li', 'main .ticket', 'main .rating', 'main .map-plate', 'main .keytag', 'main .ledger', 'main .case', 'main .reply-card', '.colophon', '.slug'].join(', ');
 
 /* The sections a place-bound message can name — see CONTEXTUAL in
    ./tracing. Their bounds are measured with the rest of the page. */
@@ -99,7 +100,8 @@ export default function Tracer({
   mark = 0.18,       // opacity of a traced cell
   rates = RATES,
   ants = 3,          // the opening cast
-  maxAnts = 6        // with reinforcements, as the visitor scrolls deeper
+  maxAnts = 6,       // with reinforcements, as the visitor scrolls deeper
+  silent = false     // walk, but never write — for the project pages
 }) {
   const layerRef = useRef(null);
 
@@ -250,7 +252,9 @@ export default function Tracer({
 
       if (reduced) {
         // One message, complete, near the top-right of the hero; no ants.
+        // A silent page gets neither.
         colony = null;
+        if (silent) return;
         const spec = nextSpec(() => true);
         for (const scale of [2, 1]) {
           const spot = findSpot(board, [], board.measure(spec, scale), { x: Math.floor(cols * 0.8), y: Math.floor((window.innerHeight * 0.12) / cellCss) });
@@ -265,6 +269,8 @@ export default function Tracer({
 
       colony = createColony({
         board, cellPx: cellCss, ants, rates, nextSpec,
+        // No room for a single message: every ant only ever roams.
+        ...(silent && { maxMessages: 0 }),
         viewport: () => ({ top: root.scrollTop, bottom: root.scrollTop + root.clientHeight })
       });
       for (let i = 0; i < colony.ants.length; i++) {
@@ -286,7 +292,7 @@ export default function Tracer({
      * someone who arrives on a deep link and never scrolls.
      */
     const announceForSection = () => {
-      if (!colony || reduced) return;
+      if (!colony || reduced || silent) return;
       const view = { top: root.scrollTop, bottom: root.scrollTop + root.clientHeight };
       for (const m of CONTEXTUAL) {
         if (said.has(m.word)) continue;
@@ -413,7 +419,7 @@ export default function Tracer({
       document.removeEventListener('visibilitychange', onVisibility);
       layer.replaceChildren();
     };
-  }, [ink, hot, cell, mark, rates, ants, maxAnts]);
+  }, [ink, hot, cell, mark, rates, ants, maxAnts, silent]);
 
   return <div className="tracer-layer" ref={layerRef} aria-hidden="true" />;
 }

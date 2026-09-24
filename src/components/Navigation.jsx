@@ -1,11 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
 import useScrollSpy from '../hooks/useScrollSpy';
+import { navigate } from '../router';
 
-export default function Navigation() {
+export default function Navigation({ project = false }) {
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const navItems = useMemo(() => ['about', 'work', 'skills', 'contact'], []);
-  const active = useScrollSpy(navItems);
+  const spied = useScrollSpy(navItems);
+  // A project page is filed under work, and has none of the sections.
+  const active = project ? 'work' : spied;
 
   // Lock the page behind the mobile sheet.
   useEffect(() => {
@@ -22,20 +25,13 @@ export default function Navigation() {
     return () => window.removeEventListener('keydown', onKey);
   }, [mobileOpen]);
 
+  // On the homepage, a smooth scroll to the section; from a project
+  // page, back to the homepage at it. (App lands the hash.)
   const goTo = id => {
-    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
     setMobileOpen(false);
+    if (project) navigate(`/#${id}`);
+    else document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
   };
-
-  // The page scrolls inside #root, and the browser handles the URL's
-  // fragment before React has rendered anything to scroll to — so a
-  // shared link like /#work landed on the hero. Once the sections exist,
-  // honour the hash ourselves, instantly, as the browser would have.
-  useEffect(() => {
-    const id = window.location.hash.slice(1);
-    if (!id) return;
-    document.getElementById(id)?.scrollIntoView({ behavior: 'instant', block: 'start' });
-  }, []);
 
   return (
     <>
@@ -46,7 +42,7 @@ export default function Navigation() {
         <span className="crop crop-bl" aria-hidden="true" />
 
         <a
-          href="#home"
+          href="/#home"
           className="spine-plate"
           onClick={e => { e.preventDefault(); goTo('home'); }}
         >
@@ -58,7 +54,7 @@ export default function Navigation() {
             {navItems.map((id, i) => (
               <li key={id}>
                 <a
-                  href={`#${id}`}
+                  href={`/#${id}`}
                   className={active === id ? 'is-active' : ''}
                   onClick={e => { e.preventDefault(); goTo(id); }}
                 >
@@ -87,7 +83,7 @@ export default function Navigation() {
       {/* Mobile: the spine folds into a top bar with a menu sheet. */}
       <div className="topbar">
         <a
-          href="#home"
+          href="/#home"
           className="topbar-name"
           onClick={e => { e.preventDefault(); goTo('home'); }}
         >
@@ -107,7 +103,7 @@ export default function Navigation() {
         {navItems.map(id => (
           <a
             key={id}
-            href={`#${id}`}
+            href={`/#${id}`}
             onClick={e => { e.preventDefault(); goTo(id); }}
           >
             {id}

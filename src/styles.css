@@ -812,116 +812,155 @@ a {
 }
 
 /* ------------------------------------------------------------
-   WORK — the reel
-   A horizontal run of plates you drag or swipe through. Not cards,
-   not a list, not a page — a filmstrip pulled across the press bed.
+   WORK — the contents page
+   Set as a printed contents page, not a table: number, title, and a
+   dot leader running out to the year. The numbers print on both
+   drums a touch out of register — riso never quite lines up — and
+   picking an entry up knocks the drums further apart.
    ------------------------------------------------------------ */
-/* The head runs the full content width rather than the centred .sheet
-   measure — the reel below it has to bleed off the right edge, and the
-   two have to share a left edge. So it drops the auto margin and takes
-   the gutter as padding instead, which puts its left edge on the same
-   spine as every centred .sheet on the page. */
-.reel-head {
-  max-width: none;
-  margin: 0 0 2.5rem;
-  padding-left: var(--gutter);
-  padding-right: var(--pad);
-}
-
-.reel-hint {
+.contents-head {
   display: flex;
-  align-items: center;
-  gap: 1rem;
+  justify-content: space-between;
+  /* Over the titles, not the numbers. */
+  padding: 0 0 0.65rem 6rem;
+  border-bottom: 3px solid var(--paper);
   font-family: var(--font-type);
-  font-size: 0.8rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
   color: var(--paper-dim);
 }
 
-.reel-hint-rule {
-  width: 3rem;
-  height: 3px;
-  background: var(--blue);
+.contents {
+  list-style: none;
 }
 
-/* The bar over the reel: the hint on the left, and on the right the
-   things that make a horizontal run legible to someone who has never
-   met one — where you are in it, and two arrows to step it. The
-   half-plate at the edge and the hint alone had a tester unable to
-   tell the reel scrolled; a counter and a pair of buttons are the
-   convention every carousel on the web has taught. */
-.reel-bar {
+/* Perforated between entries, as if each could be torn out. */
+.contents > li {
+  border-bottom: 1px dashed var(--rule-strong);
+}
+
+.entry {
+  display: grid;
+  grid-template-columns: 6rem minmax(0, 1fr);
+  grid-template-areas:
+    'no line'
+    'no summary'
+    'no stack';
+  row-gap: 0.55rem;
+  padding: 1.9rem 0 1.8rem;
+}
+
+.entry-no {
+  grid-area: no;
+  align-self: start;
+  justify-self: start;
+  font-family: var(--font-display);
+  font-size: 3.4rem;
+  line-height: 0.8;
+  color: var(--paper);
+  font-variant-numeric: tabular-nums;
+  /* The hot drum, printed a hair low and right of the key. */
+  text-shadow: 3px 3px 0 var(--red);
+  transition: text-shadow 0.3s var(--paste), transform 0.3s var(--paste);
+}
+
+.entry-line {
+  grid-area: line;
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1.5rem;
-  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.9rem;
 }
 
-.reel-nav {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
+.entry-name {
+  flex: 0 1 auto;
+  min-width: 0;
+  font-family: var(--font-display);
+  font-size: clamp(1.9rem, 3.6vw, 2.9rem);
+  line-height: 0.95;
+  letter-spacing: 0.005em;
+  text-transform: uppercase;
+  color: var(--paper);
 }
 
-.reel-count {
+.entry-leader {
+  flex: 1 1 auto;
+  min-width: 1.5rem;
+  border-bottom: 3px dotted var(--rule-strong);
+  transform: translateY(-0.3em);
+  transition: border-color 0.25s;
+}
+
+.entry-year {
+  flex: none;
   font-family: var(--font-type);
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.08em;
   color: var(--paper-dim);
-  margin-right: 0.5rem;
   font-variant-numeric: tabular-nums;
 }
 
-.reel-count b {
-  color: var(--paper);
-  font-weight: 700;
-}
-
-/* Two pasted paper squares. Same rules as the buttons in the hero — a
-   3px paper edge and a hard ink shadow — so they read as controls, not
-   decoration. */
-.reel-btn {
-  width: 2.75rem;
-  height: 2.75rem;
+/* A small pasted square, the same control as the hero's buttons. */
+.entry-go {
+  flex: none;
+  align-self: center;
+  width: 2.1rem;
+  height: 2.1rem;
   display: inline-grid;
   place-items: center;
-  font-family: var(--font-type);
-  font-size: 1.1rem;
-  font-weight: 700;
+  font-size: 1rem;
   color: var(--paper);
-  background: transparent;
-  border: 3px solid var(--paper);
-  box-shadow: 4px 4px 0 var(--blue);
-  cursor: pointer;
-  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease), opacity 0.2s;
+  border: 2px solid var(--paper);
+  box-shadow: 3px 3px 0 var(--blue);
+  transition:
+    background-color 0.15s,
+    color 0.15s,
+    border-color 0.15s,
+    transform 0.15s var(--ease),
+    box-shadow 0.15s var(--ease);
 }
 
-.reel-btn:hover:not(:disabled),
-.reel-btn:focus-visible {
+.entry-summary {
+  grid-area: summary;
+  max-width: 44em;
+  font-size: 0.98rem;
+  line-height: 1.55;
+  color: var(--paper-dim);
+}
+
+.entry-stack {
+  grid-area: stack;
+  font-family: var(--font-type);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  line-height: 1.7;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+/* Picked up: the drums slip, the leader inks, the square presses. */
+.entry:hover .entry-no,
+.entry:focus-visible .entry-no {
+  text-shadow: -4px 2px 0 var(--blue), 5px 4px 0 var(--red);
+  transform: rotate(-3deg);
+}
+
+.entry:hover .entry-leader,
+.entry:focus-visible .entry-leader {
+  border-bottom-color: var(--red);
+}
+
+.entry:hover .entry-go,
+.entry:focus-visible .entry-go {
+  color: var(--ink);
+  background: var(--red);
+  border-color: var(--red);
   transform: translate(-2px, -2px);
-  box-shadow: 6px 6px 0 var(--blue);
+  box-shadow: 5px 5px 0 var(--blue);
 }
-
-.reel-btn:active:not(:disabled) {
-  transform: translate(2px, 2px);
-  box-shadow: 2px 2px 0 var(--blue);
-}
-
-.reel-btn:disabled {
-  opacity: 0.3;
-  cursor: default;
-  box-shadow: 4px 4px 0 var(--rule);
-}
-
-.reel-btn:focus-visible {
-  outline: 3px solid var(--red);
-  outline-offset: 3px;
-}
-
 .visually-hidden {
   position: absolute;
   width: 1px;
@@ -932,143 +971,25 @@ a {
   white-space: nowrap;
 }
 
-.reel {
-  display: flex;
-  gap: 0;
-  overflow-x: auto;
-  overflow-y: hidden;
-  scroll-snap-type: x mandatory;
-  cursor: grab;
-  /* The first plate's rule lands on the page's left spine, same as the
-     heading above it; the reel itself runs full-bleed off the right
-     edge, which is the whole "there is more, swipe" affordance. */
-  padding: 0.5rem var(--pad) 1.75rem var(--gutter);
-  scroll-padding-left: var(--gutter);
-  -webkit-overflow-scrolling: touch;
-  /* A horizontal drag shouldn't arm the browser's back-navigation swipe. */
-  overscroll-behavior-x: contain;
-  /* No track. It reads as a browser artefact pasted on the board — the
-     hint line above and the half-plate at the right edge already say
-     the reel keeps going. */
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-}
-
-.reel::-webkit-scrollbar { display: none; }
-
-.reel:focus-visible {
-  outline: 3px solid var(--red);
-  outline-offset: -3px;
-}
-
-/* The frame carries the trailing-edge fade: the last visible plate
-   dissolves into the board, which says "continues" in a way a hard
-   crop doesn't. Gone once the run is fully out. */
-.reel-frame {
+/* The figure a project page opens on. */
+.pp-figure {
   position: relative;
-}
-
-.reel-frame::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  bottom: 3.5rem;
-  width: clamp(4rem, 10vw, 9rem);
-  background: linear-gradient(90deg, rgba(26, 23, 25, 0), var(--field));
-  pointer-events: none;
-  opacity: 1;
-  transition: opacity 0.35s var(--ease);
-}
-
-.reel-frame[data-at-end='true']::after {
-  opacity: 0;
-}
-
-/* The track: the whole run as a length of rule under the plates, with
-   the visible part as a heavier block that slides along it. It's the
-   scrollbar we hid, redrawn as a registration mark. */
-.reel-track {
-  position: relative;
-  height: 3px;
-  margin: 0 var(--pad) 0 var(--gutter);
-  background: var(--rule);
-}
-
-.reel-thumb {
-  position: absolute;
-  top: -2px;
-  height: 7px;
-  width: calc(var(--thumb, 1) * 100%);
-  left: calc(var(--progress, 0) * (100% - var(--thumb, 1) * 100%));
-  background: var(--paper);
-  transition: left 0.08s linear, width 0.2s var(--ease);
-}
-
-.reel.is-dragging { cursor: grabbing; }
-
-/* Snapping is suspended for the length of a mouse drag, and again while
-   the reel glides to its final plate. Left on, it re-snaps after every
-   scrollLeft written from JS and the plates judder under the pointer. */
-.reel.is-dragging,
-.reel.is-settling {
-  scroll-snap-type: none;
-}
-
-.plate {
-  flex: 0 0 clamp(340px, 40vw, 480px);
-  scroll-snap-align: start;
-  border-left: 3px solid var(--paper);
-  padding: 1.5rem 2.25rem 0 0;
-  margin-right: 2.25rem;
-  /* Keep the caption text selectable off, so a drag never highlights
-     a paragraph mid-swipe. */
-  user-select: none;
-}
-
-.plate-head {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 1rem;
-  padding-left: 1.5rem;
-  margin-bottom: 1.25rem;
-}
-
-.plate-no {
-  font-family: var(--font-display);
-  font-size: 2.4rem;
-  line-height: 0.8;
-  color: var(--paper);
-}
-
-.plate-tag {
-  font-family: var(--font-type);
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--blue);
-  text-align: right;
-}
-
-.plate-tag span { color: var(--paper-dim); }
-
-.plate-figure {
-  position: relative;
+  width: 100%;
+  max-width: 540px;
+  justify-self: end;
   aspect-ratio: 16 / 11;
   overflow: hidden;
-  margin-left: 1.5rem;
-  margin-bottom: 1.4rem;
   border: 3px solid var(--paper);
   background: var(--paper-3);
-  box-shadow: 8px 8px 0 rgba(12, 10, 11, 0.6);
+  box-shadow: 10px 10px 0 rgba(12, 10, 11, 0.6);
+  /* Pasted down, not quite square. */
+  transform: rotate(0.8deg);
 }
 
 /* The printout: a strip of tractor-feed paper. Perforated down both
-   edges, banded like green-bar stock, set in the typewriter face. The
-   figure frame around it is unchanged, so the four plates still read
-   as a series. */
+   edges, banded like green-bar stock, set in the typewriter face. Every
+   project page opens on one, so the write-ups still read as a
+   series. */
 .printout {
   position: absolute;
   inset: 0;
@@ -1099,7 +1020,7 @@ a {
 .printout::after { right: 14px; }
 
 .printout-head {
-  /* Room on the right for a plate's flag, which sits over the corner. */
+  /* Room on the right for a project's flag, which sits over the corner. */
   padding-right: 9rem;
   white-space: nowrap;
   font-size: 8px;
@@ -1176,11 +1097,11 @@ a {
   transition: opacity 0.35s var(--ease);
   pointer-events: none;
 }
-.plate:hover .printout-mark { opacity: 0.26; }
 .printout-mark-ring  { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='160 40 160 130' fill='none' stroke='%239a4e2a' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M236 58C284 44 316 88 300 128 286 164 224 176 200 140 178 108 196 66 236 58Z'/%3E%3Cpath d='M292 138L312 160'/%3E%3C/svg%3E"); }
 .printout-mark-fan   { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='186 44 136 110' fill='none' stroke='%239a4e2a' stroke-width='5' stroke-linejoin='round'%3E%3Crect x='194' y='52' width='88' height='58'/%3E%3Cpath d='M194 66H282'/%3E%3Crect x='210' y='70' width='88' height='58'/%3E%3Cpath d='M210 84H298'/%3E%3Crect x='226' y='88' width='88' height='58'/%3E%3Cpath d='M226 102H314'/%3E%3C/svg%3E"); }
 .printout-mark-trace { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='166 66 152 104' fill='none' stroke='%239a4e2a' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M172 124L196 121 210 128 224 118 236 76 246 160 258 112 272 126 290 120 312 123'/%3E%3Cpath d='M172 96H312' stroke-dasharray='6 8'/%3E%3C/svg%3E"); }
 .printout-mark-cards { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='180 48 140 110' fill='none' stroke='%239a4e2a' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='230' y='92' width='72' height='50' transform='rotate(8 266 117)'/%3E%3Crect x='220' y='82' width='72' height='50' transform='rotate(3 256 107)'/%3E%3Crect x='210' y='72' width='72' height='50'/%3E%3Cpath d='M222 96H262M222 108H250'/%3E%3Cpath d='M186 56L208 56 208 78'/%3E%3C/svg%3E"); }
+.printout-mark-sprout { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='176 44 144 116' fill='none' stroke='%239a4e2a' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M182 146H314'/%3E%3Cpath d='M248 146V88'/%3E%3Cpath d='M248 108C226 110 210 98 206 78 228 76 244 88 248 108Z'/%3E%3Cpath d='M248 94C252 70 270 56 294 56 294 80 276 94 248 94Z'/%3E%3Cpath d='M214 154V146M282 154V146' stroke-dasharray='2 6'/%3E%3C/svg%3E"); }
 
 /* Rubber stamp, pressed on crooked once the run is through. */
 .printout-stamp {
@@ -1208,7 +1129,7 @@ a {
   box-shadow: inset 0 0 0 3px var(--paper-3), inset 0 0 0 4px rgba(154, 78, 42, 0.55);
 }
 
-.plate-flag {
+.pp-flag {
   position: absolute;
   top: 0.75rem;
   right: 0;
@@ -1222,94 +1143,595 @@ a {
   padding: 0.2rem 0.5rem;
 }
 
-.plate-title {
-  font-family: var(--font-display);
-  font-size: 2.4rem;
-  line-height: 0.92;
-  letter-spacing: 0.005em;
-  text-transform: uppercase;
-  color: var(--paper);
-  padding-left: 1.5rem;
-  margin-bottom: 0.85rem;
+/* ------------------------------------------------------------
+   PROJECT PAGE — /work/<slug>
+   One sheet of the run. A job ticket clipped to the head, the sample
+   run pasted beside it, and the write-up in the forms a print shop
+   already has: the brief, clippings, a press line, proof marks,
+   stamps, and a strip to tear off for the next sheet.
+   ------------------------------------------------------------ */
+.pp {
+  padding: 7.5rem 0 6rem;
 }
 
-.plate-desc {
-  font-size: 0.94rem;
-  line-height: 1.6;
-  color: var(--paper-dim);
-  padding-left: 1.5rem;
-  margin-bottom: 1.25rem;
-}
-
-.plate-tech {
+.pp-topline {
   display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-  list-style: none;
-  padding-left: 1.5rem;
-  margin-bottom: 1.4rem;
-}
-
-.plate-tech li {
-  font-family: var(--font-type);
-  font-size: 0.66rem;
-  letter-spacing: 0.04em;
-  color: var(--paper-dim);
-  border: 1px solid var(--rule);
-  padding: 0.16rem 0.45rem;
-}
-
-.plate-links {
-  display: flex;
-  gap: 1.5rem;
-  padding-left: 1.5rem;
-}
-
-.plate-links a {
-  font-family: var(--font-type);
-  font-size: 0.76rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--paper);
-  display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  /* Standing underline in the cool drum, hot on hover — the two inks
-     working shifts rather than one ink doing everything. */
+  justify-content: space-between;
+  gap: 1rem;
+  padding-bottom: 1rem;
+  margin-bottom: 3.5rem;
+  border-bottom: 1px solid var(--rule-strong);
+  font-family: var(--font-type);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.pp-back {
+  color: var(--paper);
   border-bottom: 2px solid var(--blue);
   padding-bottom: 1px;
   transition: color 0.2s, border-color 0.2s;
 }
 
-.plate-links a:hover {
+.pp-back span {
+  display: inline-block;
+  transition: transform 0.25s var(--ease);
+}
+
+.pp-back:hover {
   color: var(--red);
   border-bottom-color: var(--red);
 }
 
-.plate-links span { transition: transform 0.25s var(--ease); }
+.pp-back:hover span { transform: translateX(-3px); }
 
-.plate-links a:hover span { transform: translateX(3px); }
+.pp-count {
+  color: var(--paper-dim);
+  font-variant-numeric: tabular-nums;
+}
 
-/* End-stop plate — the run runs out. */
-.plate-end {
-  flex-basis: 220px;
+.pp-count b { color: var(--paper); }
+
+/* --- Head: the text on the left, the sample run pasted beside it --- */
+.pp-head {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.9fr);
+  gap: 3.5rem;
+  align-items: center;
+  margin-bottom: 5.5rem;
+}
+
+/* The job ticket: a slip of stock clipped to the sheet, one ruled
+   field per particular, like the docket that travels with a job
+   through the shop. */
+.job-ticket {
+  display: inline-flex;
+  flex-wrap: wrap;
+  margin-bottom: 1.75rem;
+  background: var(--paper-2);
+  box-shadow: 5px 5px 0 rgba(12, 10, 11, 0.6);
+  transform: rotate(-1.2deg);
+  border-left: 5px solid var(--red);
+}
+
+.job-ticket > div {
+  padding: 0.5rem 1rem 0.55rem;
+  border-left: 1px dashed rgba(20, 17, 15, 0.3);
+}
+
+.job-ticket > div:first-child { border-left: 0; }
+
+.job-ticket dt {
+  font-family: var(--font-type);
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.job-ticket dd {
+  font-family: var(--font-type);
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--ink);
+}
+
+.pp-title {
+  font-family: var(--font-display);
+  /* Sized off the viewport so a twelve-letter name still fits its
+     half of the head on one line; break-word only as a last resort. */
+  font-size: clamp(2.6rem, 5.6vw, 5.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: var(--paper);
+  margin-bottom: 1.25rem;
+  overflow-wrap: break-word;
+}
+
+/* The stack, read like a colophon line rather than a row of chips. */
+.pp-inks {
+  display: flex;
+  align-items: baseline;
+  gap: 0.9rem;
+  margin-bottom: 2.25rem;
+}
+
+.pp-inks-label {
+  flex: none;
+  font-family: var(--font-type);
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.pp-inks ul {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 0.55rem;
+}
+
+.pp-inks li {
+  font-family: var(--font-type);
+  font-size: 0.85rem;
+  color: var(--paper);
+}
+
+.pp-inks li:not(:last-child)::after {
+  content: ' ·';
+  color: var(--paper-dim);
+}
+
+.pp-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem 1.25rem;
+}
+
+.pp-figure:hover .printout-mark { opacity: 0.26; }
+
+/* --- The parts: mark and name in the margin, copy on the measure --- */
+.pp-part {
+  display: grid;
+  grid-template-columns: 12rem minmax(0, 1fr);
+  gap: 2.5rem;
+  padding: 3.5rem 0;
+  border-top: 1px solid var(--rule-strong);
+}
+
+/* A grid item won't shrink below its content unless told to — without
+   this a wide press line pushes the page sideways instead of
+   scrolling inside itself. */
+.pp-body { min-width: 0; }
+
+.pp-label {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  justify-content: center;
-  gap: 1rem;
-  padding-left: 1.5rem;
+  gap: 0.35rem;
+  font-family: var(--font-condensed);
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.pp-note {
+  font-family: var(--font-type);
+  font-size: 0.72rem;
+  font-weight: 400;
+  font-style: italic;
+  letter-spacing: 0.04em;
+  text-transform: none;
+  color: var(--paper-dim);
+}
+
+.pp-mark {
+  font-family: var(--font-type);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--red);
+}
+
+/* Problem: the brief, set as a pull quote. */
+.brief {
+  position: relative;
+  max-width: 40em;
+  padding-left: 3.25rem;
+}
+
+.brief::before {
+  content: '\201C';
+  position: absolute;
+  left: -0.15rem;
+  top: -1.1rem;
+  font-family: var(--font-editorial);
+  font-weight: 900;
+  font-size: 5.5rem;
+  line-height: 1;
+  color: var(--red);
+}
+
+.brief p {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 900;
+  font-size: clamp(1.2rem, 1.9vw, 1.5rem);
+  line-height: 1.45;
+  color: var(--paper);
+}
+
+/* What it does: clippings, taped down, each a little off square. */
+.clippings {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 1.75rem 1.5rem;
+  padding-top: 0.5rem;
+}
+
+/* Four sit two by two rather than three and a straggler. */
+.clippings[data-count='4'] {
+  grid-template-columns: repeat(auto-fit, minmax(max(14rem, 40%), 1fr));
+}
+
+.clipping {
+  position: relative;
+  background: var(--paper-2);
+  padding: 1.4rem 1.4rem 1.5rem;
+  box-shadow: 6px 6px 0 rgba(12, 10, 11, 0.6);
+  transform: rotate(var(--tilt, -0.6deg));
+}
+
+.clipping:nth-child(2n) { --tilt: 0.5deg; }
+.clipping:nth-child(3n) { --tilt: -0.25deg; }
+
+/* A strip of tape in the cool drum. */
+.clipping::before {
+  content: '';
+  position: absolute;
+  top: -9px;
+  left: 50%;
+  width: 3.5rem;
+  height: 1.1rem;
+  background: rgba(98, 194, 177, 0.55);
+  transform: translateX(-50%) rotate(-3deg);
+}
+
+.clipping-no {
+  display: block;
   font-family: var(--font-display);
   font-size: 1.6rem;
-  line-height: 0.9;
+  line-height: 1;
+  color: var(--red-print);
+  margin-bottom: 0.6rem;
+}
+
+.clipping h3 {
+  font-family: var(--font-black);
+  font-size: 1.05rem;
+  line-height: 1.25;
+  color: var(--ink);
+  margin-bottom: 0.5rem;
+}
+
+.clipping p {
+  font-size: 0.92rem;
+  line-height: 1.55;
+  color: var(--ink-2);
+}
+
+/* Architecture: the press line. Stations left to right, each with its
+   number over it, and the sheet fed between them along a dashed run
+   with a head on it. Scrolls sideways if a long line won't fit;
+   stacks on a phone. */
+.press-line {
+  --feed: 3rem;
+  list-style: none;
+  display: flex;
+  gap: var(--feed);
+  overflow-x: auto;
+  padding: 0.5rem 0 1rem;
+  scrollbar-width: thin;
+}
+
+.station {
+  flex: 1 1 0;
+  min-width: 8.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.station-no {
+  font-family: var(--font-type);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue);
+}
+
+.station-box {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 1rem 0.9rem;
+  border: 3px solid var(--paper);
+  background: var(--field);
+}
+
+/* In on the cool drum; out on the stock, pressed. */
+.station:first-child .station-box { border-color: var(--blue); }
+
+.station:last-child .station-box {
+  background: var(--paper);
+  box-shadow: 5px 5px 0 var(--red);
+}
+
+.station:last-child .station-label { color: var(--ink); }
+.station:last-child .station-note { color: var(--ink-3); }
+
+/* The feed, and its head. */
+.station:not(:last-child) .station-box::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 100%;
+  width: calc(var(--feed) - 8px);
+  margin-left: 3px;
+  border-top: 2px dashed var(--blue);
+}
+
+.station:not(:last-child) .station-box::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: calc(100% + var(--feed) - 8px);
+  margin-top: 1px;
+  border-left: 8px solid var(--blue);
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  transform: translateY(-50%);
+}
+
+.station-label {
+  font-family: var(--font-condensed);
+  font-size: 1.35rem;
+  line-height: 1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--paper);
+}
+
+.station-note {
+  font-family: var(--font-type);
+  font-size: 0.72rem;
+  line-height: 1.4;
+  color: var(--paper-dim);
+}
+
+/* Key decisions: proof marks. Each call circled by hand in the cool
+   drum, and the reason run in after it like a note to the printer. */
+.proofs {
+  list-style: none;
+  display: grid;
+  gap: 2.25rem;
+}
+
+.proofs li {
+  display: grid;
+  grid-template-columns: 2.6rem minmax(0, 1fr);
+  column-gap: 1.1rem;
+}
+
+.proof-ring {
+  grid-row: span 2;
+  width: 2.3rem;
+  height: 2.3rem;
+  display: grid;
+  place-items: center;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--blue);
+  border: 2px solid var(--blue);
+  /* Drawn, not compassed. */
+  border-radius: 48% 52% 44% 56% / 56% 44% 54% 46%;
+  transform: rotate(-8deg);
+}
+
+.proof-call {
+  font-family: var(--font-black);
+  font-size: 1.15rem;
+  line-height: 1.35;
+  color: var(--paper);
+  margin-bottom: 0.45rem;
+}
+
+.proof-why {
+  max-width: 42em;
+  font-family: var(--font-type);
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: var(--paper-dim);
+}
+
+.proof-why em {
+  margin-right: 0.2em;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 900;
+  font-size: 1rem;
+  color: var(--red);
+}
+
+/* Outcome: rubber stamps, alternating drums, pressed on as the part
+   arrives. */
+.stamps {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 1.5rem 2rem;
+  padding: 0.75rem 0 0.5rem;
+}
+
+.stamps li {
+  --tilt: -3deg;
+  --stamp: var(--red);
+  --stamp-ring: rgba(207, 114, 72, 0.45);
+  max-width: 26rem;
+  padding: 0.65rem 1.2rem 0.5rem;
+  font-family: var(--font-condensed);
+  font-size: 1.45rem;
+  line-height: 1.1;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--stamp);
+  border: 3px solid var(--stamp);
+  box-shadow: inset 0 0 0 4px var(--field), inset 0 0 0 6px var(--stamp-ring);
+  transform: rotate(var(--tilt));
+  opacity: 0.92;
+}
+
+.stamps li:nth-child(2n) {
+  --tilt: 2deg;
+  --stamp: var(--blue);
+  --stamp-ring: rgba(98, 194, 177, 0.45);
+}
+
+.pp-part.is-revealed .stamps li {
+  animation: stamp-press 0.32s var(--paste) both;
+  animation-delay: calc(0.25s + var(--i, 0) * 0.12s);
+}
+
+@keyframes stamp-press {
+  from { transform: rotate(calc(var(--tilt) - 5deg)) scale(1.5); opacity: 0; }
+  to   { transform: rotate(var(--tilt)) scale(1); opacity: 0.92; }
+}
+
+/* --- The tear-off strip: the sheet either side, as two tickets ---- */
+.tearoff {
+  margin-top: 3rem;
+}
+
+.tearoff-cut {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 1.75rem;
+  font-family: var(--font-type);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
   color: var(--paper-dim);
 }
 
-.plate-end-mark {
-  font-size: 1.4rem;
+.tearoff-cut span {
+  font-size: 1.15rem;
+  letter-spacing: 0;
   color: var(--red);
+}
+
+.tearoff-cut::after {
+  content: '';
+  flex: 1;
+  border-top: 2px dashed var(--rule-strong);
+}
+
+.tearoff-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+/* A ticket: stock, a dashed cut line inside the edge, a notch bitten
+   out of each end. */
+.ticket {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1.5rem 2rem 1.6rem;
+  background: var(--paper);
+  outline: 2px dashed rgba(20, 17, 15, 0.28);
+  outline-offset: -9px;
+  box-shadow: 6px 6px 0 rgba(12, 10, 11, 0.6);
+  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+
+.ticket::before,
+.ticket::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  width: 20px;
+  height: 20px;
+  margin-top: -10px;
+  border-radius: 50%;
+  background: var(--field);
+}
+
+.ticket::before { left: -10px; }
+.ticket::after { right: -10px; }
+
+.ticket-next {
+  align-items: flex-end;
+  text-align: right;
+}
+
+.ticket-kicker {
+  font-family: var(--font-type);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--blue-print);
+}
+
+.ticket-title {
+  font-family: var(--font-display);
+  font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+  line-height: 0.95;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+
+.ticket:hover,
+.ticket:focus-visible {
+  transform: translate(-3px, -3px) rotate(-0.6deg);
+  box-shadow: 9px 9px 0 var(--red);
+}
+
+.ticket-next:hover,
+.ticket-next:focus-visible {
+  transform: translate(-3px, -3px) rotate(0.6deg);
+}
+
+.pp-missing-text {
+  margin-bottom: 2rem;
+}
+
+.pp-missing-text code {
+  font-family: var(--font-type);
+  color: var(--paper);
 }
 
 /* ------------------------------------------------------------
@@ -1417,7 +1839,7 @@ a {
    a magazine. Stock, not board; ruled lines to write on rather than
    input boxes; a rubber stamp to send it; and a perforated stub on
    the right — the part you detach and keep — carrying the direct
-   lines. Same material as the plates in Work, so the page closes on
+   lines. Same material as the printouts on the project pages, so it closes on
    something it has already taught the reader to read.
    ------------------------------------------------------------ */
 .reply-card {
@@ -1865,6 +2287,615 @@ a {
 }
 
 /* ------------------------------------------------------------
+   INFRA PAGE — something that runs, not something that shipped
+   The homelab's sheet: a rating plate riveted where the sample run
+   would be, the whole machine as a wiring drawing across the sheet,
+   key tags for the ways in, and a ledger of what its agent can do.
+   ------------------------------------------------------------ */
+
+/* --- Rating plate: stamped particulars, four rivets --------------- */
+.rating {
+  position: relative;
+  justify-self: end;
+  width: 100%;
+  max-width: 460px;
+  padding: 1.6rem 1.9rem 1.5rem;
+  background:
+    repeating-linear-gradient(90deg, rgba(20, 17, 15, 0.025) 0 2px, transparent 2px 5px),
+    var(--paper-3);
+  border: 3px double var(--ink-2);
+  box-shadow: 8px 8px 0 rgba(12, 10, 11, 0.6);
+  transform: rotate(-0.6deg);
+  color: var(--ink);
+}
+
+.rating-rivet {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 35%, var(--paper), var(--ink-3) 70%);
+}
+
+.rating-rivet:nth-child(1) { top: 9px; left: 9px; }
+.rating-rivet:nth-child(2) { top: 9px; right: 9px; }
+.rating-rivet:nth-child(3) { bottom: 9px; left: 9px; }
+.rating-rivet:nth-child(4) { bottom: 9px; right: 9px; }
+
+.rating-head {
+  font-family: var(--font-condensed);
+  font-size: 1.25rem;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink);
+  padding-bottom: 0.6rem;
+  margin-bottom: 0.4rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+.rating dl > div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.42rem 0;
+  border-bottom: 1px dashed rgba(20, 17, 15, 0.28);
+}
+
+.rating dl > div:last-child { border-bottom: 0; }
+
+.rating dt {
+  font-family: var(--font-type);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+}
+
+.rating dd {
+  font-family: var(--font-type);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: var(--ink);
+  text-align: right;
+}
+
+/* --- The wiring drawing ------------------------------------------ */
+.map-plate {
+  margin: 0 0 4.5rem;
+  background: var(--paper);
+  border: 3px solid var(--paper);
+  box-shadow: 10px 10px 0 rgba(12, 10, 11, 0.6);
+}
+
+.map-scroll {
+  overflow-x: auto;
+  scrollbar-width: thin;
+}
+
+.map-scroll:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: -3px;
+}
+
+.hm {
+  display: block;
+  width: 100%;
+  min-width: 960px;
+  height: auto;
+}
+
+.hm text { font-family: var(--font-type); }
+
+.hm-zone {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  fill: var(--ink-3);
+}
+
+.hm-box rect {
+  fill: var(--paper);
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.hm-box.key rect {
+  fill: var(--ink);
+}
+
+.hm-box.key .hm-label { fill: var(--paper); }
+.hm-box.key .hm-sub { fill: var(--paper-3); }
+
+.hm-box.protected rect {
+  stroke: var(--red-print);
+  stroke-width: 2;
+}
+
+.hm-label,
+.hm-row-name {
+  font-family: var(--font-condensed) !important;
+  font-size: 16px;
+  letter-spacing: 0.05em;
+  fill: var(--ink);
+}
+
+.hm-row-name { font-size: 15px; }
+
+.hm-sub {
+  font-size: 10px;
+  fill: var(--ink-3);
+}
+
+.hm-frame rect {
+  fill: none;
+  stroke: var(--ink-3);
+  stroke-width: 1;
+  stroke-dasharray: 4 3;
+}
+
+.hm-frame.public rect,
+.hm-frame.protected rect,
+.hm-frame.agent rect {
+  stroke-dasharray: none;
+  stroke-width: 2;
+  fill: var(--paper);
+}
+
+.hm-frame.public rect { stroke: var(--blue-print); }
+.hm-frame.protected rect { stroke: var(--red-print); }
+.hm-frame.agent rect { stroke: var(--ink); }
+
+.hm-frame-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  fill: var(--ink-2);
+}
+
+.hm-frame.public .hm-frame-label { fill: var(--blue-print); }
+.hm-frame.protected .hm-frame-label { fill: var(--red-print); }
+
+.hm-host rect {
+  fill: var(--paper-2);
+  stroke: var(--ink);
+  stroke-width: 3;
+}
+
+.hm-host-name {
+  font-family: var(--font-display) !important;
+  font-size: 26px;
+  text-transform: uppercase;
+  fill: var(--ink);
+}
+
+.hm-host-spec {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  fill: var(--ink-3);
+}
+
+.hm-bullet { fill: var(--ink); }
+.hm-frame.public ~ .hm-row .hm-bullet { fill: var(--blue-print); }
+
+.hm-tag {
+  font-size: 9.5px;
+  letter-spacing: 0.06em;
+  text-anchor: end;
+  text-transform: uppercase;
+  fill: var(--ink-3);
+}
+
+.hm-lan rect {
+  fill: none;
+  stroke: var(--ink-2);
+  stroke-width: 1;
+}
+
+.hm-lan text {
+  font-size: 8.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-anchor: middle;
+  fill: var(--ink-2);
+}
+
+.hm-edge path {
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linejoin: round;
+}
+
+.hm-edge path.is-dashed { stroke-dasharray: 6 4; }
+
+.hm-ink path, .hm-ink { stroke: var(--ink); fill: var(--ink); }
+.hm-public path, .hm-public { stroke: var(--blue-print); fill: var(--blue-print); }
+.hm-protected path, .hm-protected { stroke: var(--red-print); fill: var(--red-print); }
+
+.hm-edge path { fill: none; }
+.hm-edge.hm-public path,
+.hm-edge.hm-protected path { stroke-width: 2.2; }
+
+marker path { stroke: none; }
+
+.hm-edge-label {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  stroke: none;
+  paint-order: stroke;
+}
+
+.hm-edge.hm-ink .hm-edge-label { fill: var(--ink-2); }
+
+.hm-titleblock rect,
+.hm-titleblock line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+}
+
+.hm-tb-big {
+  font-family: var(--font-display) !important;
+  font-size: 20px;
+  text-transform: uppercase;
+  fill: var(--ink);
+}
+
+.map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.6rem 1.6rem;
+  padding: 0.9rem 1.25rem 1rem;
+  border-top: 2px solid var(--ink);
+  background: var(--paper-2);
+  font-family: var(--font-type);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-2);
+}
+
+.map-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.map-legend i {
+  display: inline-block;
+  width: 26px;
+  border-top: 3px solid;
+}
+
+.lg-public { border-color: var(--blue-print); }
+.lg-protected { border-color: var(--red-print); }
+.lg-tunnel { border-top-style: dashed !important; border-color: var(--ink); }
+.lg-ink { border-color: var(--ink); border-top-width: 2px !important; }
+
+.lg-lan {
+  padding: 0 0.3rem;
+  border: 1px solid var(--ink-2);
+  font-size: 0.6rem;
+}
+
+.map-hint {
+  display: none !important;
+  margin-left: auto;
+  color: var(--red-print);
+}
+
+/* --- Ways in: key tags on a board --------------------------------- */
+.keytags {
+  list-style: none;
+  display: grid;
+  /* Two by two — four tags never leave one hanging. */
+  grid-template-columns: repeat(auto-fit, minmax(max(15rem, 40%), 1fr));
+  gap: 2rem 1.5rem;
+  padding-top: 0.75rem;
+}
+
+.keytag {
+  --tone: var(--ink-2);
+  position: relative;
+  padding: 2.4rem 1.3rem 1.3rem;
+  background: var(--paper-2);
+  color: var(--ink);
+  /* The tag's clipped top corners. */
+  clip-path: polygon(14% 0, 86% 0, 100% 10%, 100% 100%, 0 100%, 0 10%);
+  box-shadow: inset 0 5px 0 var(--tone);
+  transform: rotate(var(--tilt, -1deg));
+  transform-origin: 50% 0;
+  transition: transform 0.3s var(--paste);
+}
+
+.keytag:nth-child(2n) { --tilt: 1.2deg; }
+.keytag:hover { transform: rotate(0deg); }
+
+.keytag-public { --tone: var(--blue-print); }
+.keytag-protected { --tone: var(--red-print); }
+.keytag-private { --tone: var(--ink); }
+
+/* The punched hole, reinforced with a ring. */
+.keytag-hole {
+  position: absolute;
+  top: 0.85rem;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  border-radius: 50%;
+  background: var(--field);
+  box-shadow: 0 0 0 3px var(--tone);
+}
+
+.keytag h3 {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  line-height: 1;
+  text-transform: uppercase;
+  color: var(--ink);
+  margin-bottom: 0.45rem;
+}
+
+.keytag-path {
+  font-family: var(--font-type);
+  font-size: 0.78rem;
+  font-weight: 700;
+  line-height: 1.5;
+  color: var(--tone) !important;
+  padding-bottom: 0.7rem;
+  margin-bottom: 0.7rem;
+  border-bottom: 1px dashed rgba(20, 17, 15, 0.3);
+}
+
+.keytag ul {
+  list-style: none;
+  display: grid;
+  gap: 0.25rem;
+}
+
+.keytag li {
+  font-size: 0.9rem;
+  line-height: 1.4;
+  color: var(--ink-2);
+  padding-left: 1rem;
+  position: relative;
+}
+
+.keytag li::before {
+  content: '—';
+  position: absolute;
+  left: 0;
+  color: var(--tone);
+}
+
+/* --- Who keeps it: the agent -------------------------------------- */
+.agent-intro {
+  max-width: 44em;
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: var(--paper);
+  margin-bottom: 1.75rem;
+}
+
+/* The modules as a ledger: ruled, typewritten, the name in the margin. */
+
+.ledger {
+  width: 100%;
+  margin-top: 2.25rem;
+  border-collapse: collapse;
+  background: var(--paper);
+  color: var(--ink);
+  box-shadow: 6px 6px 0 rgba(12, 10, 11, 0.6);
+}
+
+.ledger caption {
+  caption-side: top;
+  text-align: left;
+  padding: 0 0 0.75rem;
+  font-family: var(--font-type);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--paper-dim);
+}
+
+.ledger th,
+.ledger td {
+  padding: 0.65rem 1rem;
+  text-align: left;
+  vertical-align: baseline;
+  border-bottom: 1px solid rgba(20, 17, 15, 0.18);
+}
+
+.ledger thead th {
+  font-family: var(--font-type);
+  font-size: 0.66rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  border-bottom: 2px solid var(--ink);
+}
+
+.ledger tbody th {
+  font-family: var(--font-type);
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--red-print);
+  white-space: nowrap;
+  /* A red margin rule, as on ledger paper. */
+  border-right: 2px solid rgba(154, 78, 42, 0.45);
+}
+
+.ledger td {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  color: var(--ink-2);
+}
+
+.ledger td:last-child {
+  font-family: var(--font-type);
+  font-size: 0.78rem;
+  color: var(--blue-print);
+}
+
+/* ------------------------------------------------------------
+   SLUG — a project page's foot
+   What a press prints in the trim of every sheet: crop marks at the
+   corners, registration targets either end of a control strip of
+   both drums, and the job's particulars in small type. Board, not
+   stock — this is the margin of the sheet being read, not a cover.
+   The back cover stays with the homepage.
+   ------------------------------------------------------------ */
+.slug {
+  position: relative;
+  z-index: 1;
+  /* The fourth value clears the spine — see .colophon. */
+  padding: 3.25rem 0 3rem var(--spine);
+  background: var(--field-3);
+  border-top: 1px solid var(--rule-strong);
+}
+
+.slug-crop {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+}
+
+.slug-crop::before,
+.slug-crop::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: var(--paper-dim);
+}
+
+.slug-crop::before { width: 16px; height: 1px; }
+.slug-crop::after  { width: 1px; height: 16px; }
+
+.slug-crop-tl { top: 12px; left: calc(var(--spine) + 12px); }
+.slug-crop-tr { top: 12px; right: 12px; transform: scaleX(-1); }
+.slug-crop-bl { bottom: 12px; left: calc(var(--spine) + 12px); transform: scaleY(-1); }
+.slug-crop-br { bottom: 12px; right: 12px; transform: scale(-1); }
+
+.slug-strip {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.75rem;
+}
+
+.slug-patches {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(11, minmax(0, 1fr));
+  gap: 2px;
+  height: 16px;
+}
+
+.slug-patches i {
+  display: block;
+  outline: 1px solid var(--rule);
+}
+
+.slug-reg {
+  position: relative;
+  flex: none;
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--paper-dim);
+  border-radius: 50%;
+}
+
+.slug-reg::before,
+.slug-reg::after {
+  content: '';
+  position: absolute;
+  background: var(--paper-dim);
+}
+
+.slug-reg::before { left: 50%; top: -6px; bottom: -6px; width: 1.5px; transform: translateX(-50%); }
+.slug-reg::after  { top: 50%; left: -6px; right: -6px; height: 1.5px; transform: translateY(-50%); }
+
+.slug-imprint {
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-weight: 900;
+  font-size: 1.1rem;
+  line-height: 1.45;
+  color: var(--paper);
+  margin-bottom: 1.5rem;
+}
+
+.slug-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.25rem 2rem;
+  padding-top: 1.1rem;
+  border-top: 1px dashed var(--rule-strong);
+}
+
+.slug-line {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem 2.25rem;
+}
+
+.slug-line dt {
+  font-family: var(--font-type);
+  font-size: 0.62rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--blue);
+  margin-bottom: 0.15rem;
+}
+
+.slug-line dd {
+  font-family: var(--font-type);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--paper-dim);
+}
+
+.slug-line a,
+.slug-top {
+  color: var(--paper);
+  border-bottom: 2px solid var(--blue);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.slug-top {
+  font-family: var(--font-type);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-bottom-color: var(--red);
+}
+
+.slug-line a:hover,
+.slug-top:hover {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
+
+/* ------------------------------------------------------------
    RESPONSIVE
    ------------------------------------------------------------ */
 /* Short landscape screens can't fit the upright nav down the spine, so
@@ -1879,8 +2910,8 @@ a {
 
 @media (max-width: 900px) {
   /* The spine folds down into a top bar; content no longer clears a
-     left gutter, and the page padding comes in. Both the sheet and the
-     reel read --pad, so the left spine follows on its own. */
+     left gutter, and the page padding comes in. The sheet reads
+     --pad, so the left spine follows on its own. */
   :root { --spine: 0px; --pad: 1.5rem; }
 
   .spine { display: none; }
@@ -1916,13 +2947,39 @@ a {
 
   .case { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-  /* The reel keeps swiping horizontally — natural on touch — and its
-     gutter follows --pad down with everything else. The arrows stay:
-     they are how a visitor learns the reel moves at all. */
-  .plate { flex-basis: min(88vw, 400px); padding-right: 1.25rem; }
-  .reel-bar { gap: 1rem; }
-  .reel-frame::after { bottom: 3rem; }
+  /* A contents entry pulls its number in; the leader still runs out
+     to the year. */
+  .contents-head { padding-left: 3.5rem; }
+  .entry {
+    grid-template-columns: 3.5rem minmax(0, 1fr);
+    padding: 1.5rem 0 1.4rem;
+  }
+  .entry-no { font-size: 2.3rem; text-shadow: 2px 2px 0 var(--red); }
+  .entry-line { gap: 0.6rem; }
+  .entry-go { width: 1.8rem; height: 1.8rem; font-size: 0.85rem; }
 
+  /* A project page runs in one column; the part names sit over their
+     copy instead of beside it. */
+  .pp { padding: 6rem 0 4rem; }
+  .pp-head {
+    grid-template-columns: 1fr;
+    gap: 2.75rem;
+    margin-bottom: 3.5rem;
+  }
+  .pp-figure { justify-self: start; }
+  .pp-part {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.5rem;
+    padding: 2.75rem 0;
+  }
+  .pp-label {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+  }
+  .brief { padding-left: 2.5rem; }
+  .brief::before { font-size: 4.25rem; top: -0.8rem; }
 
   .colophon-grid { grid-template-columns: 1fr; gap: 1.25rem; }
 
@@ -1949,6 +3006,63 @@ a {
   .case-sort { min-height: 6.25rem; padding: 0.8rem 0.85rem 0.7rem; }
   .case-name { font-size: 1.35rem; }
   .case-name[data-long] { font-size: 1rem; }
+}
+
+/* The press line turns to run down the page: the station number sits
+   beside its box, and the feed drops between them. */
+@media (max-width: 700px) {
+  .press-line {
+    --feed: 2.4rem;
+    flex-direction: column;
+    overflow-x: visible;
+  }
+  .station {
+    min-width: 0;
+    display: grid;
+    grid-template-columns: 3.4rem minmax(0, 1fr);
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .station-no { white-space: nowrap; }
+  .station:not(:last-child) .station-box::after {
+    top: 100%;
+    left: 50%;
+    width: 0;
+    height: calc(var(--feed) - 8px);
+    margin: 3px 0 0;
+    border-top: 0;
+    border-left: 2px dashed var(--blue);
+  }
+  .station:not(:last-child) .station-box::before {
+    top: calc(100% + var(--feed) - 8px);
+    left: 50%;
+    margin: 0 0 0 1px;
+    border-left: 6px solid transparent;
+    border-right: 6px solid transparent;
+    border-top: 8px solid var(--blue);
+    border-bottom: 0;
+    transform: translateX(-50%);
+  }
+}
+
+@media (max-width: 900px) {
+  .rating { justify-self: start; }
+  .map-plate { margin-bottom: 3rem; }
+  .map-hint { display: inline-flex !important; }
+}
+
+@media (max-width: 560px) {
+  .ledger thead { display: none; }
+  .ledger tr { display: grid; grid-template-columns: 1fr; padding: 0.6rem 0; border-bottom: 1px solid rgba(20, 17, 15, 0.18); }
+  .ledger th, .ledger td { border: 0; padding: 0.15rem 1rem; }
+  .ledger tbody th { border-right: 0; }
+  .rating { padding: 1.4rem 1.3rem 1.3rem; }
+}
+
+@media (max-width: 560px) {
+  .tearoff-row { grid-template-columns: 1fr; }
+  .job-ticket > div { padding: 0.45rem 0.75rem 0.5rem; }
+  .pp-inks { flex-direction: column; gap: 0.4rem; }
 }
 
 @media (max-width: 480px) {
@@ -1980,15 +3094,15 @@ textarea:focus-visible {
     -webkit-tap-highlight-color: rgba(207, 114, 72, 0.24);
   }
 
-  /* The plate links are set at caption size and the topbar name sits in
+  /* The back link is set at caption size and the topbar name sits in
      a slim bar — both are well under the 44px a fingertip needs. Grow the
      hit area with a pseudo-element so the printed size doesn't change. */
-  .plate-links a,
+  .pp-back,
   .topbar-name {
     position: relative;
   }
 
-  .plate-links a::after,
+  .pp-back::after,
   .topbar-name::after {
     content: '';
     position: absolute;

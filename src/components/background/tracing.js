@@ -81,11 +81,11 @@ export function messageList(visitor, sinceLoadMs = 0, cellsWalked = 0) {
  * Messages tied to a place on the page. One of these is offered ahead
  * of the shuffled pool when an ant is standing in that section and the
  * reader is looking at it — and only once a visit, so it reads as a
- * remark rather than a nag. The plates one is a second, ambient answer
- * to the question a tester couldn't answer: does that thing scroll?
+ * remark rather than a nag. The work one points at the rows: each
+ * opens onto a write-up, which a plain index doesn't say by itself.
  */
 export const CONTEXTUAL = [
-  { where: 'work', cap: 'THE PLATES', word: 'DRAG THEM' }
+  { where: 'work', cap: 'EACH ONE', word: 'OPENS UP' }
 ];
 
 const textWidth = (str, scale) => (str.length * 6 - 1) * scale;
