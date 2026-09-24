@@ -25,8 +25,7 @@ export default function App() {
 
       <Footer />
 
-      {/* Paper fibre over the whole board. The halftone behind the
-          content supplies the dot texture now. */}
+      {/* Paper fibre over the whole board. */}
       <div className="press-grain" aria-hidden="true" />
     </>
   );

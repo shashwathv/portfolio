@@ -18,8 +18,8 @@ export default function Footer() {
         <p className="colophon-imprint">
           This site was set in <b>Anton</b>, <b>Archivo Black</b>,{' '}
           <b>Bebas Neue</b>, <b>Playfair Display</b> and{' '}
-          <b>Courier Prime</b>, and crafted at a small homelab in
-          Bengaluru — Arch Linux, Coolify and nginx, behind a Cloudflare
+          <b>Courier Prime</b>, and crafted at a small homelab
+          — Arch Linux, Coolify and nginx, behind a Cloudflare
           tunnel.
         </p>
 
@@ -29,11 +29,11 @@ export default function Footer() {
             <dd className="colophon-inks">
               <span className="ink-line">
                 <span className="ink-swatch swatch-red" aria-hidden="true" />
-                RISO Fluorescent Orange <span className="ink-hex">FF5C39</span>
+                RISO Copper <span className="ink-hex">BD6439</span>
               </span>
               <span className="ink-line">
                 <span className="ink-swatch swatch-blue" aria-hidden="true" />
-                RISO Blue <span className="ink-hex">0078BF</span>
+                RISO Sea Foam <span className="ink-hex">62C2B1</span>
               </span>
             </dd>
           </dl>
@@ -53,7 +53,7 @@ export default function Footer() {
             {/* Vol. IV is literal: this is the fourth time the site has
                 been set from scratch — Feb, Jun and two in Jul 2026. */}
             <dt>Edition</dt>
-            <dd>Vol. IV — the fourth setting, 2026</dd>
+            <dd>Vol. VIII — the eighth setting, 2026</dd>
           </dl>
         </div>
 

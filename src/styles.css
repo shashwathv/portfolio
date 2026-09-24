@@ -1,12 +1,15 @@
 
 :root {
-  /* The board. Deep press blue rather than black — the cut-outs are
-     pasted onto something, and something is never neutral. */
-  --field: #131a36;
-  --field-2: #1b2447;   /* raised panel */
-  --field-3: #0d1226;   /* recessed / behind */
-  --rule: rgba(237, 232, 218, 0.16);
-  --rule-strong: rgba(237, 232, 218, 0.5);  /* a rule meant to be read as an edge */
+  /* The board. A warm charcoal with a trace of plum in it — dark
+     enough to be dark mode, warm enough to be a colour, because a
+     ground with a hue is calmer to look at than one without: black
+     flattens everything pasted on it, and a saturated navy keeps the
+     eye up. This one sits still. */
+  --field: #1a1719;
+  --field-2: #221f22;   /* raised panel */
+  --field-3: #121012;   /* recessed / behind */
+  --rule: rgba(239, 232, 220, 0.14);
+  --rule-strong: rgba(239, 232, 220, 0.45);  /* a rule meant to be read as an edge */
 
   --spine: 78px;        /* width of the fixed left nav spine */
 
@@ -25,32 +28,26 @@
      scrollbar to guess at. */
   --gutter: calc(var(--pad) + max(0px, (100% - var(--sheet-max)) / 2));
 
-  /* Stock. Greyer and cooler than a cream — this is newsprint,
-     not letterpress cotton. Doubles as the primary text colour. */
-  --paper: #ede8da;
-  --paper-2: #dcd5c2;   /* a second, slightly darker scrap */
-  --paper-3: #c9c1ac;   /* deepest scrap / rules */
-  /* Secondary text on the board. Light enough to clear AAA at the small
-     sizes it gets used at — kickers, field labels, captions. Cool, and
-     specifically in the cool drum's family (207°, not the old 226°
-     lavender): most of the page's quiet text sits next to something
-     printed in blue, and two different blues that close together read
-     as a mistake rather than as a pair. */
-  --paper-dim: #a9b6c6;
+  /* Stock. A warm newsprint, not white: white on a dark ground glares,
+     and this whole scheme is built not to. Doubles as the primary text
+     colour. */
+  --paper: #efe8dc;
+  --paper-2: #dfd6c7;   /* a second, slightly darker scrap */
+  --paper-3: #cbc1ad;   /* deepest scrap / the printout stock */
+  /* Secondary text on the board. A warm grey, in the stock's family
+     rather than either drum's, so quiet text reads as paper let down
+     and never as a third ink. Clears AAA at the small sizes it is used
+     at. */
+  --paper-dim: #b0a9a4;
 
-  /* Inks. Two drums, exactly as the colophon claims — the published RISO
-     values, not web reds and blues that merely look the part.
+  /* Inks. Two drums, as the colophon claims — published RISO values,
+     not web colours that look the part.
 
-     CURRENT RUN: Fluorescent Orange + Blue. The most-printed pairing on
-     any riso, and the reason: on a blue board the orange is the only
-     thing that can be a warning label, and the blue is the only thing
-     that can be quiet without disappearing.
-
-     Both drums are set at a coverage where they read as ink. The run
-     this replaced kept its blue at 2.42:1 on the board — a colour you
-     could only see by being told it was there — so everything visibly
-     blue was a pale tint of it, and the page read as red on navy with
-     a lavender ghost.
+     CURRENT RUN: Copper + Sea Foam. Terracotta and mint on a warm
+     charcoal — the restful pairing. The copper is earthy enough to be
+     the hot drum without ever shouting, and the sea foam is quiet on
+     a dark board without disappearing into it. Neither is fluorescent,
+     which is the point of this run.
      ---------------------------------------------------------------
      Each drum gets one value per substrate, because a spot colour laid
      on a dark board and the same colour laid on newsprint are not the
@@ -61,25 +58,22 @@
        flood fill + --ink text    --red        —
        on the paper stock         --red-print  --blue-print
 
-     The hot drum has no legible value on the stock at any coverage (the
-     best is 3.9:1, and by then it is rust, not orange), so on paper it
-     is for marks and rules and the cool drum carries the small type.
      The variables keep their --red/--blue names across a change of
      drum: they are slots in that table, not colour names. */
-  --ink: #14110e;
-  --ink-2: #454037;
-  --ink-3: #6b6558;     /* the ink let down for a caption on the stock —
+  --ink: #14110f;
+  --ink-2: #443f3c;
+  --ink-3: #6b655f;     /* the ink let down for a caption on the stock —
                            spine handle, colophon labels, ink values */
 
-  --red: #ff5c39;       /* RISO Fluorescent Orange, full coverage */
-  --red-print: #d9451f; /* the same drum overprinted — heavier on the
-                           stock, but the same orange, not a browner
-                           second ink */
+  --red: #cf7248;       /* RISO Copper, lifted a touch from BD6439 so ink
+                           text on it and it on the board both clear */
+  --red-print: #9a4e2a; /* the same drum overprinted, for marks and
+                           rules on the stock */
 
-  --blue-deep: #0078bf; /* RISO Blue, full coverage */
-  --blue: #4fb0e4;      /* the same drum at partial coverage — same hue
-                           (199°), lifted so it reads on the board */
-  --blue-print: #00527f; /* overprinted, for small type on the stock */
+  --blue-deep: #237e74; /* RISO Pine, for a flood with light text */
+  --blue: #62c2b1;      /* RISO Sea Foam, full coverage — it reads on the
+                           board as printed */
+  --blue-print: #1f6b62; /* overprinted, for small type on the stock */
 
   /* What floods behind a section eyebrow. Normally the cool drum; on a
      run whose second ink is too loud to sit behind five headings — or
@@ -89,8 +83,8 @@
   /* The two swatches in the colophon, which have to be the drums as
      published — the values printed beside them — and not whichever
      per-substrate variant the page happens to use most. */
-  --swatch-1: var(--red);
-  --swatch-2: #0078bf;
+  --swatch-1: #bd6439;
+  --swatch-2: #62c2b1;
 
   --font-display: 'Anton', Impact, sans-serif;
   --font-black: 'Archivo Black', Arial Black, sans-serif;
@@ -158,17 +152,18 @@ body {
   z-index: 1;
 }
 
-/* Everything clears the fixed spine on the left. The halftone board
-   still runs full-bleed behind it. */
-.site-content,
-.colophon {
+/* Everything clears the fixed spine on the left. The board, and the
+   ants working on it, still run full-bleed behind it. The colophon
+   sets its own — see below, where its padding shorthand would wipe
+   anything set here. */
+.site-content {
   padding-left: var(--spine);
 }
 
 /* ------------------------------------------------------------
    PRESS GRAIN
-   Paper fibre over the whole board — the one static texture left now
-   that the live halftone supplies the dot pattern behind the content.
+   Paper fibre over the whole board. The traced word behind the content
+   is the other texture; this one sits over everything.
    ------------------------------------------------------------ */
 .press-grain {
   position: fixed;
@@ -630,7 +625,7 @@ a {
 
   /* Has to be a filter, not a box-shadow: clip-path clips everything
      the element paints, shadow included. */
-  filter: drop-shadow(4px 5px 0 rgba(9, 12, 26, 0.55));
+  filter: drop-shadow(4px 5px 0 rgba(9, 7, 8, 0.55));
 
   transform: rotate(var(--tilt));
   transition: transform 0.3s var(--paste);
@@ -730,11 +725,30 @@ a {
 /* ------------------------------------------------------------
    ABOUT
    ------------------------------------------------------------ */
+/* One grid for the whole spread, head included. The colophon on the
+   right runs from the top of the section, not from where the prose
+   starts — beside a two-line display title the right-hand third of the
+   measure was empty, and below three paragraphs of prose the left-hand
+   two-thirds were, so the two columns were each leaving a hole for the
+   other to fill. Hung from the same top edge as the kicker, the rail's
+   rule and the kicker's block sit on one line across the sheet, and
+   both columns close within a few lines of each other. */
 .about-spread {
   display: grid;
   grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
-  gap: 4rem;
+  gap: 4.5rem;
   align-items: start;
+}
+
+/* The rail is a colophon — the production particulars a printed piece
+   carries — so it is set like one: a heavy rule to open, hairlines
+   between entries, and a heavier rule to close so the block reads as a
+   block and not as a list that ran out. */
+.about-rail {
+  /* Sits the rail's top rule on the kicker's top edge — the kicker is
+     an inline-block with its own line box, so it starts a hair below
+     the grid row. */
+  padding-top: 0.2rem;
 }
 
 .about-body p + p {
@@ -758,33 +772,43 @@ a {
 
 .fact-stack {
   border-top: 3px solid var(--paper);
+  border-bottom: 1px solid var(--rule-strong);
 }
 
+/* Sized so five entries close a line or two below the last line of
+   prose — the rail should end with the copy, not before it. */
 .fact {
   border-bottom: 1px solid var(--rule);
-  padding: 1rem 0;
+  padding: 1.25rem 0 1.3rem;
+}
+
+.fact:last-child {
+  border-bottom: 0;
 }
 
 .fact dt {
   font-family: var(--font-type);
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
   color: var(--blue);
-  margin-bottom: 0.3rem;
+  margin-bottom: 0.4rem;
 }
 
 .fact dd {
   font-family: var(--font-body);
-  font-size: 0.98rem;
+  font-size: 1rem;
+  line-height: 1.35;
   color: var(--paper);
 }
 
 .fact dd span {
   display: block;
+  margin-top: 0.2rem;
   color: var(--paper-dim);
-  font-size: 0.88rem;
+  font-size: 0.86rem;
+  line-height: 1.45;
 }
 
 /* ------------------------------------------------------------
@@ -822,6 +846,92 @@ a {
   background: var(--blue);
 }
 
+/* The bar over the reel: the hint on the left, and on the right the
+   things that make a horizontal run legible to someone who has never
+   met one — where you are in it, and two arrows to step it. The
+   half-plate at the edge and the hint alone had a tester unable to
+   tell the reel scrolled; a counter and a pair of buttons are the
+   convention every carousel on the web has taught. */
+.reel-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.reel-nav {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.reel-count {
+  font-family: var(--font-type);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--paper-dim);
+  margin-right: 0.5rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.reel-count b {
+  color: var(--paper);
+  font-weight: 700;
+}
+
+/* Two pasted paper squares. Same rules as the buttons in the hero — a
+   3px paper edge and a hard ink shadow — so they read as controls, not
+   decoration. */
+.reel-btn {
+  width: 2.75rem;
+  height: 2.75rem;
+  display: inline-grid;
+  place-items: center;
+  font-family: var(--font-type);
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--paper);
+  background: transparent;
+  border: 3px solid var(--paper);
+  box-shadow: 4px 4px 0 var(--blue);
+  cursor: pointer;
+  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease), opacity 0.2s;
+}
+
+.reel-btn:hover:not(:disabled),
+.reel-btn:focus-visible {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--blue);
+}
+
+.reel-btn:active:not(:disabled) {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--blue);
+}
+
+.reel-btn:disabled {
+  opacity: 0.3;
+  cursor: default;
+  box-shadow: 4px 4px 0 var(--rule);
+}
+
+.reel-btn:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: 3px;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
 .reel {
   display: flex;
   gap: 0;
@@ -832,7 +942,7 @@ a {
   /* The first plate's rule lands on the page's left spine, same as the
      heading above it; the reel itself runs full-bleed off the right
      edge, which is the whole "there is more, swipe" affordance. */
-  padding: 0.5rem var(--pad) 2rem var(--gutter);
+  padding: 0.5rem var(--pad) 1.75rem var(--gutter);
   scroll-padding-left: var(--gutter);
   -webkit-overflow-scrolling: touch;
   /* A horizontal drag shouldn't arm the browser's back-navigation swipe. */
@@ -845,6 +955,55 @@ a {
 }
 
 .reel::-webkit-scrollbar { display: none; }
+
+.reel:focus-visible {
+  outline: 3px solid var(--red);
+  outline-offset: -3px;
+}
+
+/* The frame carries the trailing-edge fade: the last visible plate
+   dissolves into the board, which says "continues" in a way a hard
+   crop doesn't. Gone once the run is fully out. */
+.reel-frame {
+  position: relative;
+}
+
+.reel-frame::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 3.5rem;
+  width: clamp(4rem, 10vw, 9rem);
+  background: linear-gradient(90deg, rgba(26, 23, 25, 0), var(--field));
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.35s var(--ease);
+}
+
+.reel-frame[data-at-end='true']::after {
+  opacity: 0;
+}
+
+/* The track: the whole run as a length of rule under the plates, with
+   the visible part as a heavier block that slides along it. It's the
+   scrollbar we hid, redrawn as a registration mark. */
+.reel-track {
+  position: relative;
+  height: 3px;
+  margin: 0 var(--pad) 0 var(--gutter);
+  background: var(--rule);
+}
+
+.reel-thumb {
+  position: absolute;
+  top: -2px;
+  height: 7px;
+  width: calc(var(--thumb, 1) * 100%);
+  left: calc(var(--progress, 0) * (100% - var(--thumb, 1) * 100%));
+  background: var(--paper);
+  transition: left 0.08s linear, width 0.2s var(--ease);
+}
 
 .reel.is-dragging { cursor: grabbing; }
 
@@ -903,14 +1062,150 @@ a {
   margin-bottom: 1.4rem;
   border: 3px solid var(--paper);
   background: var(--paper-3);
-  box-shadow: 8px 8px 0 rgba(13, 18, 38, 0.6);
+  box-shadow: 8px 8px 0 rgba(12, 10, 11, 0.6);
 }
 
-.plate-figure .schematic {
-  width: 100%;
-  height: 100%;
-  display: block;
+/* The printout: a strip of tractor-feed paper. Perforated down both
+   edges, banded like green-bar stock, set in the typewriter face. The
+   figure frame around it is unchanged, so the four plates still read
+   as a series. */
+.printout {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  font-family: var(--font-type);
+  color: var(--ink);
+  padding: 0.7rem 1.4rem 0.7rem 1.6rem;
+  background:
+    /* sprocket holes, both edges */
+    radial-gradient(circle at 7px 10px, var(--field) 2.6px, transparent 3.2px) 0 0 / 14px 20px repeat-y,
+    radial-gradient(circle at 7px 10px, var(--field) 2.6px, transparent 3.2px) 100% 0 / 14px 20px repeat-y,
+    /* the bands */
+    repeating-linear-gradient(0deg, rgba(20, 17, 14, 0) 0 21px, rgba(20, 17, 14, 0.045) 21px 42px),
+    var(--paper-3);
+}
+
+/* Tear lines inside the sprocket strips. */
+.printout::before,
+.printout::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 0;
+  border-left: 1px dashed rgba(20, 17, 14, 0.35);
+}
+.printout::before { left: 14px; }
+.printout::after { right: 14px; }
+
+.printout-head {
+  /* Room on the right for a plate's flag, which sits over the corner. */
+  padding-right: 9rem;
+  white-space: nowrap;
+  font-size: 8px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding-bottom: 0.45rem;
+  margin-bottom: 0.55rem;
+  border-bottom: 1px solid var(--ink);
+}
+
+/* Says what it is: a run that shows the shape of the thing, not a log
+   lifted from production. */
+.printout-sample {
+  color: var(--blue-print);
+}
+
+.printout-lines {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.printout-line {
+  font-size: 10.5px;
+  line-height: 21px;   /* one band per line */
+  white-space: nowrap;
+  display: flex;
+  gap: 0.6em;
+}
+
+.printout-prompt { color: var(--blue-print); font-weight: 700; }
+.printout-cmd { font-weight: 700; }
+.printout-label {
+  display: inline-block;
+  min-width: 5.2em;
+  color: var(--ink-3);
+}
+.printout-dim { color: var(--ink-3); }
+.printout-hot { color: var(--red-print); font-weight: 700; }
+.printout-hot .printout-label { color: var(--red-print); min-width: 1.2em; }
+
+/* The print head. */
+.printout-cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.05em;
+  background: var(--ink);
+  vertical-align: -0.15em;
+  animation: printout-blink 1s steps(1) infinite;
+}
+.printout-cursor-rest { animation-duration: 1.2s; }
+
+@keyframes printout-blink {
+  0%, 55% { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+
+/* The mark: the project as one line drawing in the hot ink, faint,
+   behind the paper's text. */
+.printout-mark {
+  position: absolute;
+  right: 1.6rem;
+  bottom: 2.6rem;
+  width: 46%;
+  height: 52%;
+  opacity: 0.14;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  background-size: contain;
+  transition: opacity 0.35s var(--ease);
   pointer-events: none;
+}
+.plate:hover .printout-mark { opacity: 0.26; }
+.printout-mark-ring  { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='160 40 160 130' fill='none' stroke='%239a4e2a' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M236 58C284 44 316 88 300 128 286 164 224 176 200 140 178 108 196 66 236 58Z'/%3E%3Cpath d='M292 138L312 160'/%3E%3C/svg%3E"); }
+.printout-mark-fan   { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='186 44 136 110' fill='none' stroke='%239a4e2a' stroke-width='5' stroke-linejoin='round'%3E%3Crect x='194' y='52' width='88' height='58'/%3E%3Cpath d='M194 66H282'/%3E%3Crect x='210' y='70' width='88' height='58'/%3E%3Cpath d='M210 84H298'/%3E%3Crect x='226' y='88' width='88' height='58'/%3E%3Cpath d='M226 102H314'/%3E%3C/svg%3E"); }
+.printout-mark-trace { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='166 66 152 104' fill='none' stroke='%239a4e2a' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M172 124L196 121 210 128 224 118 236 76 246 160 258 112 272 126 290 120 312 123'/%3E%3Cpath d='M172 96H312' stroke-dasharray='6 8'/%3E%3C/svg%3E"); }
+.printout-mark-cards { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='180 48 140 110' fill='none' stroke='%239a4e2a' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'%3E%3Crect x='230' y='92' width='72' height='50' transform='rotate(8 266 117)'/%3E%3Crect x='220' y='82' width='72' height='50' transform='rotate(3 256 107)'/%3E%3Crect x='210' y='72' width='72' height='50'/%3E%3Cpath d='M222 96H262M222 108H250'/%3E%3Cpath d='M186 56L208 56 208 78'/%3E%3C/svg%3E"); }
+
+/* Rubber stamp, pressed on crooked once the run is through. */
+.printout-stamp {
+  position: absolute;
+  right: 1.9rem;
+  bottom: 0.9rem;
+  transform: rotate(-4deg) scale(1.35);
+  opacity: 0;
+  transition: transform 0.28s var(--paste), opacity 0.2s;
+  pointer-events: none;
+}
+.printout.is-done .printout-stamp {
+  opacity: 1;
+  transform: rotate(-4deg) scale(1);
+}
+.printout-stamp span {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink);
+  border: 2px solid var(--red-print);
+  box-shadow: inset 0 0 0 3px var(--paper-3), inset 0 0 0 4px rgba(154, 78, 42, 0.55);
 }
 
 .plate-flag {
@@ -993,6 +1288,7 @@ a {
 }
 
 .plate-links span { transition: transform 0.25s var(--ease); }
+
 .plate-links a:hover span { transform: translateX(3px); }
 
 /* End-stop plate — the run runs out. */
@@ -1017,355 +1313,368 @@ a {
 }
 
 /* ------------------------------------------------------------
-   PROJECT SCHEMATIC
-   The plate figure: how the thing works, drawn as if printed.
-   Flat inks, no gradients, one red gloss per plate.
+   SKILLS — the type case
+   A tray of sorts. Every tool is one tile and every tile is the same
+   size, set in one face on a hairline grid; the tools he'd reach for
+   first are the solid hot tiles, and where they fall makes the
+   pattern. Uniform is the whole point — the compartments this
+   replaced were uneven, and tags of three sizes inside them shouted
+   over one another. However many sorts there are, the tray fills: the
+   column count is read from the grid at runtime and the last row is
+   justified to it, so there are never blanks.
    ------------------------------------------------------------ */
-.schematic {
-  width: 100%;
-  height: 100%;
-  display: block;
-  /* Newsprint stock, plus the halftone screen it was printed through.
-     Kept faint — it has to sit under 9px monospace. */
-  background-color: var(--paper-3);
-  background-image: radial-gradient(
-    rgba(20, 17, 14, 0.13) 0.7px,
-    transparent 0.75px
-  );
-  background-size: 5px 5px;
+.case {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 1px;
+  border: 3px solid var(--paper);
+  /* The hairlines between tiles are the tray showing through the gap. */
+  background: var(--rule-strong);
 }
 
-/* Plate header — figure number and what the figure shows. */
-.sc-head {
+.case-sort {
+  position: relative;
+  /* A height, not a ratio: a sort that spans two columns on the last
+     row has to be the same height as one that spans a single column. */
+  min-height: 7rem;
+  padding: 0.95rem 1.05rem 0.85rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--field);
+  color: var(--paper);
+  transition: transform 0.2s var(--paste), box-shadow 0.2s var(--paste);
+}
+
+.case-sort.is-primary {
+  background: var(--red);
+  color: var(--ink);
+}
+
+/* Picked up: a sort lifts off the tray. */
+.case-sort:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 6px 6px 0 var(--blue);
+  z-index: 1;
+}
+
+.case-sort.is-primary:hover {
+  box-shadow: 6px 6px 0 var(--paper);
+}
+
+.case-name {
+  font-family: var(--font-condensed);
+  font-size: clamp(1.7rem, 2.45vw, 2.6rem);
+  line-height: 0.95;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+
+/* Long names take a smaller size and two lines, not one long one. */
+.case-name[data-long] {
+  font-size: clamp(1.2rem, 1.6vw, 1.7rem);
+  line-height: 1;
+}
+
+.case-drawer {
   font-family: var(--font-type);
-  font-size: 9px;
+  font-size: 0.58rem;
   font-weight: 700;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  fill: var(--ink);
-  opacity: 0.6;
+  color: var(--paper-dim);
 }
 
-.sc-rule { stroke: var(--ink); stroke-width: 2; opacity: 0.75; }
-
-/* The spine one job travels down, and the flow between stages. */
-.sc-spine { stroke: var(--ink); stroke-width: 2; opacity: 0.35; }
-
-.sc-flow path {
-  fill: none;
-  stroke: var(--blue-print);
-  stroke-width: 1.6;
-  stroke-linecap: square;
-  opacity: 0.55;
+.case-sort.is-primary .case-drawer {
+  color: var(--ink-2);
 }
 
-.sc-node { fill: var(--ink); }
-
-/* Terminal stage: the thing you actually get out. */
-.sc-node-out {
-  fill: var(--red-print);
-  stroke: var(--ink);
-  stroke-width: 1.5;
-}
-
-.sc-no {
-  font-family: var(--font-type);
-  font-size: 8px;
-  font-weight: 700;
-  fill: var(--ink);
-  opacity: 0.4;
-}
-
-.sc-label {
-  font-family: var(--font-condensed);
-  font-size: 17px;
-  letter-spacing: 0.045em;
-  text-transform: uppercase;
-  fill: var(--ink);
-}
-
-.sc-detail {
-  font-family: var(--font-type);
-  font-size: 9.5px;
-  letter-spacing: 0.02em;
-  fill: var(--ink);
-  opacity: 0.62;
-}
-
-/* Marginal note — the one detail that mattered. Printed in the cool
-   drum: the hot one reads at 1.6:1 on this stock, which is decorative
-   rather than legible, and this line is content. */
-.sc-gloss {
-  font-family: var(--font-type);
-  font-size: 8.5px;
-  font-weight: 700;
-  letter-spacing: 0.09em;
-  text-transform: uppercase;
-  text-anchor: end;
-  fill: var(--blue-print);
-}
-
-/* Rubber stamp, pasted on crooked. */
-.sc-stamp rect {
-  fill: none;
-  stroke: var(--red-print);
-  stroke-width: 2;
-}
-
-.sc-stamp .sc-stamp-inner { stroke-width: 1; opacity: 0.55; }
-
-.sc-stamp text {
-  font-family: var(--font-type);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  text-anchor: middle;
-  /* The box carries the red; the words stay in ink so they can be read. */
-  fill: var(--ink);
-}
-
-/* A signal running the spine while the plate is hovered. */
-.sc-pulse {
-  fill: var(--red-print);
-  opacity: 0;
-}
-
-.plate:hover .sc-pulse {
-  animation: sc-travel 2.4s var(--ease) infinite;
-}
-
-@keyframes sc-travel {
-  0%        { transform: translateY(0); opacity: 0; }
-  12%, 82%  { opacity: 1; }
-  100%      { transform: translateY(102px); opacity: 0; }
-}
-
-/* ------------------------------------------------------------
-   SKILLS — a compositor's type case
-   ------------------------------------------------------------ */
-/* Three columns, not auto-fit. Five drawers over four columns left the
-   last one spanning the full width with three tags adrift in it; over
-   three, the case closes as 3 + (1 + a double-wide FOCUS) and every
-   compartment is filled by its contents. */
-.type-case {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  border-top: 3px solid var(--paper);
-  border-left: 3px solid var(--paper);
-}
-
-.type-drawer {
-  border-right: 3px solid var(--paper);
-  border-bottom: 3px solid var(--paper);
-  /* Packed tight: the label sits close under the top rule and the tags
-     close under the label, the way a compositor fills a case. */
-  padding: 1.1rem 1.15rem 1.15rem;
-}
-
-/* FOCUS is the wide compartment — twice the width of the rest, and the
-   only one that states what the tools are *for*. */
-.type-drawer:last-child {
-  grid-column: span 2;
-}
-
-.type-drawer h3 {
-  font-family: var(--font-type);
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
-  text-transform: uppercase;
-  color: var(--ink);
-  background: var(--paper);
-  display: inline-block;
-  padding: 0.25rem 0.55rem;
-  margin-bottom: 0.7rem;
-}
-
-.type-drawer ul {
-  list-style: none;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.4rem;
-}
-
-/* Every sort in the case is meant to be read. The distinction the
-   drawer makes is filled versus outlined, not visible versus not —
-   so the outlined ones take full paper and a rule you can see. */
-.type-drawer li {
-  font-family: var(--font-condensed);
-  font-size: 1.15rem;
-  letter-spacing: 0.03em;
-  text-transform: uppercase;
-  color: var(--paper);
-  padding: 0.05rem 0.45rem;
-  border: 1px solid var(--rule-strong);
-}
-
-/* The ones he actually reaches for get set in the loud face. */
-.type-drawer li.is-primary {
-  font-family: var(--font-black);
-  font-size: 0.92rem;
-  background: var(--red);
-  border-color: var(--red);
-  color: var(--ink);
-  padding: 0.25rem 0.5rem;
-}
-
-/* Bigger sorts in the bigger compartment, so the double-wide FOCUS row
-   is packed by its four tags rather than trailing off to the right. */
-.type-drawer:last-child li {
-  font-size: 1.38rem;
-  padding: 0.1rem 0.6rem;
-}
-
-.type-drawer:last-child li.is-primary {
-  font-size: 1.05rem;
-  padding: 0.3rem 0.65rem;
-}
-
-/* The key to the case. It explains the one distinction the grid makes,
-   so it is set as a legend — rule, paper, tracked out — rather than as
-   a caption dropped underneath. */
+/* The key to the tray. */
 .type-note {
   display: inline-block;
   font-family: var(--font-type);
   font-size: 0.88rem;
   font-weight: 700;
   letter-spacing: 0.04em;
-  color: var(--paper);
+  color: var(--paper-dim);
   border-top: 3px solid var(--paper);
   padding-top: 0.9rem;
   margin-top: 1.75rem;
 }
 
 .type-note b {
-  background: var(--red);
-  color: var(--ink);
-  padding: 0.15rem 0.4rem;
+  color: var(--red);
 }
 
 /* ------------------------------------------------------------
-   CONTACT
+   CONTACT — the reply card
+   The kicker calls these letters to the editor, so the form is the
+   object that goes with the name: the printed reply card bound into
+   a magazine. Stock, not board; ruled lines to write on rather than
+   input boxes; a rubber stamp to send it; and a perforated stub on
+   the right — the part you detach and keep — carrying the direct
+   lines. Same material as the plates in Work, so the page closes on
+   something it has already taught the reader to read.
    ------------------------------------------------------------ */
-.contact-spread {
+.reply-card {
+  position: relative;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-  gap: 4rem;
-  align-items: start;
+  grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+  gap: 2.75rem;
+  background: var(--paper);
+  color: var(--ink);
+  padding: 2.75rem 2.5rem 2.5rem;
+  box-shadow: 12px 12px 0 rgba(12, 10, 11, 0.55);
 }
 
+/* Cut along here. */
+.card-cut {
+  position: absolute;
+  inset: 13px;
+  border: 2px dashed rgba(20, 17, 15, 0.3);
+  pointer-events: none;
+}
+
+.card-body,
+.card-stub {
+  position: relative;
+}
+
+.card-head {
+  font-family: var(--font-type);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding-bottom: 0.8rem;
+  margin-bottom: 1.9rem;
+  border-bottom: 2px solid var(--ink);
+}
+
+/* --- The fields: ruled lines, not boxes --------------------------- */
 .form-field {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.7rem;
 }
 
 .form-field label {
   display: block;
   font-family: var(--font-type);
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--paper);
-  margin-bottom: 0.4rem;
+  color: var(--ink-3);
+  margin-bottom: 0.3rem;
 }
 
 .form-field input,
 .form-field textarea {
   width: 100%;
-  font-family: var(--font-body);
+  font-family: var(--font-type);
   font-size: 1rem;
-  color: var(--paper);
-  background: var(--field-3);
-  border: 3px solid var(--paper);
-  padding: 0.7rem 0.85rem;
-  transition: box-shadow 0.2s var(--ease);
+  color: var(--ink);
+  background-color: transparent;
+  border: 0;
+  border-radius: 0;
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+
+.form-field input {
+  line-height: 1.5;
+  padding: 0.3rem 0.15rem 0.4rem;
+  border-bottom: 2px solid rgba(20, 17, 15, 0.38);
+}
+
+/* The message is ruled all the way down, like the back of the card. */
+.form-field textarea {
+  display: block;
+  resize: vertical;
+  padding: 0 0.15rem;
+  line-height: 28px;
+  min-height: 140px;
+  background-image: repeating-linear-gradient(
+    to bottom,
+    transparent 0 27px,
+    rgba(20, 17, 15, 0.28) 27px 28px
+  );
 }
 
 .form-field input:focus,
 .form-field textarea:focus {
   outline: none;
-  box-shadow: 5px 5px 0 var(--blue);
+  border-bottom-color: var(--red-print);
+  background-color: rgba(207, 114, 72, 0.08);
 }
 
-.form-field textarea {
-  resize: vertical;
-  min-height: 130px;
+.form-field input:focus-visible,
+.form-field textarea:focus-visible {
+  outline: 2px solid var(--red-print);
+  outline-offset: 3px;
 }
 
+/* The stock is paper; a browser's autofill wash is not. */
+.form-field input:-webkit-autofill {
+  -webkit-text-fill-color: var(--ink);
+  box-shadow: inset 0 0 0 100px var(--paper);
+}
+
+/* --- Send it: a rubber stamp -------------------------------------- */
 .btn-submit {
-  width: 100%;
   cursor: pointer;
   font-family: var(--font-type);
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
+  letter-spacing: 0.18em;
   text-transform: uppercase;
-  padding: 1rem;
-  border: 3px solid var(--paper);
-  background: var(--red);
-  color: var(--ink);
-  box-shadow: 5px 5px 0 var(--paper);
-  transition: transform 0.15s var(--ease), box-shadow 0.15s var(--ease);
+  color: var(--red-print);
+  background: transparent;
+  border: 2px solid var(--red-print);
+  box-shadow: inset 0 0 0 3px var(--paper), inset 0 0 0 4px rgba(154, 78, 42, 0.5);
+  padding: 0.85rem 2.6rem;
+  margin-top: 0.4rem;
+  transform: rotate(-1.8deg);
+  transition: transform 0.14s var(--ease), background 0.18s var(--ease),
+    color 0.18s var(--ease);
 }
 
-.btn-submit:hover:not(:disabled) {
-  transform: translate(3px, 3px);
-  box-shadow: 2px 2px 0 var(--paper);
+.btn-submit:hover:not(:disabled),
+.btn-submit:focus-visible {
+  background: var(--red-print);
+  color: var(--paper);
+}
+
+/* Pressed: it comes down flat on the card. */
+.btn-submit:active:not(:disabled) {
+  transform: rotate(0deg) translateY(2px);
 }
 
 .btn-submit:disabled {
-  opacity: 0.5;
+  opacity: 0.45;
   cursor: not-allowed;
+}
+
+.btn-submit:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+}
+
+/* --- Sent ---------------------------------------------------------- */
+.card-received {
+  padding: 1.5rem 0 2rem;
+}
+
+.received-stamp {
+  display: inline-block;
+  font-family: var(--font-condensed);
+  font-size: clamp(2.2rem, 4.6vw, 3.4rem);
+  line-height: 1;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--red-print);
+  border: 3px solid var(--red-print);
+  box-shadow: inset 0 0 0 4px var(--paper), inset 0 0 0 6px rgba(154, 78, 42, 0.45);
+  padding: 0.6rem 1.7rem 0.45rem;
+  transform: rotate(-5deg);
+  opacity: 0.9;
+  animation: stamp-down 0.32s var(--paste) both;
+}
+
+@keyframes stamp-down {
+  from { transform: rotate(-9deg) scale(1.5); opacity: 0; }
+  to   { transform: rotate(-5deg) scale(1); opacity: 0.9; }
+}
+
+.received-note {
+  margin-top: 1.6rem;
+  font-family: var(--font-editorial);
+  font-style: italic;
+  font-size: 1.15rem;
+  color: var(--ink) !important;
 }
 
 .form-note {
   font-family: var(--font-type);
   font-size: 0.85rem;
-  padding: 0.75rem;
-  margin-bottom: 1rem;
-  border: 3px solid var(--paper);
+  color: var(--ink);
+  border-left: 4px solid var(--red-print);
+  padding: 0.5rem 0 0.5rem 0.9rem;
+  margin-bottom: 1.6rem;
 }
 
-.form-note.is-error {
-  background: var(--red);
-  color: var(--ink);
+/* --- The stub: detach and keep ------------------------------------ */
+.card-stub {
+  border-left: 2px dashed rgba(20, 17, 15, 0.3);
+  padding-left: 2.75rem;
+  display: flex;
+  flex-direction: column;
 }
 
-/* The blue drum at partial coverage is a light tint, so this note is
-   overprinted in ink rather than reversed out in paper. */
-.form-note.is-success {
-  background: var(--blue);
-  color: var(--ink);
+/* Prepaid, as a reply card always is. */
+.stub-postage {
+  align-self: flex-end;
+  width: 5.6rem;
+  min-height: 5.9rem;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  border: 2px dashed rgba(20, 17, 15, 0.42);
+  font-family: var(--font-type);
+  font-size: 0.55rem;
+  font-weight: 700;
+  line-height: 1.5;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding: 0.4rem;
+  transform: rotate(2deg);
+  margin-bottom: 1.6rem;
+}
+
+.stub-head {
+  font-family: var(--font-type);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ink-3);
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.4rem;
+  border-bottom: 2px solid var(--ink);
 }
 
 .direct-line dt {
   font-family: var(--font-type);
-  font-size: 0.7rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--paper-dim);
-  margin-bottom: 0.25rem;
+  color: var(--ink-3);
+  margin-bottom: 0.3rem;
 }
 
 .direct-line dd {
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.35rem;
 }
 
 .direct-line a {
-  font-family: var(--font-black);
-  font-size: 1.35rem;
-  text-transform: uppercase;
-  color: var(--paper);
-  border-bottom: 3px solid var(--blue);
+  font-family: var(--font-type);
+  font-size: 0.95rem;
+  color: var(--ink);
+  /* Small type on the stock is the cool drum's job — the hot drum has
+     no legible value on paper at this size. */
+  border-bottom: 2px solid var(--blue-print);
   transition: color 0.2s, border-color 0.2s;
   word-break: break-word;
 }
 
 .direct-line a:hover {
-  color: var(--red);
-  border-bottom-color: var(--red);
+  color: var(--red-print);
+  border-bottom-color: var(--red-print);
 }
 
 /* Stands in for the address until a human asks. Deliberately not
@@ -1373,21 +1682,34 @@ a {
 .unmask {
   cursor: pointer;
   font-family: var(--font-type);
-  font-size: 0.82rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--paper);
+  color: var(--ink);
   background: transparent;
-  border: 3px solid var(--paper);
-  padding: 0.4rem 0.85rem;
-  transition: background 0.2s var(--ease), border-color 0.2s var(--ease);
+  border: 2px solid var(--ink);
+  padding: 0.35rem 0.8rem;
+  transition: background 0.2s var(--ease), color 0.2s var(--ease),
+    border-color 0.2s var(--ease);
 }
 
-.unmask:hover {
-  background: var(--red);
-  border-color: var(--red);
-  color: var(--ink);
+.unmask:hover,
+.unmask:focus-visible {
+  background: var(--red-print);
+  border-color: var(--red-print);
+  color: var(--paper);
+}
+
+.stub-keep {
+  margin-top: auto;
+  padding-top: 1.75rem;
+  font-family: var(--font-type);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--ink-3);
 }
 
 /* ------------------------------------------------------------
@@ -1399,7 +1721,11 @@ a {
   position: relative;
   background: var(--paper);
   color: var(--ink);
-  padding: 3.5rem 0 2.5rem;
+  /* The fourth value clears the fixed spine. It has to be part of this
+     shorthand: a padding-left set anywhere else is reset by it, which
+     is what used to run the imprint under the spine and cut the first
+     letter off every line. --spine is 0 once the spine folds away. */
+  padding: 3.5rem 0 2.5rem var(--spine);
   overflow: hidden;
   border-top: 6px solid var(--ink);
 }
@@ -1566,33 +1892,43 @@ a {
   .hero { padding-top: 7rem; }
 
   .hero-lower,
-  .about-spread,
-  .contact-spread {
+  .about-spread {
     grid-template-columns: 1fr;
     gap: 2.5rem;
   }
 
-  /* The reel keeps swiping horizontally — natural on touch — and its
-     gutter follows --pad down with everything else. */
-  .plate { flex-basis: min(88vw, 400px); padding-right: 1.25rem; }
+  .reply-card {
+    grid-template-columns: 1fr;
+    gap: 2rem;
+    padding: 2rem 1.5rem 1.75rem;
+    box-shadow: 8px 8px 0 rgba(12, 10, 11, 0.55);
+  }
 
-  /* The schematic is the one element that can't reflow — its type is set
-     in user units and shrinks with the frame. Give the frame back the
-     width the plate's gutters were taking, then scale the smallest type
-     up inside it. The copy limits in ProjectSchematic are sized for this
-     larger type: a 30-char detail and a 16-char gloss still clear. */
-  .plate-figure { margin-left: 1rem; }
-  .sc-head { font-size: 10px; }
-  .sc-detail { font-size: 10px; }
-  .sc-gloss { font-size: 9px; }
-  .sc-no { font-size: 9px; }
+  /* The stub tears off the bottom instead of the side. */
+  .card-stub {
+    border-left: 0;
+    border-top: 2px dashed rgba(20, 17, 15, 0.3);
+    padding-left: 0;
+    padding-top: 1.75rem;
+  }
+
+  .stub-postage { align-self: flex-start; }
+
+  .case { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+  /* The reel keeps swiping horizontally — natural on touch — and its
+     gutter follows --pad down with everything else. The arrows stay:
+     they are how a visitor learns the reel moves at all. */
+  .plate { flex-basis: min(88vw, 400px); padding-right: 1.25rem; }
+  .reel-bar { gap: 1rem; }
+  .reel-frame::after { bottom: 3rem; }
+
 
   .colophon-grid { grid-template-columns: 1fr; gap: 1.25rem; }
 
   .about-body p:first-child::first-letter { font-size: 3em; }
 
   /* Two columns still close the case: 2 + 2 + a double-wide FOCUS. */
-  .type-case { grid-template-columns: repeat(2, 1fr); }
 }
 
 /* One face carries the name across a phone on a single line, but the
@@ -1603,16 +1939,16 @@ a {
     font-size: clamp(2.6rem, 11.5vw, 4.4rem);
     margin-bottom: 2.5rem;
   }
-  .sig-cut { filter: drop-shadow(3px 4px 0 rgba(9, 12, 26, 0.55)); }
+  .sig-cut { filter: drop-shadow(3px 4px 0 rgba(9, 7, 8, 0.55)); }
 }
 
 @media (max-width: 560px) {
   /* One column. FOCUS must drop its span here or the grid invents a
      second, empty column to hold it. */
-  .type-case { grid-template-columns: 1fr; }
-  .type-drawer:last-child { grid-column: 1 / -1; }
-  .type-drawer:last-child li { font-size: 1.15rem; padding: 0.05rem 0.45rem; }
-  .type-drawer:last-child li.is-primary { font-size: 0.92rem; padding: 0.25rem 0.5rem; }
+  .case { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .case-sort { min-height: 6.25rem; padding: 0.8rem 0.85rem 0.7rem; }
+  .case-name { font-size: 1.35rem; }
+  .case-name[data-long] { font-size: 1rem; }
 }
 
 @media (max-width: 480px) {
@@ -1641,7 +1977,7 @@ textarea:focus-visible {
      Literal rgba because the property takes no var() in Safari. */
   a,
   button {
-    -webkit-tap-highlight-color: rgba(255, 92, 57, 0.24);
+    -webkit-tap-highlight-color: rgba(207, 114, 72, 0.24);
   }
 
   /* The plate links are set at caption size and the topbar name sits in
@@ -1687,4 +2023,8 @@ textarea:focus-visible {
 
   .reveal { opacity: 1; transform: none; }
   .reveal-heading .rh-word { transform: none; }
+
+  .printout-cursor { animation: none; }
+  .received-stamp { animation: none; }
+  .case-sort { transition: none; }
 }

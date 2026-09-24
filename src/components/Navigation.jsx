@@ -27,6 +27,16 @@ export default function Navigation() {
     setMobileOpen(false);
   };
 
+  // The page scrolls inside #root, and the browser handles the URL's
+  // fragment before React has rendered anything to scroll to — so a
+  // shared link like /#work landed on the hero. Once the sections exist,
+  // honour the hash ourselves, instantly, as the browser would have.
+  useEffect(() => {
+    const id = window.location.hash.slice(1);
+    if (!id) return;
+    document.getElementById(id)?.scrollIntoView({ behavior: 'instant', block: 'start' });
+  }, []);
+
   return (
     <>
       {/* The spine — a bound-volume edge running the full height of the

@@ -53,6 +53,7 @@ export default function Contact() {
           name={name}
           value={form[name]}
           onChange={e => setForm({ ...form, [name]: e.target.value })}
+          rows={5}
           required
         />
       ) : (
@@ -81,66 +82,90 @@ export default function Contact() {
           </h2>
         </Reveal>
 
-        <div className="contact-spread">
-          <Reveal delay={100}>
-            {done ? (
-              <p className="form-note is-success">
-                Sent. I'll write back within a day or two.
+        {/* The section's kicker calls these letters to the editor, so
+            the form is the object that goes with the name: a printed
+            reply card, on the stock, cut out of the page. The stub on
+            the right is the part you keep. */}
+        <Reveal delay={100}>
+          <div className="reply-card">
+            <div className="card-cut" aria-hidden="true" />
+
+            <div className="card-body">
+              <p className="card-head">
+                Reply card <span aria-hidden="true">·</span> Nº 04
               </p>
-            ) : (
-              <form onSubmit={submit}>
-                {error && <p className="form-note is-error">{error}</p>}
-                {field('name', 'Your name')}
-                {field('email', 'Email', 'email')}
-                {field('message', 'Message', 'textarea')}
-                <button className="btn-submit" disabled={sending}>
-                  {sending ? 'Sending…' : 'Send it'}
-                </button>
-              </form>
-            )}
-          </Reveal>
 
-          <Reveal delay={160}>
-            <dl className="direct-line">
-              <dt>Email</dt>
-              <dd>
-                {address ? (
-                  <a href={`mailto:${address}`}>{address}</a>
-                ) : (
-                  <button
-                    type="button"
-                    className="unmask"
-                    onClick={() => setAddress(MAILBOX.join('@'))}
-                  >
-                    Show address
+              {done ? (
+                <div className="card-received">
+                  <p className="received-stamp" aria-hidden="true">Received</p>
+                  <p className="received-note">
+                    Sent. I'll write back within a day or two.
+                  </p>
+                </div>
+              ) : (
+                <form onSubmit={submit}>
+                  {error && <p className="form-note">{error}</p>}
+                  {field('name', 'Your name')}
+                  {field('email', 'Email', 'email')}
+                  {field('message', 'Message', 'textarea')}
+                  <button className="btn-submit" disabled={sending}>
+                    {sending ? 'Sending…' : 'Send it'}
                   </button>
-                )}
-              </dd>
+                </form>
+              )}
+            </div>
 
-              <dt>GitHub</dt>
-              <dd>
-                <a
-                  href="https://github.com/shashwathv"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  github.com/shashwathv
-                </a>
-              </dd>
+            <div className="card-stub">
+              <div className="stub-postage" aria-hidden="true">
+                <span>No stamp needed</span>
+              </div>
 
-              <dt>LinkedIn</dt>
-              <dd>
-                <a
-                  href="https://linkedin.com/in/shashwathv4405"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  linkedin.com/in/shashwathv4405
-                </a>
-              </dd>
-            </dl>
-          </Reveal>
-        </div>
+              <p className="stub-head">Or write direct</p>
+
+              <dl className="direct-line">
+                <dt>Email</dt>
+                <dd>
+                  {address ? (
+                    <a href={`mailto:${address}`}>{address}</a>
+                  ) : (
+                    <button
+                      type="button"
+                      className="unmask"
+                      onClick={() => setAddress(MAILBOX.join('@'))}
+                    >
+                      Show address
+                    </button>
+                  )}
+                </dd>
+
+                <dt>GitHub</dt>
+                <dd>
+                  <a
+                    href="https://github.com/shashwathv"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    github.com/shashwathv
+                  </a>
+                </dd>
+
+                <dt>LinkedIn</dt>
+                <dd>
+                  <a
+                    href="https://linkedin.com/in/shashwathv4405"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    linkedin.com/in/shashwathv4405
+                  </a>
+                </dd>
+              </dl>
+
+              <p className="stub-keep" aria-hidden="true">Detach and keep</p>
+            </div>
+          </div>
+        </Reveal>
+
       </div>
     </section>
   );

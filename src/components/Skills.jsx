@@ -1,3 +1,4 @@
+import { useEffect, useRef, useState } from 'react';
 import Reveal from './Reveal';
 
 const drawers = [
@@ -14,10 +15,9 @@ const drawers = [
   {
     name: 'Backend & APIs',
     items: [
-      { name: 'Gin' },
+      { name: 'Gin', primary: true },
       { name: 'FastAPI', primary: true },
-      { name: 'Flask' },
-      { name: 'REST' }
+      { name: 'Flask' }
     ]
   },
   {
@@ -47,13 +47,58 @@ const drawers = [
     items: [
       { name: 'API design', primary: true },
       { name: 'LLM pipelines', primary: true },
-      { name: 'On-device inference' },
       { name: 'Distributed systems' }
     ]
   }
 ];
 
+/* The case, laid out flat: every sort in reading order, each knowing
+   which drawer it came from. Twenty-five of them — five by five. */
+const sorts = drawers.flatMap(d => d.items.map(i => ({ ...i, drawer: d.name })));
+
 export default function Skills() {
+  const trayRef = useRef(null);
+  // How many columns the tray is actually in — read from the grid
+  // rather than assumed, because the count comes from media queries.
+  const [cols, setCols] = useState(5);
+
+  useEffect(() => {
+    const tray = trayRef.current;
+    if (!tray) return undefined;
+    const measure = () => {
+      const n = getComputedStyle(tray)
+        .gridTemplateColumns.split(' ')
+        .filter(Boolean).length;
+      // Only ever set a different value, so re-rendering the furniture
+      // below can't feed back into the observer.
+      setCols(current => (n > 0 && n !== current ? n : current));
+    };
+    // The observer's first callback does the initial measure, so nothing
+    // sets state synchronously while the effect is running.
+    const ro = new ResizeObserver(measure);
+    ro.observe(tray);
+    window.addEventListener('resize', measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener('resize', measure);
+    };
+  }, []);
+
+  /**
+   * The last row is justified, the way a line of type is: whatever is
+   * left over widens to fill the measure exactly, so the tray never
+   * ends in a blank. Five columns across three sorts is 2 + 2 + 1;
+   * three across two is 2 + 1. Every edge still lands on the grid
+   * above it, because a sort only ever widens by whole columns.
+   */
+  const onLastRow = sorts.length % cols;
+  const firstOfLastRow = sorts.length - onLastRow;
+  const spanOf = index => {
+    if (!onLastRow || index < firstOfLastRow) return 1;
+    const place = index - firstOfLastRow;
+    return Math.floor(cols / onLastRow) + (place < cols % onLastRow ? 1 : 0);
+  };
+
   return (
     <section id="skills">
       <div className="sheet">
@@ -68,28 +113,25 @@ export default function Skills() {
         </Reveal>
 
         <Reveal delay={100}>
-          <div className="type-case">
-            {drawers.map(drawer => (
-              <div className="type-drawer" key={drawer.name}>
-                <h3>{drawer.name}</h3>
-                <ul>
-                  {drawer.items.map(item => (
-                    <li
-                      key={item.name}
-                      className={item.primary ? 'is-primary' : ''}
-                    >
-                      {item.name}
-                    </li>
-                  ))}
-                </ul>
-              </div>
+          <ul className="case" ref={trayRef}>
+            {sorts.map((sort, i) => (
+              <li
+                key={`${sort.drawer}/${sort.name}`}
+                className={`case-sort${sort.primary ? ' is-primary' : ''}`}
+                style={spanOf(i) > 1 ? { gridColumn: `span ${spanOf(i)}` } : undefined}
+              >
+                <span className="case-name" data-long={sort.name.length > 12 || undefined}>
+                  {sort.name}
+                </span>
+                <span className="case-drawer">{sort.drawer}</span>
+              </li>
             ))}
-          </div>
+          </ul>
         </Reveal>
 
         <Reveal delay={140}>
           <p className="type-note">
-            Set in <b>bold</b>: what I'd reach for first on a new project.
+            Set in <b>the hot ink</b>: what I'd reach for first on a new project.
           </p>
         </Reveal>
       </div>
